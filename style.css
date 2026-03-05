@@ -1,0 +1,127 @@
+body{
+margin:0;
+font-family: Arial, Helvetica, sans-serif;
+background:#f3f2ef;
+}
+
+/* Top Navigation */
+
+.topbar{
+background:white;
+border-bottom:1px solid #ddd;
+display:flex;
+align-items:center;
+padding:12px 20px;
+}
+
+.logo{
+background:#0a66c2;
+color:white;
+font-weight:bold;
+padding:6px 10px;
+border-radius:4px;
+margin-right:10px;
+}
+
+.title{
+font-size:20px;
+font-weight:600;
+margin-right:40px;
+}
+
+.tabs button{
+background:#0a66c2;
+color:white;
+border:none;
+padding:7px 16px;
+margin-right:8px;
+border-radius:20px;
+cursor:pointer;
+font-weight:600;
+}
+
+.tabs button:hover{
+background:#004182;
+}
+
+/* Main container */
+
+.container{
+width:700px;
+margin:30px auto;
+}
+
+/* Person card */
+
+.person{
+display:flex;
+align-items:center;
+background:white;
+padding:15px;
+border-radius:8px;
+margin-bottom:12px;
+box-shadow:0 1px 3px rgba(0,0,0,0.1);
+}
+
+/* Profile image */
+
+.avatar{
+width:55px;
+height:55px;
+border-radius:50%;
+object-fit:cover;
+margin-right:15px;
+}
+
+/* Text section */
+
+.person-info{
+flex:1;
+}
+
+.name{
+font-weight:600;
+font-size:16px;
+}
+
+.headline{
+font-size:13px;
+color:#666;
+margin-top:4px;
+}
+
+/* Buttons */
+
+.connect{
+background:#0a66c2;
+color:white;
+border:none;
+padding:8px 18px;
+border-radius:20px;
+cursor:pointer;
+font-weight:600;
+}
+
+.withdraw{
+background:#666;
+color:white;
+border:none;
+padding:8px 18px;
+border-radius:20px;
+cursor:pointer;
+font-weight:600;
+}
+
+.accept{
+background:#057642;
+color:white;
+border:none;
+padding:8px 18px;
+border-radius:20px;
+cursor:pointer;
+font-weight:600;
+}
+
+.hidden{
+display:none;
+}
