@@ -1,0 +1,38 @@
+
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>LiveSync Networking</title>
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+<div id="nameScreen" class="screen">
+  <div class="card">
+    <h2>Join Networking Session</h2>
+    <input id="nameInput" placeholder="Enter your name"/>
+    <button onclick="enterSession()">Enter</button>
+  </div>
+</div>
+
+<div id="appScreen" class="screen hidden">
+  <div class="header">
+    <div class="logo">in</div>
+    <h3>LiveSync Session</h3>
+  </div>
+
+  <div class="tabs">
+    <button onclick="showTab('people')" id="tab_people">People</button>
+    <button onclick="showTab('received')" id="tab_received">Req Received</button>
+    <button onclick="showTab('sent')" id="tab_sent">Req Sent</button>
+  </div>
+
+  <div id="people" class="tab"></div>
+  <div id="received" class="tab hidden"></div>
+  <div id="sent" class="tab hidden"></div>
+</div>
+
+<script src="script.js"></script>
+</body>
+</html>
