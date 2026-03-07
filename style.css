@@ -1,79 +1,117 @@
 body{
 margin:0;
-font-family: Arial, Helvetica, sans-serif;
+font-family:Arial;
 background:#f3f2ef;
 }
 
-/* Top Navigation */
+/* NAVBAR */
 
-.topbar{
+.navbar{
 background:white;
-border-bottom:1px solid #ddd;
 display:flex;
 align-items:center;
-padding:12px 20px;
+justify-content:space-between;
+padding:10px 30px;
+border-bottom:1px solid #ddd;
 }
 
-.logo{
+.nav-left{
+display:flex;
+align-items:center;
+}
+
+.linkedin-logo{
 background:#0a66c2;
 color:white;
 font-weight:bold;
 padding:6px 10px;
 border-radius:4px;
-margin-right:10px;
+margin-right:15px;
 }
 
-.title{
-font-size:20px;
+.search-bar{
+padding:8px 12px;
+border-radius:4px;
+border:1px solid #ccc;
+width:250px;
+}
+
+.nav-menu{
+display:flex;
+gap:30px;
+color:#666;
+}
+
+.nav-menu .active{
+color:black;
 font-weight:600;
-margin-right:40px;
+}
+
+.premium{
+color:#915907;
+font-weight:600;
+}
+
+/* PAGE */
+
+.page{
+display:flex;
+width:1100px;
+margin:30px auto;
+gap:30px;
+}
+
+/* LEFT CONTENT */
+
+.content{
+flex:2;
+}
+
+.header-row{
+display:flex;
+justify-content:space-between;
+align-items:center;
+}
+
+.timer{
+background:#fff3cd;
+padding:6px 10px;
+border-radius:5px;
+font-weight:600;
+}
+
+.tabs{
+margin-top:10px;
+margin-bottom:20px;
 }
 
 .tabs button{
 background:#0a66c2;
 color:white;
 border:none;
-padding:7px 16px;
-margin-right:8px;
+padding:7px 14px;
 border-radius:20px;
+margin-right:8px;
 cursor:pointer;
-font-weight:600;
 }
 
-.tabs button:hover{
-background:#004182;
-}
-
-/* Main container */
-
-.container{
-width:700px;
-margin:30px auto;
-}
-
-/* Person card */
+/* PEOPLE CARDS */
 
 .person{
+background:white;
 display:flex;
 align-items:center;
-background:white;
 padding:15px;
 border-radius:8px;
-margin-bottom:12px;
-box-shadow:0 1px 3px rgba(0,0,0,0.1);
+margin-bottom:10px;
 }
-
-/* Profile image */
 
 .avatar{
 width:55px;
 height:55px;
 border-radius:50%;
-object-fit:cover;
 margin-right:15px;
 }
-
-/* Text section */
 
 .person-info{
 flex:1;
@@ -81,45 +119,64 @@ flex:1;
 
 .name{
 font-weight:600;
-font-size:16px;
 }
 
 .headline{
-font-size:13px;
 color:#666;
-margin-top:4px;
+font-size:13px;
 }
-
-/* Buttons */
 
 .connect{
 background:#0a66c2;
 color:white;
 border:none;
-padding:8px 18px;
+padding:7px 16px;
 border-radius:20px;
 cursor:pointer;
-font-weight:600;
 }
 
 .withdraw{
 background:#666;
 color:white;
 border:none;
-padding:8px 18px;
+padding:7px 16px;
 border-radius:20px;
 cursor:pointer;
-font-weight:600;
 }
 
 .accept{
 background:#057642;
 color:white;
 border:none;
-padding:8px 18px;
+padding:7px 16px;
 border-radius:20px;
 cursor:pointer;
-font-weight:600;
+}
+
+/* PREMIUM */
+
+.premium-icon{
+background:#c79a00;
+color:white;
+padding:4px 6px;
+border-radius:3px;
+font-size:12px;
+margin-left:6px;
+}
+
+/* SIDEBAR */
+
+.sidebar{
+flex:1;
+background:white;
+padding:20px;
+border-radius:8px;
+height:fit-content;
+}
+
+.event{
+border-bottom:1px solid #eee;
+padding:10px 0;
 }
 
 .hidden{
