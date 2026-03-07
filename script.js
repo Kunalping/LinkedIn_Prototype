@@ -1,31 +1,22 @@
-/* ============================================================
-   STATE
-============================================================ */
-let sentCount    = 0;
-let receivedCount = 2; // pre-loaded sample requests
+/* ============================================================ STATE */
+let sentCount     = 0;
+let receivedCount = 2;
+let peopleCount   = 12;
 
-/* ============================================================
-   TAB SWITCHING
-============================================================ */
+/* ============================================================ TAB SWITCHING */
 function showTab(name) {
-  // hide all panels
   document.querySelectorAll('.tabPanel').forEach(p => p.classList.add('hidden'));
-  // deactivate all tab buttons
   document.querySelectorAll('.tabBtn').forEach(b => b.classList.remove('active'));
 
-  // show target panel
   var panel = document.getElementById(name);
   if (panel) panel.classList.remove('hidden');
 
-  // activate matching button
   var btnMap = { people: 'tabPeople', received: 'tabReceived', sent: 'tabSent' };
   var btn = document.getElementById(btnMap[name]);
   if (btn) btn.classList.add('active');
 }
 
-/* ============================================================
-   CONNECT BUTTON
-============================================================ */
+/* ============================================================ CONNECT */
 function handleConnect(btn, name, title, img) {
   if (btn.classList.contains('requested')) return;
 
@@ -43,7 +34,6 @@ function updateSentTab(name, title, img) {
   var list  = document.getElementById('sentList');
   var empty = document.getElementById('sentEmpty');
   if (!list) return;
-
   if (empty) empty.style.display = 'none';
 
   var card = document.createElement('div');
@@ -59,13 +49,10 @@ function updateSentTab(name, title, img) {
   list.appendChild(card);
 }
 
-/* ============================================================
-   ACCEPT / IGNORE RECEIVED REQUESTS
-============================================================ */
+/* ============================================================ ACCEPT / IGNORE */
 function acceptReq(btn, name, cardId) {
   var card = document.getElementById(cardId);
   if (!card) return;
-
   receivedCount--;
   card.remove();
   updateTabCounts();
@@ -75,7 +62,6 @@ function acceptReq(btn, name, cardId) {
 function ignoreReq(cardId) {
   var card = document.getElementById(cardId);
   if (!card) return;
-
   receivedCount--;
   card.style.opacity = '0';
   card.style.transition = 'opacity 0.3s';
@@ -83,38 +69,29 @@ function ignoreReq(cardId) {
   updateTabCounts();
 }
 
-/* ============================================================
-   TAB COUNTERS
-============================================================ */
+/* ============================================================ TAB COUNTERS */
 function updateTabCounts() {
-  var sentBtn = document.getElementById('tabSent');
-  if (sentBtn) sentBtn.textContent = 'Req Sent (' + sentCount + ')';
+  var s = document.getElementById('tabSent');
+  if (s) s.textContent = 'Req Sent (' + sentCount + ')';
 
-  var recvBtn = document.getElementById('tabReceived');
-  if (recvBtn) recvBtn.textContent = 'Req Received (' + receivedCount + ')';
+  var r = document.getElementById('tabReceived');
+  if (r) r.textContent = 'Req Received (' + receivedCount + ')';
 }
 
-/* ============================================================
-   ME DROPDOWN
-============================================================ */
+/* ============================================================ ME DROPDOWN */
 function toggleDropdown() {
   var dd = document.getElementById('meDropdown');
-  if (!dd) return;
-  dd.classList.toggle('open');
+  if (dd) dd.classList.toggle('open');
 }
 
 document.addEventListener('click', function(e) {
   var nme = document.getElementById('nme');
   var dd  = document.getElementById('meDropdown');
   if (!dd || !nme) return;
-  if (!nme.contains(e.target)) {
-    dd.classList.remove('open');
-  }
+  if (!nme.contains(e.target)) dd.classList.remove('open');
 });
 
-/* ============================================================
-   TOAST
-============================================================ */
+/* ============================================================ TOAST */
 var toastTimer = null;
 
 function showToast(msg) {
