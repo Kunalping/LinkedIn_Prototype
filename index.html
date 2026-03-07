@@ -1,179 +1,161 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>LiveSync Networking – My Network</title>
+<title>LiveSync Networking</title>
 <link rel="stylesheet" href="style.css">
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
 <body>
 
-<!-- LINKEDIN NAVBAR REPLICA -->
+<!-- ===== NAVBAR ===== -->
 <header class="navbar">
-  <div class="nav-left">
-    <div class="nav-logo">
-      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="34" height="34" fill="white">
+
+  <div class="navbar-left">
+    <div class="navbar-logo">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="30" height="30" fill="white">
         <path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433a2.062 2.062 0 0 1-2.063-2.065 2.064 2.064 0 1 1 2.063 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/>
       </svg>
     </div>
-    <div class="nav-search">
-      <i class="fa-solid fa-magnifying-glass nav-search-icon"></i>
-      <input type="text" placeholder="Search" class="nav-search-input">
+    <div class="navbar-search-wrap">
+      <i class="fa fa-search navbar-search-icon"></i>
+      <input class="navbar-search-input" type="text" placeholder="Search">
     </div>
   </div>
 
-  <nav class="nav-items">
-    <a href="#" class="nav-item">
-      <i class="fa-solid fa-house nav-item-icon"></i>
-      <span>Home</span>
+  <div class="navbar-right">
+    <a class="nitem" href="#"><i class="fa fa-home"></i><span>Home</span></a>
+    <a class="nitem active" href="#"><i class="fa fa-user-friends"></i><span>My Network</span></a>
+    <a class="nitem" href="#"><i class="fa fa-briefcase"></i><span>Jobs</span></a>
+    <a class="nitem pos-rel" href="#">
+      <i class="fa fa-comment-dots"></i><span>Messaging</span>
+      <em class="nbadge">3</em>
     </a>
-    <a href="#" class="nav-item active">
-      <i class="fa-solid fa-user-group nav-item-icon"></i>
-      <span>My Network</span>
+    <a class="nitem pos-rel" href="#">
+      <i class="fa fa-bell"></i><span>Notifications</span>
+      <em class="nbadge red">1</em>
     </a>
-    <a href="#" class="nav-item">
-      <i class="fa-solid fa-briefcase nav-item-icon"></i>
-      <span>Jobs</span>
-    </a>
-    <a href="#" class="nav-item">
-      <i class="fa-regular fa-comment-dots nav-item-icon"></i>
-      <span>Messaging</span>
-      <span class="nav-badge">3</span>
-    </a>
-    <a href="#" class="nav-item">
-      <i class="fa-regular fa-bell nav-item-icon"></i>
-      <span>Notifications</span>
-      <span class="nav-badge red">1</span>
-    </a>
-    <div class="nav-divider"></div>
-    <div class="nav-item nav-me" onclick="toggleDropdown()" id="meNavItem">
-      <img src="https://randomuser.me/api/portraits/men/75.jpg" class="nav-avatar" alt="Me">
-      <span>Me &nbsp;<i class="fa-solid fa-caret-down" style="font-size:9px;"></i></span>
+
+    <div class="ndivider"></div>
+
+    <div class="nitem nme" id="nme" onclick="toggleDropdown()">
+      <img src="https://randomuser.me/api/portraits/men/75.jpg" class="nme-avatar" alt="Me">
+      <span>Me <i class="fa fa-caret-down" style="font-size:10px"></i></span>
+
       <div class="me-dropdown" id="meDropdown">
-        <div class="me-dropdown-header">
+        <div class="me-drop-top">
           <img src="https://randomuser.me/api/portraits/men/75.jpg" alt="Kunal">
           <div>
-            <div class="me-name">Kunal Mehta</div>
-            <div class="me-title">MBA | IIM Ahmedabad</div>
+            <div class="me-drop-name">Kunal Mehta</div>
+            <div class="me-drop-title">MBA | IIM Ahmedabad</div>
           </div>
         </div>
         <button class="me-view-btn">View Profile</button>
-        <hr class="me-divider">
-        <div class="me-section-label">Account</div>
-        <div class="me-dropdown-link">Settings &amp; Privacy</div>
-        <div class="me-dropdown-link">Help</div>
-        <div class="me-dropdown-link">Language</div>
-        <hr class="me-divider">
-        <div class="me-dropdown-link">Sign Out</div>
+        <hr class="me-hr">
+        <div class="me-section">Account</div>
+        <div class="me-link">Settings &amp; Privacy</div>
+        <div class="me-link">Help</div>
+        <div class="me-link">Language</div>
+        <hr class="me-hr">
+        <div class="me-link">Sign Out</div>
       </div>
     </div>
-    <a href="#" class="nav-item">
-      <i class="fa-solid fa-grip nav-item-icon"></i>
-      <span>For Business &nbsp;<i class="fa-solid fa-caret-down" style="font-size:9px;"></i></span>
-    </a>
-    <a href="#" class="nav-premium">
-      Try Premium for <span class="premium-free">&#8377;0</span>
-    </a>
-  </nav>
+
+    <a class="nitem" href="#"><i class="fa fa-th"></i><span>For Business</span></a>
+    <a class="npremium" href="#">Try Premium for <strong>&#8377;0</strong></a>
+  </div>
+
 </header>
 
-<!-- PAGE BODY -->
-<div class="page-wrapper">
-  <div class="page-layout">
+<!-- ===== PAGE ===== -->
+<div class="page">
+  <div class="page-inner">
 
-    <!-- MAIN COLUMN -->
-    <main class="main-column">
-      <h2 class="section-title">LiveSync Session</h2>
+    <!-- MAIN -->
+    <main class="main">
+      <h2 class="page-title">LiveSync Session</h2>
+
       <div class="tabs">
-        <button onclick="showTab('people')" id="tab-people" class="tab-btn active">
-          People <span class="tab-count" id="count-people">4</span>
-        </button>
-        <button onclick="showTab('received')" id="tab-received" class="tab-btn">
-          Req Received <span class="tab-count" id="count-received">2</span>
-        </button>
-        <button onclick="showTab('sent')" id="tab-sent" class="tab-btn">
-          Req Sent <span class="tab-count" id="count-sent">0</span>
-        </button>
+        <button class="tabBtn active" id="tabPeople"   onclick="showTab('people')">People (4)</button>
+        <button class="tabBtn"        id="tabReceived" onclick="showTab('received')">Req Received (2)</button>
+        <button class="tabBtn"        id="tabSent"     onclick="showTab('sent')">Req Sent (0)</button>
       </div>
 
-      <!-- People Tab -->
-      <div id="people" class="tab-panel">
-        <div class="personCard">
-          <img src="https://randomuser.me/api/portraits/men/32.jpg" alt="Rahul Sharma">
-          <div class="info">
-            <div class="name">Rahul Sharma</div>
-            <div class="job-title">MBA Candidate | Marketing</div>
-            <div class="mutual"><i class="fa-solid fa-user-group"></i> 12 mutual connections</div>
+      <!-- PEOPLE -->
+      <div id="people" class="tabPanel">
+        <div class="pcard">
+          <img src="https://randomuser.me/api/portraits/men/32.jpg" alt="Rahul">
+          <div class="pinfo">
+            <div class="pname">Rahul Sharma</div>
+            <div class="ptitle">MBA Candidate | Marketing</div>
+            <div class="pmutual"><i class="fa fa-user-friends"></i> 12 mutual connections</div>
           </div>
-          <button class="connectBtn" onclick="handleConnect(this,'Rahul Sharma','MBA Candidate | Marketing','https://randomuser.me/api/portraits/men/32.jpg')">Connect</button>
+          <button class="cbtn" onclick="handleConnect(this,'Rahul Sharma','MBA Candidate | Marketing','https://randomuser.me/api/portraits/men/32.jpg')">Connect</button>
         </div>
-        <div class="personCard">
-          <img src="https://randomuser.me/api/portraits/women/44.jpg" alt="Priya Patel">
-          <div class="info">
-            <div class="name">Priya Patel</div>
-            <div class="job-title">Finance Enthusiast</div>
-            <div class="mutual"><i class="fa-solid fa-user-group"></i> 5 mutual connections</div>
+        <div class="pcard">
+          <img src="https://randomuser.me/api/portraits/women/44.jpg" alt="Priya">
+          <div class="pinfo">
+            <div class="pname">Priya Patel</div>
+            <div class="ptitle">Finance Enthusiast | CFA Level II</div>
+            <div class="pmutual"><i class="fa fa-user-friends"></i> 8 mutual connections</div>
           </div>
-          <button class="connectBtn" onclick="handleConnect(this,'Priya Patel','Finance Enthusiast','https://randomuser.me/api/portraits/women/44.jpg')">Connect</button>
+          <button class="cbtn" onclick="handleConnect(this,'Priya Patel','Finance Enthusiast','https://randomuser.me/api/portraits/women/44.jpg')">Connect</button>
         </div>
-        <div class="personCard">
-          <img src="https://randomuser.me/api/portraits/women/65.jpg" alt="Sofia Khan">
-          <div class="info">
-            <div class="name">Sofia Khan</div>
-            <div class="job-title">Product Manager</div>
-            <div class="mutual"><i class="fa-solid fa-user-group"></i> 8 mutual connections</div>
+        <div class="pcard">
+          <img src="https://randomuser.me/api/portraits/women/65.jpg" alt="Sofia">
+          <div class="pinfo">
+            <div class="pname">Sofia Khan</div>
+            <div class="ptitle">Product Manager | IIM-A</div>
+            <div class="pmutual"><i class="fa fa-user-friends"></i> 5 mutual connections</div>
           </div>
-          <button class="connectBtn" onclick="handleConnect(this,'Sofia Khan','Product Manager','https://randomuser.me/api/portraits/women/65.jpg')">Connect</button>
+          <button class="cbtn" onclick="handleConnect(this,'Sofia Khan','Product Manager','https://randomuser.me/api/portraits/women/65.jpg')">Connect</button>
         </div>
-        <div class="personCard">
-          <img src="https://randomuser.me/api/portraits/men/45.jpg" alt="John Mathew">
-          <div class="info">
-            <div class="name">John Mathew</div>
-            <div class="job-title">Software Engineer</div>
-            <div class="mutual"><i class="fa-solid fa-user-group"></i> 3 mutual connections</div>
+        <div class="pcard">
+          <img src="https://randomuser.me/api/portraits/men/45.jpg" alt="John">
+          <div class="pinfo">
+            <div class="pname">John Mathew</div>
+            <div class="ptitle">Software Engineer | Google</div>
+            <div class="pmutual"><i class="fa fa-user-friends"></i> 3 mutual connections</div>
           </div>
-          <button class="connectBtn" onclick="handleConnect(this,'John Mathew','Software Engineer','https://randomuser.me/api/portraits/men/45.jpg')">Connect</button>
+          <button class="cbtn" onclick="handleConnect(this,'John Mathew','Software Engineer','https://randomuser.me/api/portraits/men/45.jpg')">Connect</button>
         </div>
       </div>
 
-      <!-- Received Tab -->
-      <div id="received" class="tab-panel hidden">
-        <div class="personCard" id="card-arjun">
-          <img src="https://randomuser.me/api/portraits/men/22.jpg" alt="Arjun Nair">
-          <div class="info">
-            <div class="name">Arjun Nair</div>
-            <div class="job-title">Operations Lead | FMCG</div>
-            <div class="mutual"><i class="fa-solid fa-user-group"></i> 6 mutual connections</div>
-            <div class="req-time">2 days ago</div>
+      <!-- RECEIVED -->
+      <div id="received" class="tabPanel hidden">
+        <div class="pcard" id="card-arjun">
+          <img src="https://randomuser.me/api/portraits/men/22.jpg" alt="Arjun">
+          <div class="pinfo">
+            <div class="pname">Arjun Nair</div>
+            <div class="ptitle">Operations Lead | FMCG</div>
+            <div class="pmutual"><i class="fa fa-user-friends"></i> 6 mutual connections</div>
           </div>
-          <div class="received-actions">
-            <button class="acceptBtn" onclick="acceptRequest(this,'Arjun Nair','card-arjun')">Accept</button>
-            <button class="ignoreBtn" onclick="ignoreRequest(this,'card-arjun')">Ignore</button>
+          <div class="recv-actions">
+            <button class="abtn" onclick="acceptReq(this,'Arjun Nair','card-arjun')">Accept</button>
+            <button class="ibtn" onclick="ignoreReq('card-arjun')">Ignore</button>
           </div>
         </div>
-        <div class="personCard" id="card-meera">
-          <img src="https://randomuser.me/api/portraits/women/30.jpg" alt="Meera Iyer">
-          <div class="info">
-            <div class="name">Meera Iyer</div>
-            <div class="job-title">Strategy Consultant | BCG</div>
-            <div class="mutual"><i class="fa-solid fa-user-group"></i> 14 mutual connections</div>
-            <div class="req-time">5 days ago</div>
+        <div class="pcard" id="card-meera">
+          <img src="https://randomuser.me/api/portraits/women/30.jpg" alt="Meera">
+          <div class="pinfo">
+            <div class="pname">Meera Iyer</div>
+            <div class="ptitle">Strategy Consultant | BCG</div>
+            <div class="pmutual"><i class="fa fa-user-friends"></i> 14 mutual connections</div>
           </div>
-          <div class="received-actions">
-            <button class="acceptBtn" onclick="acceptRequest(this,'Meera Iyer','card-meera')">Accept</button>
-            <button class="ignoreBtn" onclick="ignoreRequest(this,'card-meera')">Ignore</button>
+          <div class="recv-actions">
+            <button class="abtn" onclick="acceptReq(this,'Meera Iyer','card-meera')">Accept</button>
+            <button class="ibtn" onclick="ignoreReq('card-meera')">Ignore</button>
           </div>
         </div>
       </div>
 
-      <!-- Sent Tab -->
-      <div id="sent" class="tab-panel hidden">
-        <div id="sentList">
-          <div class="empty-state" id="sentEmpty">
-            <i class="fa-regular fa-paper-plane"></i>
-            <p>No connection requests sent yet</p>
-          </div>
+      <!-- SENT -->
+      <div id="sent" class="tabPanel hidden">
+        <div id="sentList"></div>
+        <div id="sentEmpty" class="empty-state">
+          <i class="fa fa-paper-plane"></i>
+          <p>No requests sent yet</p>
         </div>
       </div>
 
@@ -182,96 +164,73 @@
     <!-- SIDEBAR -->
     <aside class="sidebar">
 
-      <!-- Mini Profile -->
-      <div class="sidebar-card profile-mini">
-        <div class="profile-mini-banner"></div>
-        <img src="https://randomuser.me/api/portraits/men/75.jpg" class="profile-mini-avatar" alt="Kunal">
-        <div class="profile-mini-name">Kunal Mehta</div>
-        <div class="profile-mini-title">MBA | IIM Ahmedabad</div>
-        <div class="profile-mini-stats">
-          <div class="stat"><span class="stat-num">1,503</span><span class="stat-label">Connections</span></div>
-          <div class="stat-divider"></div>
-          <div class="stat"><span class="stat-num">47</span><span class="stat-label">Profile views</span></div>
+      <div class="scard">
+        <div class="scard-title">
+          <i class="fa fa-calendar-days" style="color:#0A66C2;margin-right:6px"></i>Upcoming Events
         </div>
-        <button class="profile-mini-btn">View full profile</button>
+
+        <div class="event">
+          <div class="edate"><span class="emon">MAR</span><span class="eday">12</span></div>
+          <div class="einfo">
+            <div class="ename">IIM Startup Pitch Night</div>
+            <div class="emeta"><i class="fa fa-map-marker-alt"></i> IIM Ahmedabad · In-person</div>
+            <div class="emeta"><i class="fa fa-users"></i> 48 attending</div>
+          </div>
+        </div>
+
+        <div class="event">
+          <div class="edate"><span class="emon">MAR</span><span class="eday">15</span></div>
+          <div class="einfo">
+            <div class="ename">FinTech Networking Mixer</div>
+            <div class="emeta"><i class="fa fa-map-marker-alt"></i> The Lalit, Mumbai</div>
+            <div class="emeta"><i class="fa fa-users"></i> 112 attending</div>
+          </div>
+        </div>
+
+        <div class="event">
+          <div class="edate"><span class="emon">MAR</span><span class="eday">20</span></div>
+          <div class="einfo">
+            <div class="ename">Product Leaders Summit 2026</div>
+            <div class="emeta"><i class="fa fa-video"></i> Online · Zoom</div>
+            <div class="emeta"><i class="fa fa-users"></i> 340 attending</div>
+          </div>
+        </div>
+
+        <div class="event">
+          <div class="edate"><span class="emon">APR</span><span class="eday">3</span></div>
+          <div class="einfo">
+            <div class="ename">MBA Alumni Speed Networking</div>
+            <div class="emeta"><i class="fa fa-map-marker-alt"></i> Taj Palace, Delhi</div>
+            <div class="emeta"><i class="fa fa-users"></i> 76 attending</div>
+          </div>
+        </div>
+
+        <div class="event">
+          <div class="edate"><span class="emon">APR</span><span class="eday">9</span></div>
+          <div class="einfo">
+            <div class="ename">Women in Tech – Bangalore</div>
+            <div class="emeta"><i class="fa fa-map-marker-alt"></i> Leela Palace, Bengaluru</div>
+            <div class="emeta"><i class="fa fa-users"></i> 210 attending</div>
+          </div>
+        </div>
+
+        <a href="#" class="see-all">Show all events <i class="fa fa-arrow-right" style="font-size:11px"></i></a>
       </div>
 
-      <!-- Upcoming Events -->
-      <div class="sidebar-card events-card">
-        <div class="sidebar-header">
-          <i class="fa-solid fa-calendar-days sidebar-header-icon"></i>
-          <span>Upcoming Events</span>
-        </div>
-        <ul class="event-list">
-          <li class="event-item">
-            <div class="event-date-block">
-              <span class="event-month">MAR</span>
-              <span class="event-day">12</span>
-            </div>
-            <div class="event-details">
-              <div class="event-title">IIM Startup Pitch Night</div>
-              <div class="event-meta"><i class="fa-solid fa-location-dot"></i> IIM Ahmedabad</div>
-              <div class="event-meta"><i class="fa-regular fa-clock"></i> 6:00 – 9:00 PM</div>
-              <div class="event-attending"><i class="fa-solid fa-circle-check"></i> 48 attending</div>
-            </div>
-          </li>
-          <li class="event-item">
-            <div class="event-date-block">
-              <span class="event-month">MAR</span>
-              <span class="event-day">15</span>
-            </div>
-            <div class="event-details">
-              <div class="event-title">FinTech Networking Mixer</div>
-              <div class="event-meta"><i class="fa-solid fa-location-dot"></i> The Lalit, Mumbai</div>
-              <div class="event-meta"><i class="fa-regular fa-clock"></i> 7:30 – 10:00 PM</div>
-              <div class="event-attending"><i class="fa-solid fa-circle-check"></i> 112 attending</div>
-            </div>
-          </li>
-          <li class="event-item">
-            <div class="event-date-block">
-              <span class="event-month">MAR</span>
-              <span class="event-day">20</span>
-            </div>
-            <div class="event-details">
-              <div class="event-title">Product Leaders Summit 2026</div>
-              <div class="event-meta"><i class="fa-solid fa-location-dot"></i> Online (Zoom)</div>
-              <div class="event-meta"><i class="fa-regular fa-clock"></i> 10:00 AM – 1:00 PM</div>
-              <div class="event-attending"><i class="fa-solid fa-circle-check"></i> 340 attending</div>
-            </div>
-          </li>
-          <li class="event-item">
-            <div class="event-date-block">
-              <span class="event-month">APR</span>
-              <span class="event-day">3</span>
-            </div>
-            <div class="event-details">
-              <div class="event-title">MBA Alumni Speed Networking</div>
-              <div class="event-meta"><i class="fa-solid fa-location-dot"></i> Taj Palace, Delhi</div>
-              <div class="event-meta"><i class="fa-regular fa-clock"></i> 5:00 – 8:00 PM</div>
-              <div class="event-attending"><i class="fa-solid fa-circle-check"></i> 76 attending</div>
-            </div>
-          </li>
-          <li class="event-item">
-            <div class="event-date-block">
-              <span class="event-month">APR</span>
-              <span class="event-day">9</span>
-            </div>
-            <div class="event-details">
-              <div class="event-title">Women in Tech – Bangalore</div>
-              <div class="event-meta"><i class="fa-solid fa-location-dot"></i> Leela Palace, Bangalore</div>
-              <div class="event-meta"><i class="fa-regular fa-clock"></i> 4:00 – 7:30 PM</div>
-              <div class="event-attending"><i class="fa-solid fa-circle-check"></i> 210 attending</div>
-            </div>
-          </li>
-        </ul>
-        <button class="see-all-events">See all events <i class="fa-solid fa-arrow-right"></i></button>
+      <div class="scard" style="margin-top:12px">
+        <div class="scard-title">Host an Event</div>
+        <p style="font-size:13px;color:#666;margin:0 0 12px">Run your own networking session or workshop.</p>
+        <button class="create-event-btn"><i class="fa fa-plus"></i> Create Event</button>
       </div>
 
     </aside>
+
   </div>
 </div>
 
-<div id="toast" class="toast"></div>
+<!-- TOAST -->
+<div id="toast" class="toast hidden"></div>
+
 <script src="script.js"></script>
 </body>
 </html>
