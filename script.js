@@ -161,6 +161,17 @@ render()
 
 }
 
+function toggleDropdown(){
+
+let menu=document.getElementById("profileDropdown")
+
+if(menu.style.display=="block")
+menu.style.display="none"
+else
+menu.style.display="block"
+
+}
+
 function sendAll(){
 
 people.forEach(p=>{
