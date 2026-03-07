@@ -7,9 +7,7 @@ body {
   min-height: 100vh;
 }
 
-/* ============================================================
-   NAVBAR
-============================================================ */
+/* ============================================================ NAVBAR */
 .navbar {
   position: sticky;
   top: 0;
@@ -24,7 +22,6 @@ body {
   box-shadow: 0 1px 4px rgba(0,0,0,0.08);
 }
 
-/* --- Left: logo + search --- */
 .navbar-left {
   display: flex;
   align-items: center;
@@ -72,14 +69,12 @@ body {
   border-color: #0A66C2;
 }
 
-/* --- Right: nav items --- */
 .navbar-right {
   display: flex;
   align-items: center;
   height: 52px;
 }
 
-/* Individual nav link */
 .nitem {
   display: flex;
   flex-direction: column;
@@ -98,15 +93,10 @@ body {
   min-width: 54px;
 }
 
-.nitem i {
-  font-size: 20px;
-  margin-bottom: 2px;
-}
-
+.nitem i { font-size: 20px; margin-bottom: 2px; }
 .nitem:hover { color: #000; border-bottom-color: #000; }
 .nitem.active { color: #000; border-bottom-color: #000; font-weight: 600; }
 
-/* Badge on messaging / notifications */
 .pos-rel { position: relative; }
 
 .nbadge {
@@ -124,10 +114,8 @@ body {
   display: flex;
   align-items: center;
   justify-content: center;
-  line-height: 1;
 }
 
-/* Divider between nav groups */
 .ndivider {
   width: 1px;
   height: 32px;
@@ -136,7 +124,6 @@ body {
   flex-shrink: 0;
 }
 
-/* Me button */
 .nme { position: relative; cursor: pointer; }
 
 .nme-avatar {
@@ -173,13 +160,7 @@ body {
   margin-bottom: 6px;
 }
 
-.me-drop-top img {
-  width: 40px;
-  height: 40px;
-  border-radius: 50%;
-  object-fit: cover;
-}
-
+.me-drop-top img { width: 40px; height: 40px; border-radius: 50%; object-fit: cover; }
 .me-drop-name { font-weight: 600; font-size: 14px; color: #000; }
 .me-drop-title { font-size: 12px; color: #666; }
 
@@ -199,15 +180,8 @@ body {
 }
 
 .me-view-btn:hover { background: #eef3f8; }
-
 .me-hr { border: none; border-top: 1px solid #eee; margin: 6px 0; }
-
-.me-section {
-  padding: 4px 16px;
-  font-size: 12px;
-  font-weight: 700;
-  color: #333;
-}
+.me-section { padding: 4px 16px; font-size: 12px; font-weight: 700; color: #333; }
 
 .me-link {
   padding: 7px 16px;
@@ -216,10 +190,8 @@ body {
   cursor: pointer;
   transition: background 0.1s;
 }
-
 .me-link:hover { background: #f3f2ef; }
 
-/* Premium link */
 .npremium {
   font-size: 12px;
   color: #c37d16;
@@ -230,12 +202,9 @@ body {
   text-align: center;
   align-self: center;
 }
-
 .npremium strong { display: block; }
 
-/* ============================================================
-   PAGE LAYOUT
-============================================================ */
+/* ============================================================ PAGE */
 .page { padding: 24px 16px; }
 
 .page-inner {
@@ -255,9 +224,7 @@ body {
   margin-bottom: 16px;
 }
 
-/* ============================================================
-   TABS
-============================================================ */
+/* ============================================================ TABS */
 .tabs {
   display: flex;
   gap: 8px;
@@ -277,18 +244,10 @@ body {
   transition: background 0.15s, color 0.15s;
 }
 
-.tabBtn:hover,
-.tabBtn.active {
-  background: #0A66C2;
-  color: #fff;
-}
-
-.tabPanel { }
+.tabBtn:hover, .tabBtn.active { background: #0A66C2; color: #fff; }
 .hidden { display: none !important; }
 
-/* ============================================================
-   PERSON CARD
-============================================================ */
+/* ============================================================ PERSON CARD */
 .pcard {
   display: flex;
   align-items: center;
@@ -312,14 +271,10 @@ body {
 }
 
 .pinfo { flex: 1; min-width: 0; }
-
 .pname { font-weight: 600; font-size: 15px; color: #000; }
-
 .ptitle { font-size: 13px; color: #555; margin-top: 2px; }
-
 .pmutual { font-size: 12px; color: #888; margin-top: 4px; }
 
-/* Connect button */
 .cbtn {
   flex-shrink: 0;
   background: #fff;
@@ -334,15 +289,8 @@ body {
 }
 
 .cbtn:hover { background: #eef3f8; }
+.cbtn.requested { background: #f3f2ef; color: #888; border-color: #ccc; cursor: not-allowed; }
 
-.cbtn.requested {
-  background: #f3f2ef;
-  color: #888;
-  border-color: #ccc;
-  cursor: not-allowed;
-}
-
-/* Accept / Ignore */
 .recv-actions { display: flex; gap: 8px; flex-shrink: 0; }
 
 .abtn {
@@ -356,7 +304,6 @@ body {
   cursor: pointer;
   transition: background 0.15s;
 }
-
 .abtn:hover { background: #004182; }
 
 .ibtn {
@@ -369,10 +316,8 @@ body {
   cursor: pointer;
   transition: background 0.15s;
 }
-
 .ibtn:hover { background: #f3f2ef; }
 
-/* Empty state */
 .empty-state {
   background: #fff;
   border-radius: 10px;
@@ -382,13 +327,10 @@ body {
   font-size: 14px;
   box-shadow: 0 1px 3px rgba(0,0,0,0.08);
 }
-
 .empty-state i { font-size: 36px; display: block; margin-bottom: 10px; }
 .empty-state p { margin: 0; }
 
-/* ============================================================
-   SIDEBAR
-============================================================ */
+/* ============================================================ SIDEBAR */
 .sidebar { width: 300px; flex-shrink: 0; }
 
 .scard {
@@ -398,21 +340,14 @@ body {
   box-shadow: 0 1px 3px rgba(0,0,0,0.08);
 }
 
-.scard-title {
-  font-size: 16px;
-  font-weight: 600;
-  color: #000;
-  margin-bottom: 14px;
-}
+.scard-title { font-size: 16px; font-weight: 600; color: #000; margin-bottom: 14px; }
 
-/* Event row */
 .event {
   display: flex;
   gap: 12px;
   padding: 10px 0;
   border-bottom: 1px solid #f0f0f0;
 }
-
 .event:last-of-type { border-bottom: none; }
 
 .edate {
@@ -427,29 +362,11 @@ body {
   flex-shrink: 0;
 }
 
-.emon {
-  font-size: 9px;
-  font-weight: 700;
-  color: #0A66C2;
-  text-transform: uppercase;
-  letter-spacing: 0.5px;
-}
-
+.emon { font-size: 9px; font-weight: 700; color: #0A66C2; text-transform: uppercase; letter-spacing: 0.5px; }
 .eday { font-size: 20px; font-weight: 700; color: #000; line-height: 1.1; }
-
 .einfo { flex: 1; }
-
 .ename { font-size: 13px; font-weight: 600; color: #000; line-height: 1.3; margin-bottom: 3px; }
-
-.emeta {
-  font-size: 11px;
-  color: #666;
-  margin-top: 2px;
-  display: flex;
-  align-items: center;
-  gap: 4px;
-}
-
+.emeta { font-size: 11px; color: #666; margin-top: 2px; display: flex; align-items: center; gap: 4px; }
 .emeta i { color: #0A66C2; }
 
 .see-all {
@@ -464,7 +381,6 @@ body {
   border-radius: 6px;
   transition: background 0.15s;
 }
-
 .see-all:hover { background: #eef3f8; }
 
 .create-event-btn {
@@ -479,12 +395,9 @@ body {
   cursor: pointer;
   transition: background 0.15s;
 }
-
 .create-event-btn:hover { background: #eef3f8; }
 
-/* ============================================================
-   TOAST
-============================================================ */
+/* ============================================================ TOAST */
 .toast {
   position: fixed;
   bottom: 28px;
@@ -501,7 +414,6 @@ body {
   white-space: nowrap;
   animation: slideUp 0.25s ease;
 }
-
 .toast.hidden { display: none; }
 
 @keyframes slideUp {
@@ -509,9 +421,7 @@ body {
   to   { opacity: 1; transform: translateX(-50%) translateY(0); }
 }
 
-/* ============================================================
-   RESPONSIVE
-============================================================ */
+/* ============================================================ RESPONSIVE */
 @media (max-width: 720px) {
   .page-inner { flex-direction: column; }
   .sidebar { width: 100%; }
