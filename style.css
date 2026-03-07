@@ -1,16 +1,18 @@
 body{
-font-family: Arial;
+font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto;
 background:#f3f2ef;
 margin:0;
 }
 
+/* NAVBAR */
+
 .navbar{
-background:white;
-padding:10px 20px;
-border-bottom:1px solid #ddd;
 display:flex;
-align-items:center;
 justify-content:space-between;
+align-items:center;
+padding:10px 30px;
+background:white;
+border-bottom:1px solid #ddd;
 }
 
 .logo{
@@ -24,20 +26,24 @@ border-radius:4px;
 .search{
 background:#eef3f8;
 border:none;
-padding:8px;
+padding:8px 12px;
 border-radius:4px;
-width:200px;
+width:220px;
 }
+
+/* PAGE */
 
 .container{
 width:800px;
 margin:40px auto;
 }
 
+/* TABS */
+
 .tabs{
-margin:20px 0;
 display:flex;
-gap:10px;
+gap:12px;
+margin:20px 0;
 }
 
 .tabs button{
@@ -47,44 +53,54 @@ border:none;
 padding:8px 16px;
 border-radius:20px;
 cursor:pointer;
+font-size:14px;
 }
+
+/* PROFILE CARD */
 
 .personCard{
 display:flex;
 align-items:center;
 background:white;
-padding:15px;
+padding:16px;
 border-radius:10px;
-margin-bottom:15px;
+margin-bottom:16px;
 box-shadow:0 1px 3px rgba(0,0,0,0.1);
 }
 
+/* PROFILE IMAGE */
+
 .personCard img{
-width:50px;
-height:50px;
+width:48px;
+height:48px;
 border-radius:50%;
-margin-right:15px;
+margin-right:14px;
 }
+
+/* INFO */
 
 .info{
 flex:1;
 }
 
 .name{
-font-weight:bold;
+font-weight:600;
 }
 
 .title{
-color:#666;
 font-size:14px;
+color:#666;
 }
+
+/* CONNECT BUTTON */
 
 .connectBtn{
 background:#0A66C2;
 color:white;
 border:none;
-padding:8px 18px;
+padding:7px 18px;
 border-radius:20px;
+font-weight:600;
 cursor:pointer;
 }
 
@@ -92,11 +108,15 @@ cursor:pointer;
 background:#004182;
 }
 
+/* REQUESTED BUTTON */
+
 .connectBtn.requested{
-background:#d9d9d9;
+background:#e0e0e0;
 color:#555;
 cursor:not-allowed;
 }
+
+/* TAB VISIBILITY */
 
 .hidden{
 display:none;
