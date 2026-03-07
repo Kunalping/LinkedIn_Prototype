@@ -1,96 +1,61 @@
-// Store sent requests
-let sentRequests = [];
+let sentRequests = 0;
 
-// Wait for page to load
-document.addEventListener("DOMContentLoaded", function () {
+document.addEventListener("DOMContentLoaded", function(){
 
-    const connectButtons = document.querySelectorAll(".connect-btn");
+const buttons = document.querySelectorAll(".connectBtn");
 
-    connectButtons.forEach(button => {
+buttons.forEach(button => {
 
-        button.addEventListener("click", function () {
+button.addEventListener("click", function(){
 
-            if (button.classList.contains("requested")) return;
+if(button.classList.contains("requested")) return;
 
-            const card = button.closest(".person-card");
-            const name = card.querySelector(".person-name").innerText;
+button.innerText="Requested";
+button.classList.add("requested");
+button.disabled=true;
 
-            // mark request sent
-            button.innerText = "Requested";
-            button.classList.add("requested");
-            button.disabled = true;
+const card = button.closest(".personCard");
+const name = card.querySelector(".name").innerText;
 
-            // store request
-            sentRequests.push(name);
+addToSent(name);
 
-            addToSentList(name);
-            updateCounters();
+sentRequests++;
+updateCounter();
 
-        });
+});
 
-    });
+});
 
 });
 
 
-// Add profile to "Req Sent"
-function addToSentList(name) {
+function addToSent(name){
 
-    const sentContainer = document.getElementById("sentList");
+const container=document.getElementById("sentList");
 
-    if (!sentContainer) return;
+const div=document.createElement("div");
+div.className="personCard";
+div.innerHTML=`<div class="name">${name}</div>`;
 
-    const item = document.createElement("div");
-    item.className = "person-card";
-
-    item.innerHTML = `
-        <div class="person-name">${name}</div>
-    `;
-
-    sentContainer.appendChild(item);
+container.appendChild(div);
 
 }
 
 
-// Update tab counters
-function updateCounters(){
+function updateCounter(){
 
-    const sentTab = document.getElementById("sentTab");
-
-    if(sentTab){
-        sentTab.innerText = "Req Sent (" + sentRequests.length + ")";
-    }
+document.getElementById("sentTab").innerText=
+"Req Sent ("+sentRequests+")";
 
 }
 
 
-// Dropdown toggle for "Me ▼"
-function toggleDropdown(){
+function showTab(tab){
 
-    const dropdown = document.getElementById("meDropdown");
+document.querySelectorAll(".tabContent").forEach(t=>{
+t.classList.add("hidden");
+});
 
-    if(!dropdown) return;
-
-    if(dropdown.style.display === "block"){
-        dropdown.style.display = "none";
-    } else {
-        dropdown.style.display = "block";
-    }
-
-}
-
-
-// Close dropdown if clicked outside
-window.onclick = function(event){
-
-    if(!event.target.closest(".me-menu")){
-
-        const dropdown = document.getElementById("meDropdown");
-
-        if(dropdown){
-            dropdown.style.display = "none";
-        }
-
-    }
+document.getElementById(tab).classList.remove("hidden");
 
 }
