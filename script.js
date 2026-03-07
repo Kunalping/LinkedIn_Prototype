@@ -1,133 +1,172 @@
-const peopleData = [
-{name:"Rahul Sharma",headline:"MBA Candidate | Marketing",img:"https://randomuser.me/api/portraits/men/1.jpg"},
-{name:"Priya Patel",headline:"Finance Enthusiast",img:"https://randomuser.me/api/portraits/women/2.jpg"},
-{name:"Sofia Khan",headline:"Product Manager",img:"https://randomuser.me/api/portraits/women/3.jpg"},
-{name:"John Mathew",headline:"Software Engineer",img:"https://randomuser.me/api/portraits/men/4.jpg"},
-{name:"Meera Iyer",headline:"Consulting Aspirant",img:"https://randomuser.me/api/portraits/women/5.jpg"},
-{name:"Nina Roy",headline:"Business Analyst",img:"https://randomuser.me/api/portraits/women/6.jpg"},
-{name:"Karan Singh",headline:"Startup Founder",img:"https://randomuser.me/api/portraits/men/7.jpg"},
-{name:"Aisha Khan",headline:"UX Designer",img:"https://randomuser.me/api/portraits/women/8.jpg"},
-{name:"Daniel Lee",headline:"Data Scientist",img:"https://randomuser.me/api/portraits/men/9.jpg"},
-{name:"Sneha Kulkarni",headline:"Operations Manager",img:"https://randomuser.me/api/portraits/women/10.jpg"}
+const people=[
+{name:"Rahul Sharma",headline:"MBA Candidate | Marketing",img:"https://randomuser.me/api/portraits/men/32.jpg"},
+{name:"Priya Patel",headline:"Finance Enthusiast",img:"https://randomuser.me/api/portraits/women/44.jpg"},
+{name:"Sofia Khan",headline:"Product Manager",img:"https://randomuser.me/api/portraits/women/68.jpg"},
+{name:"John Mathew",headline:"Software Engineer",img:"https://randomuser.me/api/portraits/men/52.jpg"}
 ]
 
-let sentRequests=[]
-let receivedRequests=[peopleData[1],peopleData[3]]
+let sent=[]
+let received=[
+{name:"Daniel Lee",headline:"Data Scientist",img:"https://randomuser.me/api/portraits/men/14.jpg"}
+]
 
-function showSection(section){
+const sessionEnd=new Date()
+sessionEnd.setHours(sessionEnd.getHours()+5)
+
+function updateTimer(){
+
+const now=new Date()
+
+let diff=sessionEnd-now
+
+let days=Math.floor(diff/(1000*60*60*24))
+let hours=Math.floor(diff/(1000*60*60)%24)
+let mins=Math.floor(diff/(1000*60)%60)
+
+document.getElementById("timer").innerText=
+`Session Live: ${days}d ${hours}h ${mins}m`
+
+}
+
+setInterval(updateTimer,60000)
+updateTimer()
+
+function showSection(sec){
 
 document.getElementById("people").classList.add("hidden")
-document.getElementById("received").classList.add("hidden")
 document.getElementById("sent").classList.add("hidden")
+document.getElementById("received").classList.add("hidden")
 
-document.getElementById(section).classList.remove("hidden")
-
-render()
+document.getElementById(sec).classList.remove("hidden")
 
 }
 
 function render(){
 
-renderPeople()
-renderSent()
-renderReceived()
+document.getElementById("peopleCount").innerText=people.length
+document.getElementById("sentCount").innerText=sent.length
+document.getElementById("receivedCount").innerText=received.length
 
-}
+let html=""
 
-function createPersonCard(person,buttonType){
-
-const div=document.createElement("div")
-div.className="person"
-
-let buttonHTML=""
-
-if(buttonType==="connect"){
-buttonHTML=`<button class="connect" onclick="sendRequest('${person.name}')">Connect</button>`
-}
-
-if(buttonType==="withdraw"){
-buttonHTML=`<button class="withdraw" onclick="withdrawRequest('${person.name}')">Withdraw</button>`
-}
-
-if(buttonType==="accept"){
-buttonHTML=`<button class="accept" onclick="acceptRequest('${person.name}')">Accept</button>`
-}
-
-div.innerHTML=`
-
-<img class="avatar" src="${person.img}">
-
+html+=`
+<div class="person">
 <div class="person-info">
-<div class="name">${person.name}</div>
-<div class="headline">${person.headline}</div>
+<div class="name">
+LiveSync Official Group
+<span class="premium-icon">★</span>
 </div>
-
-${buttonHTML}
-
+<div class="headline">Join official event group</div>
+</div>
+<button class="connect">Join</button>
+</div>
 `
 
-return div
-}
+html+=`
+<div class="person">
+<div class="person-info">
+<div class="name">
+Send Request to All
+<span class="premium-icon">★</span>
+</div>
+<div class="headline">Premium feature</div>
+</div>
+<button class="connect" onclick="sendAll()">Send</button>
+</div>
+`
 
-function renderPeople(){
+people.forEach(p=>{
+html+=`
+<div class="person">
 
-const container=document.getElementById("people")
-container.innerHTML=""
+<img class="avatar" src="${p.img}">
 
-peopleData.forEach(person=>{
+<div class="person-info">
+<div class="name">${p.name}</div>
+<div class="headline">${p.headline}</div>
+</div>
 
-if(!sentRequests.find(p=>p.name===person.name)){
-container.appendChild(createPersonCard(person,"connect"))
-}
+<button class="connect" onclick="sendRequest('${p.name}')">Connect</button>
 
+</div>
+`
 })
 
-}
+document.getElementById("people").innerHTML=html
 
-function renderSent(){
+let sentHTML=""
+sent.forEach(p=>{
+sentHTML+=`
+<div class="person">
 
-const container=document.getElementById("sent")
-container.innerHTML=""
+<img class="avatar" src="${p.img}">
 
-sentRequests.forEach(person=>{
-container.appendChild(createPersonCard(person,"withdraw"))
+<div class="person-info">
+<div class="name">${p.name}</div>
+<div class="headline">${p.headline}</div>
+</div>
+
+<button class="withdraw" onclick="withdraw('${p.name}')">Withdraw</button>
+
+</div>
+`
 })
 
-}
+document.getElementById("sent").innerHTML=sentHTML
 
-function renderReceived(){
+let recHTML=""
+received.forEach(p=>{
+recHTML+=`
+<div class="person">
 
-const container=document.getElementById("received")
-container.innerHTML=""
+<img class="avatar" src="${p.img}">
 
-receivedRequests.forEach(person=>{
-container.appendChild(createPersonCard(person,"accept"))
+<div class="person-info">
+<div class="name">${p.name}</div>
+<div class="headline">${p.headline}</div>
+</div>
+
+<button class="accept" onclick="accept('${p.name}')">Accept</button>
+
+</div>
+`
 })
+
+document.getElementById("received").innerHTML=recHTML
 
 }
 
 function sendRequest(name){
 
-const person=peopleData.find(p=>p.name===name)
-sentRequests.push(person)
+let p=people.find(x=>x.name==name)
+sent.push(p)
+
 render()
 
 }
 
-function withdrawRequest(name){
+function withdraw(name){
 
-sentRequests=sentRequests.filter(p=>p.name!==name)
+sent=sent.filter(p=>p.name!=name)
+
 render()
 
 }
 
-function acceptRequest(name){
+function accept(name){
 
-const person=receivedRequests.find(p=>p.name===name)
+received=received.filter(p=>p.name!=name)
 
-receivedRequests=receivedRequests.filter(p=>p.name!==name)
+render()
 
-peopleData.push(person)
+}
+
+function sendAll(){
+
+people.forEach(p=>{
+if(!sent.includes(p))
+sent.push(p)
+})
 
 render()
 
