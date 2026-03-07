@@ -8,24 +8,97 @@
 
 <body>
 
-<div class="topbar">
-<div class="logo">in</div>
-<div class="title">LiveSync Session</div>
+<!-- TOP NAV BAR -->
+
+<div class="navbar">
+
+<div class="nav-left">
+
+<div class="linkedin-logo">in</div>
+
+<input class="search-bar" placeholder="Search">
+
+</div>
+
+<div class="nav-menu">
+
+<div>Home</div>
+<div class="active">My Network</div>
+<div>Jobs</div>
+<div>Messaging</div>
+<div>Notifications</div>
+<div>Me</div>
+
+</div>
+
+<div class="premium">Try Premium for ₹0</div>
+
+</div>
+
+
+<!-- PAGE CONTENT -->
+
+<div class="page">
+
+<!-- LEFT CONTENT -->
+
+<div class="content">
+
+<div class="header-row">
+
+<h2>LiveSync Session</h2>
+
+<div class="timer" id="timer"></div>
+
+</div>
+
 
 <div class="tabs">
-<button onclick="showSection('people')">People</button>
-<button onclick="showSection('received')">Req Received</button>
-<button onclick="showSection('sent')">Req Sent</button>
-</div>
+
+<button onclick="showSection('people')">
+People (<span id="peopleCount"></span>)
+</button>
+
+<button onclick="showSection('received')">
+Req Received (<span id="receivedCount"></span>)
+</button>
+
+<button onclick="showSection('sent')">
+Req Sent (<span id="sentCount"></span>)
+</button>
+
 </div>
 
-<div class="container">
 
 <div id="people" class="section"></div>
-
 <div id="received" class="section hidden"></div>
-
 <div id="sent" class="section hidden"></div>
+
+</div>
+
+
+<!-- RIGHT SIDEBAR -->
+
+<div class="sidebar">
+
+<h3>Upcoming Networking Events</h3>
+
+<div class="event">
+AI Startup Mixer<br>
+<span>Tomorrow 7PM</span>
+</div>
+
+<div class="event">
+Product Leaders Meetup<br>
+<span>Friday 6PM</span>
+</div>
+
+<div class="event">
+FinTech Connect<br>
+<span>Saturday 5PM</span>
+</div>
+
+</div>
 
 </div>
 
