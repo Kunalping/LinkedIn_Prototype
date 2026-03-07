@@ -1,3 +1,36 @@
+/* ============================================================ SESSION COUNTDOWN TIMER */
+// Session duration: 2 days, 4 hours, 37 minutes from page load
+var sessionEndTime = Date.now() + ((2 * 24 * 60 * 60) + (4 * 60 * 60) + (37 * 60)) * 1000;
+
+function updateTimer() {
+  var remaining = sessionEndTime - Date.now();
+  var el = document.getElementById('timerDisplay');
+  if (!el) return;
+
+  if (remaining <= 0) {
+    el.textContent = 'Session ended';
+    el.style.color = '#cc1016';
+    return;
+  }
+
+  var days  = Math.floor(remaining / (1000 * 60 * 60 * 24));
+  var hours = Math.floor((remaining % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+  var mins  = Math.floor((remaining % (1000 * 60 * 60)) / (1000 * 60));
+
+  el.textContent =
+    (days > 0 ? days + 'd ' : '') +
+    String(hours).padStart(2,'0') + 'h ' +
+    String(mins).padStart(2,'0') + 'm';
+}
+
+updateTimer();
+setInterval(updateTimer, 30000); // refresh every 30s
+
+/* ============================================================ PREMIUM PROMPT */
+function showPremiumPrompt() {
+  showToast('⭐ Upgrade to LinkedIn Premium to unlock this feature');
+}
+
 /* ============================================================ STATE */
 let sentCount     = 0;
 let receivedCount = 2;
