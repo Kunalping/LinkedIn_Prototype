@@ -1,12 +1,8 @@
-let sentRequests = 0;
+let sentCount = 0;
 
-document.addEventListener("DOMContentLoaded", function(){
+document.querySelectorAll(".connectBtn").forEach(button=>{
 
-const buttons = document.querySelectorAll(".connectBtn");
-
-buttons.forEach(button => {
-
-button.addEventListener("click", function(){
+button.addEventListener("click",()=>{
 
 if(button.classList.contains("requested")) return;
 
@@ -14,41 +10,14 @@ button.innerText="Requested";
 button.classList.add("requested");
 button.disabled=true;
 
-const card = button.closest(".personCard");
-const name = card.querySelector(".name").innerText;
-
-addToSent(name);
-
-sentRequests++;
-updateCounter();
-
-});
-
-});
-
-});
-
-
-function addToSent(name){
-
-const container=document.getElementById("sentList");
-
-const div=document.createElement("div");
-div.className="personCard";
-div.innerHTML=`<div class="name">${name}</div>`;
-
-container.appendChild(div);
-
-}
-
-
-function updateCounter(){
+sentCount++;
 
 document.getElementById("sentTab").innerText=
-"Req Sent ("+sentRequests+")";
+"Req Sent ("+sentCount+")";
 
-}
+});
 
+});
 
 function showTab(tab){
 
