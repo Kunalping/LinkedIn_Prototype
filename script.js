@@ -1,139 +1,127 @@
-/* ═══════════════════════════════════════════
+/* ============================================================
    STATE
-═══════════════════════════════════════════ */
-let sentRequests = [];
-let receivedCount = 2;
+============================================================ */
+let sentCount    = 0;
+let receivedCount = 2; // pre-loaded sample requests
 
-/* ═══════════════════════════════════════════
+/* ============================================================
    TAB SWITCHING
-═══════════════════════════════════════════ */
-function showTab(tabName) {
-  // Hide all panels
-  document.querySelectorAll('.tab-panel').forEach(p => p.classList.add('hidden'));
-  // Deactivate all tab buttons
-  document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
-  // Show selected panel
-  document.getElementById(tabName).classList.remove('hidden');
-  // Activate selected tab button
-  document.getElementById('tab-' + tabName).classList.add('active');
+============================================================ */
+function showTab(name) {
+  // hide all panels
+  document.querySelectorAll('.tabPanel').forEach(p => p.classList.add('hidden'));
+  // deactivate all tab buttons
+  document.querySelectorAll('.tabBtn').forEach(b => b.classList.remove('active'));
+
+  // show target panel
+  var panel = document.getElementById(name);
+  if (panel) panel.classList.remove('hidden');
+
+  // activate matching button
+  var btnMap = { people: 'tabPeople', received: 'tabReceived', sent: 'tabSent' };
+  var btn = document.getElementById(btnMap[name]);
+  if (btn) btn.classList.add('active');
 }
 
-/* ═══════════════════════════════════════════
+/* ============================================================
    CONNECT BUTTON
-═══════════════════════════════════════════ */
-function handleConnect(btn, name, title, imgSrc) {
+============================================================ */
+function handleConnect(btn, name, title, img) {
   if (btn.classList.contains('requested')) return;
 
   btn.classList.add('requested');
   btn.textContent = 'Requested';
   btn.disabled = true;
 
-  sentRequests.push({ name, title, imgSrc });
-  updateSentTab(name, title, imgSrc);
-  updateCounters();
+  sentCount++;
+  updateSentTab(name, title, img);
+  updateTabCounts();
   showToast('Connection request sent to ' + name);
 }
 
-/* ═══════════════════════════════════════════
-   ADD TO SENT LIST
-═══════════════════════════════════════════ */
-function updateSentTab(name, title, imgSrc) {
-  const empty = document.getElementById('sentEmpty');
+function updateSentTab(name, title, img) {
+  var list  = document.getElementById('sentList');
+  var empty = document.getElementById('sentEmpty');
+  if (!list) return;
+
   if (empty) empty.style.display = 'none';
 
-  const container = document.getElementById('sentList');
-  const div = document.createElement('div');
-  div.className = 'personCard';
-  div.innerHTML = `
-    <img src="${imgSrc}" alt="${name}" onerror="this.src='https://randomuser.me/api/portraits/lego/1.jpg'">
-    <div class="info">
-      <div class="name">${name}</div>
-      <div class="job-title">${title}</div>
-      <div class="req-time"><i class="fa-regular fa-clock"></i> Just now</div>
-    </div>
-    <span style="font-size:12px;color:#057642;font-weight:600;"><i class="fa-solid fa-circle-check"></i> Sent</span>
-  `;
-  container.appendChild(div);
+  var card = document.createElement('div');
+  card.className = 'pcard';
+  card.innerHTML =
+    '<img src="' + img + '" alt="' + name + '" onerror="this.style.display=\'none\'">' +
+    '<div class="pinfo">' +
+      '<div class="pname">' + name + '</div>' +
+      '<div class="ptitle">' + title + '</div>' +
+      '<div class="pmutual" style="color:#057642"><i class="fa fa-check-circle"></i> Request sent</div>' +
+    '</div>' +
+    '<button class="cbtn requested" disabled>Requested</button>';
+  list.appendChild(card);
 }
 
-/* ═══════════════════════════════════════════
+/* ============================================================
    ACCEPT / IGNORE RECEIVED REQUESTS
-═══════════════════════════════════════════ */
-function acceptRequest(btn, name, cardId) {
-  const card = document.getElementById(cardId);
+============================================================ */
+function acceptReq(btn, name, cardId) {
+  var card = document.getElementById(cardId);
   if (!card) return;
 
-  card.style.transition = 'opacity .3s, transform .3s';
-  card.style.opacity = '0';
-  card.style.transform = 'translateX(20px)';
-
-  setTimeout(() => {
-    card.remove();
-    receivedCount = Math.max(0, receivedCount - 1);
-    updateCounters();
-    showToast('You are now connected with ' + name + '!');
-    checkEmptyReceived();
-  }, 300);
+  receivedCount--;
+  card.remove();
+  updateTabCounts();
+  showToast('You are now connected with ' + name + '!');
 }
 
-function ignoreRequest(btn, cardId) {
-  const card = document.getElementById(cardId);
+function ignoreReq(cardId) {
+  var card = document.getElementById(cardId);
   if (!card) return;
 
-  card.style.transition = 'opacity .3s';
+  receivedCount--;
   card.style.opacity = '0';
-
-  setTimeout(() => {
-    card.remove();
-    receivedCount = Math.max(0, receivedCount - 1);
-    updateCounters();
-    checkEmptyReceived();
-  }, 300);
+  card.style.transition = 'opacity 0.3s';
+  setTimeout(function() { card.remove(); }, 300);
+  updateTabCounts();
 }
 
-function checkEmptyReceived() {
-  const panel = document.getElementById('received');
-  const remaining = panel.querySelectorAll('.personCard');
-  if (remaining.length === 0) {
-    panel.innerHTML = `
-      <div class="empty-state">
-        <i class="fa-regular fa-envelope" style="font-size:36px;color:#aaa;"></i>
-        <p>No pending requests</p>
-      </div>`;
-  }
+/* ============================================================
+   TAB COUNTERS
+============================================================ */
+function updateTabCounts() {
+  var sentBtn = document.getElementById('tabSent');
+  if (sentBtn) sentBtn.textContent = 'Req Sent (' + sentCount + ')';
+
+  var recvBtn = document.getElementById('tabReceived');
+  if (recvBtn) recvBtn.textContent = 'Req Received (' + receivedCount + ')';
 }
 
-/* ═══════════════════════════════════════════
-   UPDATE COUNTERS
-═══════════════════════════════════════════ */
-function updateCounters() {
-  document.getElementById('count-sent').textContent = sentRequests.length;
-  document.getElementById('count-received').textContent = receivedCount;
-}
-
-/* ═══════════════════════════════════════════
+/* ============================================================
    ME DROPDOWN
-═══════════════════════════════════════════ */
+============================================================ */
 function toggleDropdown() {
-  document.getElementById('meDropdown').classList.toggle('open');
+  var dd = document.getElementById('meDropdown');
+  if (!dd) return;
+  dd.classList.toggle('open');
 }
 
-window.addEventListener('click', function(e) {
-  const meItem = document.getElementById('meNavItem');
-  const dropdown = document.getElementById('meDropdown');
-  if (meItem && !meItem.contains(e.target)) {
-    dropdown.classList.remove('open');
+document.addEventListener('click', function(e) {
+  var nme = document.getElementById('nme');
+  var dd  = document.getElementById('meDropdown');
+  if (!dd || !nme) return;
+  if (!nme.contains(e.target)) {
+    dd.classList.remove('open');
   }
 });
 
-/* ═══════════════════════════════════════════
+/* ============================================================
    TOAST
-═══════════════════════════════════════════ */
-let toastTimer;
+============================================================ */
+var toastTimer = null;
+
 function showToast(msg) {
-  const toast = document.getElementById('toast');
-  toast.textContent = msg;
-  toast.classList.add('show');
+  var t = document.getElementById('toast');
+  if (!t) return;
+  t.textContent = msg;
+  t.classList.remove('hidden');
   clearTimeout(toastTimer);
-  toastTimer = setTimeout(() => toast.classList.remove('show'), 2800);
+  toastTimer = setTimeout(function() { t.classList.add('hidden'); }, 3000);
 }
