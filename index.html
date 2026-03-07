@@ -42,7 +42,6 @@
     <div class="nitem nme" id="nme" onclick="toggleDropdown()">
       <img src="https://randomuser.me/api/portraits/men/75.jpg" class="nme-avatar" alt="Me">
       <span>Me <i class="fa fa-caret-down" style="font-size:10px"></i></span>
-
       <div class="me-dropdown" id="meDropdown">
         <div class="me-drop-top">
           <img src="https://randomuser.me/api/portraits/men/75.jpg" alt="Kunal">
@@ -77,13 +76,14 @@
       <h2 class="page-title">LiveSync Session</h2>
 
       <div class="tabs">
-        <button class="tabBtn active" id="tabPeople"   onclick="showTab('people')">People (4)</button>
+        <button class="tabBtn active" id="tabPeople"   onclick="showTab('people')">People (12)</button>
         <button class="tabBtn"        id="tabReceived" onclick="showTab('received')">Req Received (2)</button>
         <button class="tabBtn"        id="tabSent"     onclick="showTab('sent')">Req Sent (0)</button>
       </div>
 
       <!-- PEOPLE -->
       <div id="people" class="tabPanel">
+
         <div class="pcard">
           <img src="https://randomuser.me/api/portraits/men/32.jpg" alt="Rahul">
           <div class="pinfo">
@@ -93,6 +93,7 @@
           </div>
           <button class="cbtn" onclick="handleConnect(this,'Rahul Sharma','MBA Candidate | Marketing','https://randomuser.me/api/portraits/men/32.jpg')">Connect</button>
         </div>
+
         <div class="pcard">
           <img src="https://randomuser.me/api/portraits/women/44.jpg" alt="Priya">
           <div class="pinfo">
@@ -102,6 +103,7 @@
           </div>
           <button class="cbtn" onclick="handleConnect(this,'Priya Patel','Finance Enthusiast','https://randomuser.me/api/portraits/women/44.jpg')">Connect</button>
         </div>
+
         <div class="pcard">
           <img src="https://randomuser.me/api/portraits/women/65.jpg" alt="Sofia">
           <div class="pinfo">
@@ -111,6 +113,7 @@
           </div>
           <button class="cbtn" onclick="handleConnect(this,'Sofia Khan','Product Manager','https://randomuser.me/api/portraits/women/65.jpg')">Connect</button>
         </div>
+
         <div class="pcard">
           <img src="https://randomuser.me/api/portraits/men/45.jpg" alt="John">
           <div class="pinfo">
@@ -120,6 +123,87 @@
           </div>
           <button class="cbtn" onclick="handleConnect(this,'John Mathew','Software Engineer','https://randomuser.me/api/portraits/men/45.jpg')">Connect</button>
         </div>
+
+        <div class="pcard">
+          <img src="https://randomuser.me/api/portraits/women/12.jpg" alt="Ananya">
+          <div class="pinfo">
+            <div class="pname">Ananya Reddy</div>
+            <div class="ptitle">Investment Banking Analyst | Goldman Sachs</div>
+            <div class="pmutual"><i class="fa fa-user-friends"></i> 17 mutual connections</div>
+          </div>
+          <button class="cbtn" onclick="handleConnect(this,'Ananya Reddy','Investment Banking Analyst','https://randomuser.me/api/portraits/women/12.jpg')">Connect</button>
+        </div>
+
+        <div class="pcard">
+          <img src="https://randomuser.me/api/portraits/men/58.jpg" alt="Vikram">
+          <div class="pinfo">
+            <div class="pname">Vikram Nair</div>
+            <div class="ptitle">Venture Capital | Early-Stage Startups</div>
+            <div class="pmutual"><i class="fa fa-user-friends"></i> 9 mutual connections</div>
+          </div>
+          <button class="cbtn" onclick="handleConnect(this,'Vikram Nair','Venture Capital','https://randomuser.me/api/portraits/men/58.jpg')">Connect</button>
+        </div>
+
+        <div class="pcard">
+          <img src="https://randomuser.me/api/portraits/women/33.jpg" alt="Divya">
+          <div class="pinfo">
+            <div class="pname">Divya Menon</div>
+            <div class="ptitle">Data Scientist | Flipkart</div>
+            <div class="pmutual"><i class="fa fa-user-friends"></i> 6 mutual connections</div>
+          </div>
+          <button class="cbtn" onclick="handleConnect(this,'Divya Menon','Data Scientist','https://randomuser.me/api/portraits/women/33.jpg')">Connect</button>
+        </div>
+
+        <div class="pcard">
+          <img src="https://randomuser.me/api/portraits/men/71.jpg" alt="Aryan">
+          <div class="pinfo">
+            <div class="pname">Aryan Kapoor</div>
+            <div class="ptitle">Strategy & Consulting | Deloitte</div>
+            <div class="pmutual"><i class="fa fa-user-friends"></i> 11 mutual connections</div>
+          </div>
+          <button class="cbtn" onclick="handleConnect(this,'Aryan Kapoor','Strategy & Consulting','https://randomuser.me/api/portraits/men/71.jpg')">Connect</button>
+        </div>
+
+        <div class="pcard">
+          <img src="https://randomuser.me/api/portraits/women/55.jpg" alt="Neha">
+          <div class="pinfo">
+            <div class="pname">Neha Joshi</div>
+            <div class="ptitle">UX Designer | Microsoft India</div>
+            <div class="pmutual"><i class="fa fa-user-friends"></i> 4 mutual connections</div>
+          </div>
+          <button class="cbtn" onclick="handleConnect(this,'Neha Joshi','UX Designer','https://randomuser.me/api/portraits/women/55.jpg')">Connect</button>
+        </div>
+
+        <div class="pcard">
+          <img src="https://randomuser.me/api/portraits/men/19.jpg" alt="Rohan">
+          <div class="pinfo">
+            <div class="pname">Rohan Desai</div>
+            <div class="ptitle">Operations Manager | Amazon</div>
+            <div class="pmutual"><i class="fa fa-user-friends"></i> 7 mutual connections</div>
+          </div>
+          <button class="cbtn" onclick="handleConnect(this,'Rohan Desai','Operations Manager','https://randomuser.me/api/portraits/men/19.jpg')">Connect</button>
+        </div>
+
+        <div class="pcard">
+          <img src="https://randomuser.me/api/portraits/women/78.jpg" alt="Ishita">
+          <div class="pinfo">
+            <div class="pname">Ishita Bose</div>
+            <div class="ptitle">Marketing Lead | Zomato</div>
+            <div class="pmutual"><i class="fa fa-user-friends"></i> 14 mutual connections</div>
+          </div>
+          <button class="cbtn" onclick="handleConnect(this,'Ishita Bose','Marketing Lead','https://randomuser.me/api/portraits/women/78.jpg')">Connect</button>
+        </div>
+
+        <div class="pcard">
+          <img src="https://randomuser.me/api/portraits/men/36.jpg" alt="Karan">
+          <div class="pinfo">
+            <div class="pname">Karan Mehta</div>
+            <div class="ptitle">Supply Chain Analyst | Unilever</div>
+            <div class="pmutual"><i class="fa fa-user-friends"></i> 2 mutual connections</div>
+          </div>
+          <button class="cbtn" onclick="handleConnect(this,'Karan Mehta','Supply Chain Analyst','https://randomuser.me/api/portraits/men/36.jpg')">Connect</button>
+        </div>
+
       </div>
 
       <!-- RECEIVED -->
