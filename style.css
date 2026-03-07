@@ -453,17 +453,16 @@ body {
   min-width: 0;
 }
 
-.prem-icon {
+.prem-star {
   width: 20px;
   height: 20px;
-  object-fit: contain;
   flex-shrink: 0;
 }
 
-.prem-icon-fallback {
-  font-size: 16px;
+.prem-btn-star {
+  width: 14px;
+  height: 14px;
   flex-shrink: 0;
-  line-height: 1;
 }
 
 .prem-action-label {
@@ -500,14 +499,6 @@ body {
 }
 
 .prem-btn:hover { opacity: 0.88; transform: translateY(-1px); }
-
-.prem-btn-icon {
-  width: 16px;
-  height: 16px;
-  object-fit: contain;
-}
-
-.prem-icon-fallback-btn { font-size: 13px; }
 
 /* ============================================================ TOAST */
 .toast {
