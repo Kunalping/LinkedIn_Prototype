@@ -79,10 +79,60 @@
         <button class="tabBtn active" id="tabPeople"   onclick="showTab('people')">People (12)</button>
         <button class="tabBtn"        id="tabReceived" onclick="showTab('received')">Req Received (2)</button>
         <button class="tabBtn"        id="tabSent"     onclick="showTab('sent')">Req Sent (0)</button>
+        <div class="session-timer">
+          <i class="fa fa-clock" style="color:#c37d16;font-size:13px"></i>
+          <span class="timer-label">Session ends in</span>
+          <span id="timerDisplay" class="timer-display">02d 04h 37m</span>
+        </div>
       </div>
 
       <!-- PEOPLE -->
       <div id="people" class="tabPanel">
+
+        <!-- SEND TO ALL — Premium -->
+        <div class="premium-action-bar">
+          <div class="prem-left">
+            <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/0/01/LinkedIn_Logo.svg/200px-LinkedIn_Logo.svg.png"
+                 onerror="this.style.display='none'"
+                 class="prem-li-logo" alt="">
+            <img src="https://static.licdn.com/aero-v1/sc/h/cs8pjfgyw96g44ln9r7tct85f"
+                 onerror="this.style.display='none'"
+                 class="prem-icon" alt="Premium">
+            <span class="prem-icon-fallback">&#11088;</span>
+            <div>
+              <span class="prem-action-label">Send connection request to all</span>
+              <em class="prem-tag">Premium feature</em>
+            </div>
+          </div>
+          <button class="prem-btn" onclick="showPremiumPrompt()">
+            <img src="https://static.licdn.com/aero-v1/sc/h/cs8pjfgyw96g44ln9r7tct85f"
+                 onerror="this.style.display='none'"
+                 class="prem-btn-icon" alt="">
+            <span class="prem-icon-fallback-btn">&#11088;</span>
+            Send to All
+          </button>
+        </div>
+
+        <!-- JOIN GROUP — Premium -->
+        <div class="premium-action-bar join-group-bar">
+          <div class="prem-left">
+            <img src="https://static.licdn.com/aero-v1/sc/h/cs8pjfgyw96g44ln9r7tct85f"
+                 onerror="this.style.display='none'"
+                 class="prem-icon" alt="Premium">
+            <span class="prem-icon-fallback">&#11088;</span>
+            <div>
+              <span class="prem-action-label"><i class="fa fa-users" style="margin-right:5px;color:#0A66C2"></i>Join LiveSync Group — MBA Networking 2026</span>
+              <em class="prem-tag">Premium feature</em>
+            </div>
+          </div>
+          <button class="prem-btn" onclick="showPremiumPrompt()">
+            <img src="https://static.licdn.com/aero-v1/sc/h/cs8pjfgyw96g44ln9r7tct85f"
+                 onerror="this.style.display='none'"
+                 class="prem-btn-icon" alt="">
+            <span class="prem-icon-fallback-btn">&#11088;</span>
+            Join Group
+          </button>
+        </div>
 
         <div class="pcard">
           <img src="https://randomuser.me/api/portraits/men/32.jpg" alt="Rahul">
