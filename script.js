@@ -1,345 +1,171 @@
-// ----------------------
-// DATA
-// ----------------------
+let currentUser = "";
+let sentRequests = [];
+let receivedRequests = [];
 
+// Dummy people list
 const people = [
-{name:"Rahul Sharma",headline:"MBA Candidate | Marketing",img:"https://randomuser.me/api/portraits/men/32.jpg"},
-{name:"Priya Patel",headline:"Finance Enthusiast",img:"https://randomuser.me/api/portraits/women/44.jpg"},
-{name:"Sofia Khan",headline:"Product Manager",img:"https://randomuser.me/api/portraits/women/68.jpg"},
-{name:"John Mathew",headline:"Software Engineer",img:"https://randomuser.me/api/portraits/men/52.jpg"},
-{name:"Meera Iyer",headline:"Consulting Aspirant",img:"https://randomuser.me/api/portraits/women/12.jpg"}
-]
+  "Rahul Sharma",
+  "Priya Patel",
+  "Amit Singh",
+  "Neha Gupta",
+  "Karan Mehta",
+  "Sneha Reddy",
+  "Aditya Verma",
+  "Pooja Kapoor",
+  "Vikram Joshi",
+  "Ananya Das",
+  "Rohan Iyer",
+  "Meera Nair"
+];
 
-let sent = []
 
-let received = [
-{name:"Daniel Lee",headline:"Data Scientist",img:"https://randomuser.me/api/portraits/men/14.jpg"},
-{name:"Nina Roy",headline:"Business Analyst",img:"https://randomuser.me/api/portraits/women/21.jpg"}
-]
+// LOGIN FUNCTION
+function enterApp() {
+  const nameInput = document.getElementById("nameInput").value;
 
+  if (nameInput.trim() === "") {
+    alert("Please enter your name");
+    return;
+  }
 
-// ----------------------
-// SESSION TIMER
-// ----------------------
+  currentUser = nameInput;
 
-const sessionEnd = new Date()
+  document.getElementById("loginPage").style.display = "none";
+  document.getElementById("mainPage").style.display = "block";
 
-// example session: 1 day 4 hours
-sessionEnd.setHours(sessionEnd.getHours() + 28)
-
-function updateTimer(){
-
-const now = new Date()
-
-let diff = sessionEnd - now
-
-let days = Math.floor(diff/(1000*60*60*24))
-let hours = Math.floor((diff/(1000*60*60)) % 24)
-let mins = Math.floor((diff/(1000*60)) % 60)
-
-document.getElementById("timer").innerText =
-`Session Live: ${days}d ${hours}h ${mins}m`
-
+  renderPeople();
 }
 
-updateTimer()
-setInterval(updateTimer,60000)
 
+// TAB SWITCHING
+function showTab(tabName) {
 
-// ----------------------
-// NAVBAR DROPDOWN
-// ----------------------
+  document.getElementById("peopleSection").style.display = "none";
+  document.getElementById("receivedSection").style.display = "none";
+  document.getElementById("sentSection").style.display = "none";
 
-function toggleDropdown(){
-
-let menu = document.getElementById("profileDropdown")
-
-if(menu.style.display === "block")
-menu.style.display = "none"
-else
-menu.style.display = "block"
+  document.getElementById(tabName).style.display = "block";
 
 }
 
 
-// close dropdown when clicking outside
+// RENDER PEOPLE
+function renderPeople() {
 
-window.onclick = function(event){
+  const container = document.getElementById("peopleList");
+  container.innerHTML = "";
 
-if(!event.target.closest(".dropdown")){
+  people.forEach(person => {
 
-let menu = document.getElementById("profileDropdown")
+    const card = document.createElement("div");
+    card.className = "personCard";
 
-if(menu)
-menu.style.display = "none"
+    const name = document.createElement("span");
+    name.innerText = person;
 
-}
+    const button = document.createElement("button");
 
-}
+    if (sentRequests.includes(person)) {
 
+      button.innerText = "Pending";
+      button.disabled = true;
+      button.style.backgroundColor = "#ccc";
+      button.style.cursor = "not-allowed";
 
-// ----------------------
-// TAB NAVIGATION
-// ----------------------
+    } else {
 
-function showSection(section){
+      button.innerText = "Connect";
+      button.onclick = () => sendRequest(person, button);
 
-document.getElementById("people").classList.add("hidden")
-document.getElementById("sent").classList.add("hidden")
-document.getElementById("received").classList.add("hidden")
+    }
 
-document.getElementById(section).classList.remove("hidden")
+    card.appendChild(name);
+    card.appendChild(button);
 
-}
+    container.appendChild(card);
 
-
-// ----------------------
-// RENDER UI
-// ----------------------
-
-function render(){
-
-document.getElementById("peopleCount").innerText = people.length
-document.getElementById("sentCount").innerText = sent.length
-document.getElementById("receivedCount").innerText = received.length
-
-renderPeople()
-renderSent()
-renderReceived()
+  });
 
 }
 
 
-// ----------------------
-// PEOPLE SECTION
-// ----------------------
+// SEND REQUEST
+function sendRequest(person, button) {
 
-function renderPeople(){
+  sentRequests.push(person);
 
-let html = ""
+  button.innerText = "Pending";
+  button.disabled = true;
+  button.style.backgroundColor = "#ccc";
 
-
-// PREMIUM GROUP ENTRY
-
-html += `
-<div class="person">
-
-<div class="person-info">
-
-<div class="name">
-LiveSync Official Group
-<span class="premium-icon">★</span>
-</div>
-
-<div class="headline">
-Join official event networking group
-</div>
-
-</div>
-
-<button class="connect">Join</button>
-
-</div>
-`
-
-
-// SEND REQUEST TO ALL (PREMIUM)
-
-html += `
-<div class="person">
-
-<div class="person-info">
-
-<div class="name">
-Send Request to All
-<span class="premium-icon">★</span>
-</div>
-
-<div class="headline">
-Premium feature
-</div>
-
-</div>
-
-<button class="connect" onclick="sendAllRequests()">
-Send
-</button>
-
-</div>
-`
-
-
-// NORMAL PEOPLE
-
-people.forEach(p=>{
-
-if(!sent.find(x=>x.name === p.name)){
-
-html += `
-<div class="person">
-
-<img class="avatar" src="${p.img}">
-
-<div class="person-info">
-
-<div class="name">${p.name}</div>
-<div class="headline">${p.headline}</div>
-
-</div>
-
-<button class="connect"
-onclick="sendRequest('${p.name}')">
-
-Connect
-
-</button>
-
-</div>
-`
-
-}
-
-})
-
-document.getElementById("people").innerHTML = html
+  renderSentRequests();
 
 }
 
 
-// ----------------------
-// SENT REQUESTS
-// ----------------------
+// RENDER SENT REQUESTS
+function renderSentRequests() {
 
-function renderSent(){
+  const container = document.getElementById("sentList");
+  container.innerHTML = "";
 
-let html = ""
+  sentRequests.forEach(person => {
 
-sent.forEach(p=>{
+    const item = document.createElement("div");
+    item.className = "personCard";
+    item.innerText = person;
 
-html += `
-<div class="person">
+    container.appendChild(item);
 
-<img class="avatar" src="${p.img}">
-
-<div class="person-info">
-
-<div class="name">${p.name}</div>
-<div class="headline">${p.headline}</div>
-
-</div>
-
-<button class="withdraw"
-onclick="withdrawRequest('${p.name}')">
-
-Withdraw
-
-</button>
-
-</div>
-`
-
-})
-
-document.getElementById("sent").innerHTML = html
+  });
 
 }
 
 
-// ----------------------
-// RECEIVED REQUESTS
-// ----------------------
+// RENDER RECEIVED REQUESTS
+function renderReceivedRequests() {
 
-function renderReceived(){
+  const container = document.getElementById("receivedList");
+  container.innerHTML = "";
 
-let html = ""
+  receivedRequests.forEach(person => {
 
-received.forEach(p=>{
+    const item = document.createElement("div");
+    item.className = "personCard";
+    item.innerText = person;
 
-html += `
-<div class="person">
+    container.appendChild(item);
 
-<img class="avatar" src="${p.img}">
-
-<div class="person-info">
-
-<div class="name">${p.name}</div>
-<div class="headline">${p.headline}</div>
-
-</div>
-
-<button class="accept"
-onclick="acceptRequest('${p.name}')">
-
-Accept
-
-</button>
-
-</div>
-`
-
-})
-
-document.getElementById("received").innerHTML = html
+  });
 
 }
 
 
-// ----------------------
-// ACTIONS
-// ----------------------
+// ME DROPDOWN
+function toggleDropdown() {
 
-function sendRequest(name){
+  const dropdown = document.getElementById("meDropdown");
 
-let person = people.find(p=>p.name === name)
-
-if(!sent.includes(person))
-sent.push(person)
-
-render()
+  if (dropdown.style.display === "block") {
+    dropdown.style.display = "none";
+  } else {
+    dropdown.style.display = "block";
+  }
 
 }
 
 
-function withdrawRequest(name){
+// CLOSE DROPDOWN IF CLICK OUTSIDE
+window.onclick = function(event) {
 
-sent = sent.filter(p=>p.name !== name)
+  if (!event.target.matches('.meButton')) {
 
-render()
+    const dropdown = document.getElementById("meDropdown");
 
-}
+    if (dropdown && dropdown.style.display === "block") {
+      dropdown.style.display = "none";
+    }
 
+  }
 
-function acceptRequest(name){
-
-let person = received.find(p=>p.name === name)
-
-received = received.filter(p=>p.name !== name)
-
-people.push(person)
-
-render()
-
-}
-
-
-// PREMIUM FEATURE
-
-function sendAllRequests(){
-
-people.forEach(p=>{
-
-if(!sent.includes(p))
-sent.push(p)
-
-})
-
-render()
-
-}
-
-
-// ----------------------
-// INITIAL RENDER
-// ----------------------
-
-render()
+};
