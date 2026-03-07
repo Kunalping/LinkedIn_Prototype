@@ -2,141 +2,79 @@
 <html>
 <head>
 <meta charset="UTF-8">
-<title>LiveSync Session</title>
+<title>LiveSync Networking</title>
 <link rel="stylesheet" href="style.css">
 </head>
 
 <body>
 
-<!-- TOP NAV BAR -->
+<header class="navbar">
+<div class="logo">in</div>
+<input class="search" placeholder="Search">
+</header>
 
-<div class="navbar">
+<div class="container">
 
-<div class="nav-left">
-
-<div class="linkedin-logo">in</div>
-
-<div class="search-wrapper">
-<input class="search-bar" placeholder="Search">
-</div>
-
-</div>
-
-<div class="nav-menu">
-
-<div class="nav-item">
-<div class="icon">🏠</div>
-<div class="label">Home</div>
-</div>
-
-<div class="nav-item active">
-<div class="icon">👥</div>
-<div class="label">My Network</div>
-</div>
-
-<div class="nav-item">
-<div class="icon">💼</div>
-<div class="label">Jobs</div>
-</div>
-
-<div class="nav-item">
-<div class="icon">💬</div>
-<div class="label">Messaging</div>
-</div>
-
-<div class="nav-item">
-<div class="icon">🔔</div>
-<div class="label">Notifications</div>
-</div>
-
-<div class="nav-item dropdown" onclick="toggleDropdown()">
-
-<div class="icon">👤</div>
-<div class="label">Me ▼</div>
-
-<div id="profileDropdown" class="dropdown-menu">
-
-<div>View Profile</div>
-<div>Settings</div>
-<div>Help</div>
-<div>Sign Out</div>
-
-</div>
-
-</div>
-
-</div>
-
-<div class="premium">Try Premium for ₹0</div>
-
-</div>
-<!-- PAGE CONTENT -->
-
-<div class="page">
-
-<!-- LEFT CONTENT -->
-
-<div class="content">
-
-<div class="header-row">
-
-<h2>LiveSync Session</h2>
-
-<div class="timer" id="timer"></div>
-
-</div>
-
+<h1>LiveSync Session</h1>
 
 <div class="tabs">
+<button onclick="showTab('people')" id="peopleTab">People (4)</button>
+<button onclick="showTab('received')" id="receivedTab">Req Received (0)</button>
+<button onclick="showTab('sent')" id="sentTab">Req Sent (0)</button>
+</div>
 
-<button onclick="showSection('people')">
-People (<span id="peopleCount"></span>)
-</button>
+<!-- PEOPLE TAB -->
 
-<button onclick="showSection('received')">
-Req Received (<span id="receivedCount"></span>)
-</button>
+<div id="people" class="tabContent">
 
-<button onclick="showSection('sent')">
-Req Sent (<span id="sentCount"></span>)
-</button>
+<div class="personCard">
+<div>
+<div class="name">Rahul Sharma</div>
+<div class="title">MBA Candidate</div>
+</div>
+<button class="connectBtn">Connect</button>
+</div>
+
+<div class="personCard">
+<div>
+<div class="name">Priya Patel</div>
+<div class="title">Finance Enthusiast</div>
+</div>
+<button class="connectBtn">Connect</button>
+</div>
+
+<div class="personCard">
+<div>
+<div class="name">Sofia Khan</div>
+<div class="title">Product Manager</div>
+</div>
+<button class="connectBtn">Connect</button>
+</div>
+
+<div class="personCard">
+<div>
+<div class="name">John Mathew</div>
+<div class="title">Software Engineer</div>
+</div>
+<button class="connectBtn">Connect</button>
+</div>
 
 </div>
 
+<!-- RECEIVED TAB -->
 
-<div id="people" class="section"></div>
-<div id="received" class="section hidden"></div>
-<div id="sent" class="section hidden"></div>
-
+<div id="received" class="tabContent hidden">
+<p>No requests yet</p>
 </div>
 
+<!-- SENT TAB -->
 
-<!-- RIGHT SIDEBAR -->
-
-<div class="sidebar">
-
-<h3>Upcoming Networking Events</h3>
-
-<div class="event">
-AI Startup Mixer<br>
-<span>Tomorrow 7PM</span>
-</div>
-
-<div class="event">
-Product Leaders Meetup<br>
-<span>Friday 6PM</span>
-</div>
-
-<div class="event">
-FinTech Connect<br>
-<span>Saturday 5PM</span>
-</div>
-
+<div id="sent" class="tabContent hidden">
+<div id="sentList"></div>
 </div>
 
 </div>
 
 <script src="script.js"></script>
-
 </body>
 </html>
