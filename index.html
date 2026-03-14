@@ -47,7 +47,7 @@
           <img src="https://randomuser.me/api/portraits/men/75.jpg" alt="Kunal">
           <div>
             <div class="me-drop-name">Kunal Ping</div>
-            <div class="me-drop-title">PGDM 2025–27 | SPJIMR, Mumbai</div>
+            <div class="me-drop-title">PGDM 2024–26 | SPJIMR, Mumbai</div>
           </div>
         </div>
         <button class="me-view-btn">View Profile</button>
@@ -109,7 +109,7 @@
           <div class="prem-left">
             <svg class="prem-star" viewBox="0 0 24 24" fill="#c37d16" xmlns="http://www.w3.org/2000/svg"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
             <div>
-              <span class="prem-action-label"><i class="fa fa-users" style="margin-right:5px;color:#0A66C2"></i>Join LiveSync Group — SPJIMR PGDM Batch 2025–27</span>
+              <span class="prem-action-label"><i class="fa fa-users" style="margin-right:5px;color:#0A66C2"></i>Join LiveSync Group — SPJIMR PGDM Batch 2024–26</span>
               <em class="prem-tag">Premium feature</em>
             </div>
           </div>
@@ -291,7 +291,7 @@
         <div class="event">
           <div class="edate"><span class="emon">MAR</span><span class="eday">12</span></div>
           <div class="einfo">
-            <div class="ename">SPJIMR WISE Tech Pitchathon</div>
+            <div class="ename">SPJIMR Startup Pitch Night</div>
             <div class="emeta"><i class="fa fa-map-marker-alt"></i> SPJIMR, Andheri · In-person</div>
             <div class="emeta"><i class="fa fa-users"></i> 48 attending</div>
           </div>
@@ -339,7 +339,7 @@
       <div class="scard" style="margin-top:12px">
         <div class="scard-title">Host an Event</div>
         <p style="font-size:13px;color:#666;margin:0 0 12px">Run your own networking session or workshop.</p>
-        <button class="create-event-btn"><i class="fa fa-plus"></i> Create Event</button>
+        <button class="create-event-btn" onclick="openCreateEvent()"><i class="fa fa-plus"></i> Create Event</button>
       </div>
 
     </aside>
@@ -350,6 +350,353 @@
 <!-- TOAST -->
 <div id="toast" class="toast hidden"></div>
 
-<script src="script.js"></script>
+<!-- ============================================================
+     MODAL 1: CREATE EVENT (3-step)
+============================================================ -->
+<div class="modal-overlay hidden" id="modalCreateEvent">
+  <div class="modal-box modal-large">
+    <div class="modal-header">
+      <h3><i class="fa fa-calendar-plus" style="color:#0A66C2;margin-right:8px"></i>Create Event</h3>
+      <button class="modal-close" onclick="closeModal('modalCreateEvent')">&times;</button>
+    </div>
+    <div class="modal-body">
+
+      <div class="privacy-notice">
+        <i class="fa fa-shield-halved"></i>
+        <span>Attendee contact information remains private. You can only reach them through platform notifications.</span>
+      </div>
+
+      <div class="verify-row">
+        <span class="verify-badge"><i class="fa fa-circle-check"></i> Premium &amp; Verified Account</span>
+        <span class="events-left"><i class="fa fa-calendar-week"></i> 2 of 3 events remaining this week</span>
+      </div>
+
+      <div class="step-bar">
+        <div class="step active" id="step1dot"><span>1</span><small>Details</small></div>
+        <div class="step-line"></div>
+        <div class="step" id="step2dot"><span>2</span><small>Reach</small></div>
+        <div class="step-line"></div>
+        <div class="step" id="step3dot"><span>3</span><small>Options</small></div>
+      </div>
+
+      <!-- STEP 1 -->
+      <div id="evStep1">
+        <div class="form-grid">
+          <div class="form-group full">
+            <label>Event Name *</label>
+            <input type="text" id="evName" placeholder="e.g. AI Networking Mixer – Mumbai" class="form-input">
+          </div>
+          <div class="form-group full">
+            <label>Description *</label>
+            <textarea id="evDesc" rows="3" placeholder="What is this event about? Who should attend?" class="form-input"></textarea>
+          </div>
+          <div class="form-group">
+            <label>Location *</label>
+            <input type="text" id="evLocation" placeholder="Venue or Online" class="form-input">
+          </div>
+          <div class="form-group">
+            <label>Date &amp; Time *</label>
+            <input type="datetime-local" id="evDatetime" class="form-input">
+          </div>
+          <div class="form-group full">
+            <label>Audience Type</label>
+            <div class="tag-picker" id="audiencePicker">
+              <span class="tag-opt" onclick="toggleTag(this)">Startup</span>
+              <span class="tag-opt" onclick="toggleTag(this)">Tech</span>
+              <span class="tag-opt" onclick="toggleTag(this)">Product</span>
+              <span class="tag-opt" onclick="toggleTag(this)">Finance</span>
+              <span class="tag-opt" onclick="toggleTag(this)">Marketing</span>
+              <span class="tag-opt" onclick="toggleTag(this)">Consulting</span>
+              <span class="tag-opt" onclick="toggleTag(this)">Operations</span>
+              <span class="tag-opt" onclick="toggleTag(this)">HR &amp; People</span>
+              <span class="tag-opt" onclick="toggleTag(this)">Analytics</span>
+              <span class="tag-opt" onclick="toggleTag(this)">VC / Investing</span>
+            </div>
+          </div>
+          <div class="form-group full">
+            <label>Attach Existing Group <span class="opt-label">(optional)</span></label>
+            <select class="form-input" id="evGroup">
+              <option value="">— None —</option>
+              <option>SPJIMR PGDM Batch 2024–26</option>
+              <option>Mumbai Product Managers</option>
+              <option>FinTech India Network</option>
+            </select>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button class="btn-ghost" onclick="closeModal('modalCreateEvent')">Cancel</button>
+          <button class="btn-primary" onclick="goStep(2)">Next: Set Reach &rarr;</button>
+        </div>
+      </div>
+
+      <!-- STEP 2: Notify Professionals -->
+      <div id="evStep2" class="hidden">
+        <div class="paid-feature-banner">
+          <svg class="prem-star" viewBox="0 0 24 24" fill="#c37d16"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+          <div>
+            <strong>Notify Relevant Professionals</strong><span> — Premium Feature</span>
+            <p>Send LinkedIn-style notifications to targeted professionals. Their personal data is never shared.</p>
+          </div>
+          <label class="toggle-switch">
+            <input type="checkbox" id="notifyToggle" onchange="toggleNotifyPanel()">
+            <span class="toggle-slider"></span>
+          </label>
+        </div>
+
+        <div id="notifyPanel" class="hidden">
+          <div class="section-label"><i class="fa fa-sliders"></i> Target Audience Filters</div>
+          <div class="form-grid">
+            <div class="form-group">
+              <label>Geography</label>
+              <input type="text" id="fGeo" placeholder="e.g. Mumbai, India" class="form-input" oninput="updateReach()">
+            </div>
+            <div class="form-group">
+              <label>Industry</label>
+              <select class="form-input" id="fIndustry" onchange="updateReach()">
+                <option>Any</option><option>Technology</option><option>Finance / BFSI</option>
+                <option>Consulting</option><option>FMCG</option><option>Healthcare</option>
+                <option>E-commerce</option><option>Media</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label>Profession</label>
+              <input type="text" id="fProfession" placeholder="e.g. Product Manager" class="form-input" oninput="updateReach()">
+            </div>
+            <div class="form-group">
+              <label>Experience Level</label>
+              <select class="form-input" id="fExp" onchange="updateReach()">
+                <option>Any</option><option>Student / Fresher</option><option>0–2 years</option>
+                <option>2–5 years</option><option>5–10 years</option><option>10+ years</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label>Company Size</label>
+              <select class="form-input" id="fCompSize" onchange="updateReach()">
+                <option>Any</option><option>Startup (1–50)</option><option>SME (51–500)</option>
+                <option>Mid-size (500–5000)</option><option>Enterprise (5000+)</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label>Open to Work</label>
+              <select class="form-input" id="fOTW" onchange="updateReach()">
+                <option>Any</option><option>Yes — actively looking</option><option>No preference</option>
+              </select>
+            </div>
+            <div class="form-group full">
+              <label>Interests / Skills Tags</label>
+              <input type="text" id="fSkills" placeholder="e.g. AI, Startups, Product Strategy" class="form-input" oninput="updateReach()">
+            </div>
+          </div>
+
+          <div class="reach-estimate">
+            <i class="fa fa-users"></i>
+            <span>Estimated reach: <strong id="reachNum">~480 professionals</strong></span>
+            <small>Based on your filters · updates as you type</small>
+          </div>
+
+          <div class="notif-preview">
+            <div class="section-label"><i class="fa fa-bell"></i> Notification Preview</div>
+            <div class="notif-card">
+              <img src="https://randomuser.me/api/portraits/men/75.jpg" class="notif-avatar" alt="">
+              <div class="notif-body">
+                <p><strong>Kunal Ping</strong> is hosting <strong id="prevEventName">your event</strong> in <span id="prevLocation">your city</span>.</p>
+                <p class="notif-sub">Tap to join and connect with professionals in your field.</p>
+                <div class="notif-actions">
+                  <button class="btn-primary btn-sm">Join Event</button>
+                  <button class="btn-ghost btn-sm">Ignore</button>
+                  <button class="btn-ghost btn-sm" style="color:#888">Mute host</button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="modal-footer">
+          <button class="btn-ghost" onclick="goStep(1)">&larr; Back</button>
+          <button class="btn-primary" onclick="goStep(3)">Next: Event Options &rarr;</button>
+        </div>
+      </div>
+
+      <!-- STEP 3: QR + Group + Trust -->
+      <div id="evStep3" class="hidden">
+        <div class="options-grid">
+          <div class="option-card">
+            <div class="option-header">
+              <i class="fa fa-qrcode option-icon"></i>
+              <div>
+                <div class="option-title">Generate Event QR Code</div>
+                <div class="option-sub">Attendees scan to join. No personal data shared with host.</div>
+              </div>
+              <label class="toggle-switch">
+                <input type="checkbox" id="qrToggle" onchange="toggleQRPreview()">
+                <span class="toggle-slider"></span>
+              </label>
+            </div>
+            <div id="qrPreviewArea" class="hidden">
+              <div class="qr-placeholder">
+                <div class="qr-mock">
+                  <svg viewBox="0 0 100 100" width="110" height="110" xmlns="http://www.w3.org/2000/svg">
+                    <rect width="100" height="100" fill="white"/>
+                    <rect x="5" y="5" width="35" height="35" fill="none" stroke="#000" stroke-width="4"/>
+                    <rect x="12" y="12" width="21" height="21" fill="#000"/>
+                    <rect x="60" y="5" width="35" height="35" fill="none" stroke="#000" stroke-width="4"/>
+                    <rect x="67" y="12" width="21" height="21" fill="#000"/>
+                    <rect x="5" y="60" width="35" height="35" fill="none" stroke="#000" stroke-width="4"/>
+                    <rect x="12" y="67" width="21" height="21" fill="#000"/>
+                    <rect x="50" y="50" width="8" height="8" fill="#000"/>
+                    <rect x="62" y="50" width="8" height="8" fill="#000"/>
+                    <rect x="74" y="50" width="8" height="8" fill="#000"/>
+                    <rect x="86" y="50" width="8" height="8" fill="#000"/>
+                    <rect x="50" y="62" width="8" height="8" fill="#000"/>
+                    <rect x="74" y="62" width="8" height="8" fill="#000"/>
+                    <rect x="50" y="74" width="8" height="8" fill="#000"/>
+                    <rect x="62" y="74" width="8" height="8" fill="#000"/>
+                    <rect x="86" y="74" width="8" height="8" fill="#000"/>
+                    <rect x="62" y="86" width="8" height="8" fill="#000"/>
+                    <rect x="74" y="86" width="8" height="8" fill="#000"/>
+                  </svg>
+                </div>
+                <div class="qr-meta">
+                  <p class="qr-title" id="qrEventLabel">Event QR Code</p>
+                  <p class="qr-sub"><i class="fa fa-clock"></i> Expires when event ends</p>
+                  <button class="btn-ghost btn-sm" onclick="openQRPreview()"><i class="fa fa-eye"></i> Preview attendee page</button>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="option-card">
+            <div class="option-header">
+              <i class="fa fa-users option-icon"></i>
+              <div>
+                <div class="option-title">Create Networking Group</div>
+                <div class="option-sub">Build a community around this event.</div>
+              </div>
+              <label class="toggle-switch">
+                <input type="checkbox" id="groupToggle">
+                <span class="toggle-slider"></span>
+              </label>
+            </div>
+          </div>
+        </div>
+
+        <div class="trust-box">
+          <div class="trust-title"><i class="fa fa-lock"></i> Trust &amp; Safety</div>
+          <ul class="trust-list">
+            <li><i class="fa fa-check"></i> Only Premium &amp; Verified accounts can create QR events</li>
+            <li><i class="fa fa-check"></i> Maximum 3 events per week per host</li>
+            <li><i class="fa fa-check"></i> QR codes automatically expire when the event ends</li>
+            <li><i class="fa fa-check"></i> Attendees can report the host at any time</li>
+            <li><i class="fa fa-check"></i> Account verification required for paid notifications</li>
+          </ul>
+        </div>
+
+        <div class="modal-footer">
+          <button class="btn-ghost" onclick="goStep(2)">&larr; Back</button>
+          <button class="btn-primary btn-gold" onclick="submitEvent()"><i class="fa fa-rocket"></i> Launch Event</button>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<!-- ============================================================
+     MODAL 2: QR ATTENDEE LANDING PAGE PREVIEW
+============================================================ -->
+<div class="modal-overlay hidden" id="modalQRLanding">
+  <div class="modal-box modal-medium">
+    <div class="modal-header">
+      <h3><i class="fa fa-mobile-screen" style="color:#0A66C2;margin-right:8px"></i>Attendee QR Landing Page</h3>
+      <button class="modal-close" onclick="closeModal('modalQRLanding')">&times;</button>
+    </div>
+    <div class="modal-body">
+      <div class="qr-landing-preview">
+        <div class="qlp-logo">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="26" height="26" fill="white"><path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433a2.062 2.062 0 0 1-2.063-2.065 2.064 2.064 0 1 1 2.063 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/></svg>
+        </div>
+        <div class="qlp-event-name" id="qlpName">AI Networking Mixer</div>
+        <div class="qlp-host">Hosted by <strong>Kunal Ping</strong></div>
+        <div class="qlp-desc" id="qlpDesc">A networking event for professionals in AI, Product &amp; Startups.</div>
+        <div class="qlp-stats">
+          <div class="qlp-stat"><span class="qlp-num" id="qlpCount">84</span><span class="qlp-label">Attendees</span></div>
+          <div class="qlp-stat"><span class="qlp-num">3</span><span class="qlp-label">Interest tags</span></div>
+        </div>
+        <div class="privacy-notice" style="margin:16px 0">
+          <i class="fa fa-shield-halved"></i>
+          <span>Your contact information remains private. Event hosts can only reach you through platform notifications.</span>
+        </div>
+        <button class="btn-primary" style="width:100%;padding:12px;font-size:15px" onclick="simulateJoin()">
+          <i class="fa fa-bolt"></i> Join Networking Session
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ============================================================
+     MODAL 3: HOST DASHBOARD
+============================================================ -->
+<div class="modal-overlay hidden" id="modalDashboard">
+  <div class="modal-box modal-large">
+    <div class="modal-header">
+      <h3><i class="fa fa-chart-line" style="color:#0A66C2;margin-right:8px"></i>Host Dashboard</h3>
+      <button class="modal-close" onclick="closeModal('modalDashboard')">&times;</button>
+    </div>
+    <div class="modal-body">
+      <div class="dash-event-title" id="dashEventTitle">Event Name</div>
+      <div class="dash-privacy-note">
+        <i class="fa fa-eye-slash"></i> Aggregated data only — no personal attendee information is shown.
+      </div>
+
+      <div class="dash-stats">
+        <div class="dash-stat-card">
+          <div class="dash-stat-num" id="dNotifSent">500</div>
+          <div class="dash-stat-label">Notifications Sent</div>
+        </div>
+        <div class="dash-stat-card highlight">
+          <div class="dash-stat-num" id="dJoined">84</div>
+          <div class="dash-stat-label">People Joined</div>
+        </div>
+        <div class="dash-stat-card">
+          <div class="dash-stat-num" id="dEngRate">16.8%</div>
+          <div class="dash-stat-label">Engagement Rate</div>
+        </div>
+        <div class="dash-stat-card">
+          <div class="dash-stat-num" id="dQRScans">61</div>
+          <div class="dash-stat-label">QR Scans</div>
+        </div>
+      </div>
+
+      <div class="dash-section">
+        <div class="dash-section-title">Top Interest Categories</div>
+        <div class="interest-bars">
+          <div class="ibar-row"><span class="ibar-label">AI &amp; ML</span><div class="ibar-track"><div class="ibar-fill" style="width:78%"></div></div><span class="ibar-pct">78%</span></div>
+          <div class="ibar-row"><span class="ibar-label">Product Management</span><div class="ibar-track"><div class="ibar-fill" style="width:61%"></div></div><span class="ibar-pct">61%</span></div>
+          <div class="ibar-row"><span class="ibar-label">Startups</span><div class="ibar-track"><div class="ibar-fill" style="width:54%"></div></div><span class="ibar-pct">54%</span></div>
+          <div class="ibar-row"><span class="ibar-label">VC / Investing</span><div class="ibar-track"><div class="ibar-fill" style="width:33%"></div></div><span class="ibar-pct">33%</span></div>
+          <div class="ibar-row"><span class="ibar-label">Finance</span><div class="ibar-track"><div class="ibar-fill" style="width:27%"></div></div><span class="ibar-pct">27%</span></div>
+        </div>
+      </div>
+
+      <div class="dash-section">
+        <div class="dash-section-title">Notification Response Breakdown</div>
+        <div class="notif-breakdown">
+          <div class="nbd-row"><span class="nbd-dot joined"></span><span>Joined</span><span class="nbd-val">84 (16.8%)</span></div>
+          <div class="nbd-row"><span class="nbd-dot ignored"></span><span>Ignored</span><span class="nbd-val">312 (62.4%)</span></div>
+          <div class="nbd-row"><span class="nbd-dot muted"></span><span>Muted host</span><span class="nbd-val">14 (2.8%)</span></div>
+          <div class="nbd-row"><span class="nbd-dot pending"></span><span>Pending</span><span class="nbd-val">90 (18%)</span></div>
+        </div>
+      </div>
+
+      <div class="modal-footer" style="border-top:1px solid #eee;padding-top:14px;margin-top:4px">
+        <button class="btn-ghost" onclick="closeModal('modalDashboard')">Close</button>
+        <button class="btn-primary" onclick="closeModal('modalDashboard');openCreateEvent()"><i class="fa fa-plus"></i> Create Another Event</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script src="script.js?v=4"></script>
 </body>
 </html>
