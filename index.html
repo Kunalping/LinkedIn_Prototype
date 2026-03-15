@@ -3,17 +3,17 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
 <title>LiveSync Networking</title>
-<link rel="stylesheet" href="style.css">
+<link rel="stylesheet" href="style.css?v=5">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
 <body>
 
-<!-- ===== NAVBAR ===== -->
+<!-- ===================================================== NAVBAR -->
 <header class="navbar">
-
   <div class="navbar-left">
-    <div class="navbar-logo">
+    <div class="navbar-logo" onclick="showPage('mynetwork')" style="cursor:pointer">
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="30" height="30" fill="white">
         <path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433a2.062 2.062 0 0 1-2.063-2.065 2.064 2.064 0 1 1 2.063 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/>
       </svg>
@@ -25,20 +25,18 @@
   </div>
 
   <div class="navbar-right">
-    <a class="nitem" href="#"><i class="fa fa-home"></i><span>Home</span></a>
-    <a class="nitem active" href="#"><i class="fa fa-user-friends"></i><span>My Network</span></a>
-    <a class="nitem" href="#"><i class="fa fa-briefcase"></i><span>Jobs</span></a>
-    <a class="nitem pos-rel" href="#">
+    <a class="nitem" id="nav-home"      onclick="showPage('home')"      href="#"><i class="fa fa-home"></i><span>Home</span></a>
+    <a class="nitem active" id="nav-mynetwork" onclick="showPage('mynetwork')" href="#"><i class="fa fa-user-friends"></i><span>My Network</span></a>
+    <a class="nitem" id="nav-jobs"      onclick="showPage('jobs')"      href="#"><i class="fa fa-briefcase"></i><span>Jobs</span></a>
+    <a class="nitem pos-rel" id="nav-messaging"  onclick="showPage('messaging')"  href="#">
       <i class="fa fa-comment-dots"></i><span>Messaging</span>
-      <em class="nbadge">3</em>
+      <em class="nbadge" id="msgBadge">3</em>
     </a>
-    <a class="nitem pos-rel" href="#">
+    <a class="nitem pos-rel" id="nav-notifications" onclick="showPage('notifications')" href="#">
       <i class="fa fa-bell"></i><span>Notifications</span>
-      <em class="nbadge red">1</em>
+      <em class="nbadge red" id="notifBadge">1</em>
     </a>
-
     <div class="ndivider"></div>
-
     <div class="nitem nme" id="nme" onclick="toggleDropdown()">
       <img src="https://randomuser.me/api/portraits/men/75.jpg" class="nme-avatar" alt="Me">
       <span>Me <i class="fa fa-caret-down" style="font-size:10px"></i></span>
@@ -50,7 +48,7 @@
             <div class="me-drop-title">PGDM 2024–26 | SPJIMR, Mumbai</div>
           </div>
         </div>
-        <button class="me-view-btn">View Profile</button>
+        <button class="me-view-btn" onclick="showPage('profile')">View Profile</button>
         <hr class="me-hr">
         <div class="me-section">Account</div>
         <div class="me-link">Settings &amp; Privacy</div>
@@ -60,202 +58,239 @@
         <div class="me-link">Sign Out</div>
       </div>
     </div>
-
     <a class="nitem" href="#"><i class="fa fa-th"></i><span>For Business</span></a>
     <a class="npremium" href="#">Try Premium for <strong>&#8377;0</strong></a>
   </div>
-
 </header>
 
-<!-- ===== PAGE ===== -->
-<div class="page">
-  <div class="page-inner">
+<!-- ===================================================== ALL PAGES WRAPPER -->
+<div id="appRoot">
 
-    <!-- MAIN -->
-    <main class="main">
-      <h2 class="page-title">LiveSync Session</h2>
+<!-- =====================================================
+     PAGE: HOME (Feed)
+===================================================== -->
+<div id="page-home" class="app-page hidden">
+  <div class="page">
+    <div class="page-inner feed-layout">
 
-      <div class="tabs">
-        <button class="tabBtn active" id="tabPeople"   onclick="showTab('people')">People (12)</button>
-        <button class="tabBtn"        id="tabReceived" onclick="showTab('received')">Req Received (2)</button>
-        <button class="tabBtn"        id="tabSent"     onclick="showTab('sent')">Req Sent (0)</button>
-        <div class="session-timer">
-          <i class="fa fa-clock" style="color:#c37d16;font-size:13px"></i>
-          <span class="timer-label">Session ends in</span>
-          <span id="timerDisplay" class="timer-display">02d 04h 37m</span>
+      <!-- Left profile card -->
+      <aside class="feed-left">
+        <div class="scard profile-card-left">
+          <div class="pcl-banner"></div>
+          <img src="https://randomuser.me/api/portraits/men/75.jpg" class="pcl-avatar" alt="Kunal">
+          <div class="pcl-name">Kunal Ping</div>
+          <div class="pcl-title">PGDM 2024–26 | SPJIMR, Mumbai</div>
+          <hr class="me-hr" style="margin:12px 0">
+          <div class="pcl-stat"><span>Profile viewers</span><strong>47</strong></div>
+          <div class="pcl-stat"><span>Post impressions</span><strong>312</strong></div>
+          <hr class="me-hr" style="margin:12px 0">
+          <div class="pcl-prem"><i class="fa fa-star" style="color:#c37d16"></i> Try Premium for free</div>
         </div>
-      </div>
+      </aside>
 
-      <!-- PEOPLE -->
-      <div id="people" class="tabPanel">
+      <!-- Feed -->
+      <main class="feed-main">
+        <!-- Post composer -->
+        <div class="scard post-composer">
+          <div class="composer-row">
+            <img src="https://randomuser.me/api/portraits/men/75.jpg" class="composer-avatar" alt="">
+            <button class="composer-input-btn" onclick="showToast('Post composer coming soon!')">Start a post</button>
+          </div>
+          <div class="composer-actions">
+            <button class="composer-action"><i class="fa fa-image" style="color:#378fe9"></i> Photo</button>
+            <button class="composer-action"><i class="fa fa-video" style="color:#5f9b41"></i> Video</button>
+            <button class="composer-action"><i class="fa fa-calendar" style="color:#c37d16"></i> Event</button>
+            <button class="composer-action"><i class="fa fa-pen" style="color:#e06847"></i> Write</button>
+          </div>
+        </div>
 
-        <!-- SEND TO ALL — Premium -->
-        <div class="premium-action-bar">
-          <div class="prem-left">
-            <svg class="prem-star" viewBox="0 0 24 24" fill="#c37d16" xmlns="http://www.w3.org/2000/svg"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+        <!-- Posts -->
+        <div class="scard feed-post" id="post1">
+          <div class="post-header">
+            <img src="https://randomuser.me/api/portraits/women/44.jpg" class="post-avatar" alt="">
             <div>
-              <span class="prem-action-label">Send connection request to all</span>
-              <em class="prem-tag">Premium feature</em>
+              <div class="post-author">Priya Patel</div>
+              <div class="post-meta">PGDM 2024–26 | Finance | SPJIMR · 2h</div>
+            </div>
+            <button class="post-follow-btn" onclick="showToast('Following Priya!')">+ Follow</button>
+          </div>
+          <div class="post-text">
+            Just wrapped up the <strong>SPJIMR FinTech Case Competition</strong> 🏆 Our team pitched a B2B payments solution for MSMEs and made it to the finals! Grateful for the amazing support from faculty and batchmates. The learning curve was steep but worth every late night. #SPJIMR #FinTech #CaseCompetition
+          </div>
+          <div class="post-img-placeholder" style="background:linear-gradient(135deg,#e8f0fe,#d2e3fc)">
+            <i class="fa fa-trophy" style="font-size:40px;color:#0A66C2;opacity:0.4"></i>
+          </div>
+          <div class="post-stats">
+            <span><i class="fa fa-thumbs-up" style="color:#0A66C2"></i> 84 · 12 comments</span>
+          </div>
+          <div class="post-actions">
+            <button class="post-action-btn like-btn" onclick="toggleLike(this, 'post1')"><i class="fa fa-thumbs-up"></i> Like</button>
+            <button class="post-action-btn" onclick="showToast('Comment feature coming soon!')"><i class="fa fa-comment"></i> Comment</button>
+            <button class="post-action-btn" onclick="showToast('Repost feature coming soon!')"><i class="fa fa-retweet"></i> Repost</button>
+            <button class="post-action-btn" onclick="showToast('Share feature coming soon!')"><i class="fa fa-share"></i> Send</button>
+          </div>
+        </div>
+
+        <div class="scard feed-post" id="post2">
+          <div class="post-header">
+            <img src="https://randomuser.me/api/portraits/men/71.jpg" class="post-avatar" alt="">
+            <div>
+              <div class="post-author">Aryan Kapoor</div>
+              <div class="post-meta">SPJIMR Alum '23 | Strategy | McKinsey · 5h</div>
+            </div>
+            <button class="post-follow-btn" onclick="showToast('Following Aryan!')">+ Follow</button>
+          </div>
+          <div class="post-text">
+            3 things I wish I knew before joining a consulting firm straight out of b-school:<br><br>
+            1️⃣ Slide decks are the least of your problems. Structuring the problem is everything.<br>
+            2️⃣ Your MBA network is your biggest asset — use it.<br>
+            3️⃣ Learn to say no. Saying yes to everything burns you out fast.<br><br>
+            What would you add? Drop it in the comments 👇 #Consulting #MBA #CareerAdvice
+          </div>
+          <div class="post-stats">
+            <span><i class="fa fa-thumbs-up" style="color:#0A66C2"></i> 241 · 38 comments</span>
+          </div>
+          <div class="post-actions">
+            <button class="post-action-btn like-btn liked" onclick="toggleLike(this, 'post2')"><i class="fa fa-thumbs-up"></i> Like</button>
+            <button class="post-action-btn" onclick="showToast('Comment feature coming soon!')"><i class="fa fa-comment"></i> Comment</button>
+            <button class="post-action-btn" onclick="showToast('Repost feature coming soon!')"><i class="fa fa-retweet"></i> Repost</button>
+            <button class="post-action-btn" onclick="showToast('Share feature coming soon!')"><i class="fa fa-share"></i> Send</button>
+          </div>
+        </div>
+
+        <div class="scard feed-post" id="post3">
+          <div class="post-header">
+            <img src="https://randomuser.me/api/portraits/men/58.jpg" class="post-avatar" alt="">
+            <div>
+              <div class="post-author">Vikram Nair</div>
+              <div class="post-meta">SPJIMR Alum '21 | Associate | Sequoia India · 1d</div>
+            </div>
+            <button class="post-follow-btn" onclick="showToast('Following Vikram!')">+ Follow</button>
+          </div>
+          <div class="post-text">
+            Excited to share that <strong>Sequoia India</strong> just closed a ₹120Cr seed round for a B2B SaaS startup from Mumbai 🎉 The founders are IIT + SPJIMR alumni building for the manufacturing sector. India's startup ecosystem is maturing fast. The best founders we've met lately are solving deep domain problems, not chasing trends. #VC #StartupIndia #Sequoia
+          </div>
+          <div class="post-stats">
+            <span><i class="fa fa-thumbs-up" style="color:#0A66C2"></i> 567 · 74 comments</span>
+          </div>
+          <div class="post-actions">
+            <button class="post-action-btn like-btn" onclick="toggleLike(this, 'post3')"><i class="fa fa-thumbs-up"></i> Like</button>
+            <button class="post-action-btn" onclick="showToast('Comment feature coming soon!')"><i class="fa fa-comment"></i> Comment</button>
+            <button class="post-action-btn" onclick="showToast('Repost feature coming soon!')"><i class="fa fa-retweet"></i> Repost</button>
+            <button class="post-action-btn" onclick="showToast('Share feature coming soon!')"><i class="fa fa-share"></i> Send</button>
+          </div>
+        </div>
+
+        <div class="scard feed-post" id="post4">
+          <div class="post-header">
+            <img src="https://randomuser.me/api/portraits/women/33.jpg" class="post-avatar" alt="">
+            <div>
+              <div class="post-author">Divya Menon</div>
+              <div class="post-meta">PGDM 2024–26 | Operations & Analytics | SPJIMR · 2d</div>
+            </div>
+            <button class="post-follow-btn" onclick="showToast('Following Divya!')">+ Follow</button>
+          </div>
+          <div class="post-text">
+            Just completed my summer internship at <strong>Bain & Company</strong> 🎯 Worked on a supply chain optimisation project for a FMCG client. The experience of presenting to C-suite stakeholders mid-way through was nerve-wracking but incredibly valuable. Thank you to my mentor for pushing me to think like a partner, not just an analyst. #SummerIntern #Bain #SupplyChain
+          </div>
+          <div class="post-stats">
+            <span><i class="fa fa-thumbs-up" style="color:#0A66C2"></i> 189 · 27 comments</span>
+          </div>
+          <div class="post-actions">
+            <button class="post-action-btn like-btn" onclick="toggleLike(this, 'post4')"><i class="fa fa-thumbs-up"></i> Like</button>
+            <button class="post-action-btn" onclick="showToast('Comment feature coming soon!')"><i class="fa fa-comment"></i> Comment</button>
+            <button class="post-action-btn" onclick="showToast('Repost feature coming soon!')"><i class="fa fa-retweet"></i> Repost</button>
+            <button class="post-action-btn" onclick="showToast('Share feature coming soon!')"><i class="fa fa-share"></i> Send</button>
+          </div>
+        </div>
+
+        <div class="scard feed-post" id="post5">
+          <div class="post-header">
+            <img src="https://randomuser.me/api/portraits/women/55.jpg" class="post-avatar" alt="">
+            <div>
+              <div class="post-author">Neha Joshi</div>
+              <div class="post-meta">PGDM 2024–26 | Digital Marketing | SPJIMR · 3d</div>
+            </div>
+            <button class="post-follow-btn" onclick="showToast('Following Neha!')">+ Follow</button>
+          </div>
+          <div class="post-text">
+            Hot take: <strong>personal branding is not vanity — it's strategy.</strong><br><br>
+            In today's market, 70% of hiring managers check LinkedIn before an interview. Your profile is your first impression. I've been building mine consistently for 6 months and the results are tangible — 3x more profile views, and 2 internship reach-outs from companies I hadn't even applied to. Start today. You'll thank yourself later. #PersonalBranding #CareerTips
+          </div>
+          <div class="post-stats">
+            <span><i class="fa fa-thumbs-up" style="color:#0A66C2"></i> 312 · 45 comments</span>
+          </div>
+          <div class="post-actions">
+            <button class="post-action-btn like-btn" onclick="toggleLike(this, 'post5')"><i class="fa fa-thumbs-up"></i> Like</button>
+            <button class="post-action-btn" onclick="showToast('Comment feature coming soon!')"><i class="fa fa-comment"></i> Comment</button>
+            <button class="post-action-btn" onclick="showToast('Repost feature coming soon!')"><i class="fa fa-retweet"></i> Repost</button>
+            <button class="post-action-btn" onclick="showToast('Share feature coming soon!')"><i class="fa fa-share"></i> Send</button>
+          </div>
+        </div>
+      </main>
+
+      <!-- Right sidebar -->
+      <aside class="feed-right">
+        <div class="scard">
+          <div class="scard-title" style="font-size:14px">Add to your feed</div>
+          <div class="follow-suggest">
+            <img src="https://randomuser.me/api/portraits/men/22.jpg" alt="">
+            <div><div style="font-weight:600;font-size:13px">Arjun Nair</div><div style="font-size:11px;color:#666">PGDM | Operations | SPJIMR</div></div>
+            <button class="cbtn btn-sm" style="margin-left:auto" onclick="showToast('Following Arjun!')">Follow</button>
+          </div>
+          <div class="follow-suggest">
+            <img src="https://randomuser.me/api/portraits/women/30.jpg" alt="">
+            <div><div style="font-weight:600;font-size:13px">Meera Iyer</div><div style="font-size:11px;color:#666">Senior Consultant | BCG</div></div>
+            <button class="cbtn btn-sm" style="margin-left:auto" onclick="showToast('Following Meera!')">Follow</button>
+          </div>
+        </div>
+      </aside>
+
+    </div>
+  </div>
+</div>
+
+<!-- =====================================================
+     PAGE: MY NETWORK
+===================================================== -->
+<div id="page-mynetwork" class="app-page">
+  <div class="page">
+    <div class="page-inner">
+      <main class="main">
+
+        <!-- JOIN LIVESYNC SESSION -->
+        <div class="scard join-session-card">
+          <div class="join-session-header">
+            <i class="fa fa-bolt" style="color:#c37d16;font-size:18px"></i>
+            <div>
+              <div style="font-weight:700;font-size:15px">Join a LiveSync Session</div>
+              <div style="font-size:13px;color:#666">Enter a 6-digit event code to join a live networking session</div>
             </div>
           </div>
-          <button class="prem-btn" onclick="showPremiumPrompt()">
-            <svg class="prem-btn-star" viewBox="0 0 24 24" fill="#3d2a00" xmlns="http://www.w3.org/2000/svg"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
-            Send to All
-          </button>
-        </div>
-
-        <!-- JOIN GROUP — Premium -->
-        <div class="premium-action-bar join-group-bar">
-          <div class="prem-left">
-            <svg class="prem-star" viewBox="0 0 24 24" fill="#c37d16" xmlns="http://www.w3.org/2000/svg"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
-            <div>
-              <span class="prem-action-label"><i class="fa fa-users" style="margin-right:5px;color:#0A66C2"></i>Join LiveSync Group — SPJIMR PGDM Batch 2024–26</span>
-              <em class="prem-tag">Premium feature</em>
-            </div>
+          <div class="join-session-input-row">
+            <input type="text" id="sessionCodeInput" maxlength="6" placeholder="Enter 6-digit code" class="form-input session-code-input">
+            <button class="btn-primary" onclick="joinSession()"><i class="fa fa-arrow-right"></i> Join Session</button>
           </div>
-          <button class="prem-btn" onclick="showPremiumPrompt()">
-            <svg class="prem-btn-star" viewBox="0 0 24 24" fill="#3d2a00" xmlns="http://www.w3.org/2000/svg"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
-            Join Group
-          </button>
+          <div class="join-hint">Try code: <strong>SPJIMR</strong> or <strong>847261</strong></div>
         </div>
 
-        <div class="pcard">
-          <img src="https://randomuser.me/api/portraits/men/32.jpg" alt="Rahul">
-          <div class="pinfo">
-            <div class="pname">Rahul Sharma</div>
-            <div class="ptitle">PGDM 2024–26 | Marketing | SPJIMR</div>
-            <div class="pmutual"><i class="fa fa-user-friends"></i> 12 mutual connections</div>
-          </div>
-          <button class="cbtn" onclick="handleConnect(this,'Rahul Sharma','PGDM | Marketing | SPJIMR','https://randomuser.me/api/portraits/men/32.jpg')">Connect</button>
-        </div>
+        <!-- PENDING REQUESTS -->
+        <div style="font-size:16px;font-weight:700;margin:20px 0 12px">Pending Invitations</div>
 
-        <div class="pcard">
-          <img src="https://randomuser.me/api/portraits/women/44.jpg" alt="Priya">
-          <div class="pinfo">
-            <div class="pname">Priya Patel</div>
-            <div class="ptitle">PGDM 2024–26 | Finance | SPJIMR</div>
-            <div class="pmutual"><i class="fa fa-user-friends"></i> 8 mutual connections</div>
-          </div>
-          <button class="cbtn" onclick="handleConnect(this,'Priya Patel','PGDM | Finance | SPJIMR','https://randomuser.me/api/portraits/women/44.jpg')">Connect</button>
-        </div>
-
-        <div class="pcard">
-          <img src="https://randomuser.me/api/portraits/women/65.jpg" alt="Sofia">
-          <div class="pinfo">
-            <div class="pname">Sofia Khan</div>
-            <div class="ptitle">PGDM 2024–26 | Strategy | SPJIMR</div>
-            <div class="pmutual"><i class="fa fa-user-friends"></i> 5 mutual connections</div>
-          </div>
-          <button class="cbtn" onclick="handleConnect(this,'Sofia Khan','PGDM | Strategy | SPJIMR','https://randomuser.me/api/portraits/women/65.jpg')">Connect</button>
-        </div>
-
-        <div class="pcard">
-          <img src="https://randomuser.me/api/portraits/men/45.jpg" alt="John">
-          <div class="pinfo">
-            <div class="pname">John Mathew</div>
-            <div class="ptitle">SPJIMR Alum '22 | Product Manager | PhonePe</div>
-            <div class="pmutual"><i class="fa fa-user-friends"></i> 3 mutual connections</div>
-          </div>
-          <button class="cbtn" onclick="handleConnect(this,'John Mathew','SPJIMR Alum | Product Manager','https://randomuser.me/api/portraits/men/45.jpg')">Connect</button>
-        </div>
-
-        <div class="pcard">
-          <img src="https://randomuser.me/api/portraits/women/12.jpg" alt="Ananya">
-          <div class="pinfo">
-            <div class="pname">Ananya Reddy</div>
-            <div class="ptitle">PGDM 2024–26 | Finance | SPJIMR · Ex-Axis Bank</div>
-            <div class="pmutual"><i class="fa fa-user-friends"></i> 17 mutual connections</div>
-          </div>
-          <button class="cbtn" onclick="handleConnect(this,'Ananya Reddy','PGDM | Finance | SPJIMR','https://randomuser.me/api/portraits/women/12.jpg')">Connect</button>
-        </div>
-
-        <div class="pcard">
-          <img src="https://randomuser.me/api/portraits/men/58.jpg" alt="Vikram">
-          <div class="pinfo">
-            <div class="pname">Vikram Nair</div>
-            <div class="ptitle">SPJIMR Alum '21 | Associate | Sequoia India</div>
-            <div class="pmutual"><i class="fa fa-user-friends"></i> 9 mutual connections</div>
-          </div>
-          <button class="cbtn" onclick="handleConnect(this,'Vikram Nair','SPJIMR Alum | Sequoia India','https://randomuser.me/api/portraits/men/58.jpg')">Connect</button>
-        </div>
-
-        <div class="pcard">
-          <img src="https://randomuser.me/api/portraits/women/33.jpg" alt="Divya">
-          <div class="pinfo">
-            <div class="pname">Divya Menon</div>
-            <div class="ptitle">PGDM 2024–26 | Operations & Analytics | SPJIMR</div>
-            <div class="pmutual"><i class="fa fa-user-friends"></i> 6 mutual connections</div>
-          </div>
-          <button class="cbtn" onclick="handleConnect(this,'Divya Menon','PGDM | Operations | SPJIMR','https://randomuser.me/api/portraits/women/33.jpg')">Connect</button>
-        </div>
-
-        <div class="pcard">
-          <img src="https://randomuser.me/api/portraits/men/71.jpg" alt="Aryan">
-          <div class="pinfo">
-            <div class="pname">Aryan Kapoor</div>
-            <div class="ptitle">SPJIMR Alum '23 | Strategy | McKinsey & Company</div>
-            <div class="pmutual"><i class="fa fa-user-friends"></i> 11 mutual connections</div>
-          </div>
-          <button class="cbtn" onclick="handleConnect(this,'Aryan Kapoor','SPJIMR Alum | McKinsey','https://randomuser.me/api/portraits/men/71.jpg')">Connect</button>
-        </div>
-
-        <div class="pcard">
-          <img src="https://randomuser.me/api/portraits/women/55.jpg" alt="Neha">
-          <div class="pinfo">
-            <div class="pname">Neha Joshi</div>
-            <div class="ptitle">PGDM 2024–26 | Digital Marketing | SPJIMR</div>
-            <div class="pmutual"><i class="fa fa-user-friends"></i> 4 mutual connections</div>
-          </div>
-          <button class="cbtn" onclick="handleConnect(this,'Neha Joshi','PGDM | Digital Marketing | SPJIMR','https://randomuser.me/api/portraits/women/55.jpg')">Connect</button>
-        </div>
-
-        <div class="pcard">
-          <img src="https://randomuser.me/api/portraits/men/19.jpg" alt="Rohan">
-          <div class="pinfo">
-            <div class="pname">Rohan Desai</div>
-            <div class="ptitle">SPJIMR Alum '22 | Supply Chain Manager | Marico</div>
-            <div class="pmutual"><i class="fa fa-user-friends"></i> 7 mutual connections</div>
-          </div>
-          <button class="cbtn" onclick="handleConnect(this,'Rohan Desai','SPJIMR Alum | Marico','https://randomuser.me/api/portraits/men/19.jpg')">Connect</button>
-        </div>
-
-        <div class="pcard">
-          <img src="https://randomuser.me/api/portraits/women/78.jpg" alt="Ishita">
-          <div class="pinfo">
-            <div class="pname">Ishita Bose</div>
-            <div class="ptitle">PGDM 2024–26 | Media & Entertainment | SPJIMR</div>
-            <div class="pmutual"><i class="fa fa-user-friends"></i> 14 mutual connections</div>
-          </div>
-          <button class="cbtn" onclick="handleConnect(this,'Ishita Bose','PGDM | Media & Entertainment | SPJIMR','https://randomuser.me/api/portraits/women/78.jpg')">Connect</button>
-        </div>
-
-        <div class="pcard">
-          <img src="https://randomuser.me/api/portraits/men/36.jpg" alt="Karan">
-          <div class="pinfo">
-            <div class="pname">Karan Mehta</div>
-            <div class="ptitle">PGDM 2024–26 | General Management | SPJIMR · Ex-Tata Steel</div>
-            <div class="pmutual"><i class="fa fa-user-friends"></i> 2 mutual connections</div>
-          </div>
-          <button class="cbtn" onclick="handleConnect(this,'Karan Mehta','PGDM | General Management | SPJIMR','https://randomuser.me/api/portraits/men/36.jpg')">Connect</button>
-        </div>
-
-      </div>
-
-      <!-- RECEIVED -->
-      <div id="received" class="tabPanel hidden">
-        <div class="pcard" id="card-arjun">
+        <div class="pcard" id="netcard-arjun">
           <img src="https://randomuser.me/api/portraits/men/22.jpg" alt="Arjun">
           <div class="pinfo">
             <div class="pname">Arjun Nair</div>
-            <div class="ptitle">PGDM 2024–26 | Operations | SPJIMR · Ex-Larsen & Toubro</div>
+            <div class="ptitle">PGDM 2024–26 | Operations | SPJIMR · Ex-L&amp;T</div>
             <div class="pmutual"><i class="fa fa-user-friends"></i> 6 mutual connections</div>
           </div>
           <div class="recv-actions">
-            <button class="abtn" onclick="acceptReq(this,'Arjun Nair','card-arjun')">Accept</button>
-            <button class="ibtn" onclick="ignoreReq('card-arjun')">Ignore</button>
+            <button class="abtn" onclick="acceptNetReq('Arjun Nair','netcard-arjun')">Accept</button>
+            <button class="ibtn" onclick="ignoreNetReq('netcard-arjun')">Ignore</button>
           </div>
         </div>
-        <div class="pcard" id="card-meera">
+
+        <div class="pcard" id="netcard-meera">
           <img src="https://randomuser.me/api/portraits/women/30.jpg" alt="Meera">
           <div class="pinfo">
             <div class="pname">Meera Iyer</div>
@@ -263,96 +298,442 @@
             <div class="pmutual"><i class="fa fa-user-friends"></i> 14 mutual connections</div>
           </div>
           <div class="recv-actions">
-            <button class="abtn" onclick="acceptReq(this,'Meera Iyer','card-meera')">Accept</button>
-            <button class="ibtn" onclick="ignoreReq('card-meera')">Ignore</button>
-          </div>
-        </div>
-      </div>
-
-      <!-- SENT -->
-      <div id="sent" class="tabPanel hidden">
-        <div id="sentList"></div>
-        <div id="sentEmpty" class="empty-state">
-          <i class="fa fa-paper-plane"></i>
-          <p>No requests sent yet</p>
-        </div>
-      </div>
-
-    </main>
-
-    <!-- SIDEBAR -->
-    <aside class="sidebar">
-
-      <div class="scard">
-        <div class="scard-title">
-          <i class="fa fa-calendar-days" style="color:#0A66C2;margin-right:6px"></i>Upcoming Events
-        </div>
-
-        <div class="event">
-          <div class="edate"><span class="emon">MAR</span><span class="eday">12</span></div>
-          <div class="einfo">
-            <div class="ename">SPJIMR Startup Pitch Night</div>
-            <div class="emeta"><i class="fa fa-map-marker-alt"></i> SPJIMR, Andheri · In-person</div>
-            <div class="emeta"><i class="fa fa-users"></i> 48 attending</div>
+            <button class="abtn" onclick="acceptNetReq('Meera Iyer','netcard-meera')">Accept</button>
+            <button class="ibtn" onclick="ignoreNetReq('netcard-meera')">Ignore</button>
           </div>
         </div>
 
-        <div class="event">
-          <div class="edate"><span class="emon">MAR</span><span class="eday">15</span></div>
-          <div class="einfo">
-            <div class="ename">FinTech Networking Mixer</div>
-            <div class="emeta"><i class="fa fa-map-marker-alt"></i> The Lalit, Mumbai</div>
-            <div class="emeta"><i class="fa fa-users"></i> 112 attending</div>
+        <div class="pcard" id="netcard-rohan">
+          <img src="https://randomuser.me/api/portraits/men/19.jpg" alt="Rohan">
+          <div class="pinfo">
+            <div class="pname">Rohan Desai</div>
+            <div class="ptitle">SPJIMR Alum '22 | Supply Chain Manager | Marico</div>
+            <div class="pmutual"><i class="fa fa-user-friends"></i> 7 mutual connections</div>
+          </div>
+          <div class="recv-actions">
+            <button class="abtn" onclick="acceptNetReq('Rohan Desai','netcard-rohan')">Accept</button>
+            <button class="ibtn" onclick="ignoreNetReq('netcard-rohan')">Ignore</button>
           </div>
         </div>
 
-        <div class="event">
-          <div class="edate"><span class="emon">MAR</span><span class="eday">20</span></div>
-          <div class="einfo">
-            <div class="ename">Product Leaders Summit 2026</div>
-            <div class="emeta"><i class="fa fa-video"></i> Online · Zoom</div>
-            <div class="emeta"><i class="fa fa-users"></i> 340 attending</div>
+        <!-- PEOPLE YOU MAY KNOW -->
+        <div style="font-size:16px;font-weight:700;margin:24px 0 12px">People You May Know</div>
+        <div class="pcard">
+          <img src="https://randomuser.me/api/portraits/men/36.jpg" alt="Karan">
+          <div class="pinfo">
+            <div class="pname">Karan Mehta</div>
+            <div class="ptitle">PGDM 2024–26 | General Management | SPJIMR</div>
+            <div class="pmutual"><i class="fa fa-user-friends"></i> 2 mutual connections</div>
           </div>
+          <button class="cbtn" onclick="handleConnect(this,'Karan Mehta','PGDM | General Management | SPJIMR','https://randomuser.me/api/portraits/men/36.jpg')">Connect</button>
+        </div>
+        <div class="pcard">
+          <img src="https://randomuser.me/api/portraits/women/78.jpg" alt="Ishita">
+          <div class="pinfo">
+            <div class="pname">Ishita Bose</div>
+            <div class="ptitle">PGDM 2024–26 | Media &amp; Entertainment | SPJIMR</div>
+            <div class="pmutual"><i class="fa fa-user-friends"></i> 14 mutual connections</div>
+          </div>
+          <button class="cbtn" onclick="handleConnect(this,'Ishita Bose','PGDM | Media & Entertainment | SPJIMR','https://randomuser.me/api/portraits/women/78.jpg')">Connect</button>
         </div>
 
-        <div class="event">
-          <div class="edate"><span class="emon">APR</span><span class="eday">3</span></div>
-          <div class="einfo">
-            <div class="ename">SPJIMR Alumni Speed Networking</div>
-            <div class="emeta"><i class="fa fa-map-marker-alt"></i> The Trident, Mumbai BKC</div>
-            <div class="emeta"><i class="fa fa-users"></i> 76 attending</div>
+      </main>
+
+      <!-- SIDEBAR: My Events -->
+      <aside class="sidebar">
+        <div class="scard">
+          <div class="scard-title"><i class="fa fa-calendar-days" style="color:#0A66C2;margin-right:6px"></i>My Events</div>
+
+          <!-- Sample hosted event -->
+          <div class="my-event-card" id="myevent-1">
+            <div class="my-event-info">
+              <div class="my-event-name">AI Startup Networking Mixer</div>
+              <div class="emeta"><i class="fa fa-calendar"></i> June 20, 2026</div>
+              <div class="emeta"><i class="fa fa-map-marker-alt"></i> Mumbai · BKC</div>
+              <div class="emeta"><i class="fa fa-users"></i> 84 attendees</div>
+              <div class="emeta" style="color:#c37d16"><i class="fa fa-key"></i> Code: <strong>847261</strong></div>
+            </div>
+            <div class="my-event-actions">
+              <button class="btn-primary btn-sm" onclick="viewEvent('AI Startup Networking Mixer','June 20, 2026','Mumbai · BKC',84,'847261')">View Event</button>
+              <button class="btn-ghost btn-sm" onclick="openQRForEvent('AI Startup Networking Mixer')"><i class="fa fa-qrcode"></i> QR</button>
+              <button class="btn-ghost btn-sm" onclick="showToast('Share link copied!')"><i class="fa fa-share"></i></button>
+            </div>
           </div>
+
+          <button class="create-event-btn" style="margin-top:12px" onclick="openCreateEvent()"><i class="fa fa-plus"></i> Create Event</button>
         </div>
 
-        <div class="event">
-          <div class="edate"><span class="emon">APR</span><span class="eday">9</span></div>
-          <div class="einfo">
-            <div class="ename">Women in Tech – Bangalore</div>
-            <div class="emeta"><i class="fa fa-map-marker-alt"></i> Leela Palace, Bengaluru</div>
-            <div class="emeta"><i class="fa fa-users"></i> 210 attending</div>
+        <div class="scard" style="margin-top:12px">
+          <div class="scard-title"><i class="fa fa-calendar-days" style="color:#0A66C2;margin-right:6px"></i>Upcoming Events</div>
+          <div class="event">
+            <div class="edate"><span class="emon">MAR</span><span class="eday">15</span></div>
+            <div class="einfo"><div class="ename">FinTech Networking Mixer</div><div class="emeta"><i class="fa fa-map-marker-alt"></i> The Lalit, Mumbai</div></div>
           </div>
+          <div class="event">
+            <div class="edate"><span class="emon">MAR</span><span class="eday">20</span></div>
+            <div class="einfo"><div class="ename">Product Leaders Summit 2026</div><div class="emeta"><i class="fa fa-video"></i> Online · Zoom</div></div>
+          </div>
+          <div class="event">
+            <div class="edate"><span class="emon">APR</span><span class="eday">3</span></div>
+            <div class="einfo"><div class="ename">SPJIMR Alumni Speed Networking</div><div class="emeta"><i class="fa fa-map-marker-alt"></i> The Trident, BKC</div></div>
+          </div>
+          <a href="#" class="see-all" onclick="showPage('mynetwork')">Show all events →</a>
         </div>
-
-        <a href="#" class="see-all">Show all events <i class="fa fa-arrow-right" style="font-size:11px"></i></a>
-      </div>
-
-      <div class="scard" style="margin-top:12px">
-        <div class="scard-title">Host an Event</div>
-        <p style="font-size:13px;color:#666;margin:0 0 12px">Run your own networking session or workshop.</p>
-        <button class="create-event-btn" onclick="openCreateEvent()"><i class="fa fa-plus"></i> Create Event</button>
-      </div>
-
-    </aside>
-
+      </aside>
+    </div>
   </div>
 </div>
+
+<!-- =====================================================
+     PAGE: LIVESYNC SESSION (the networking page)
+===================================================== -->
+<div id="page-session" class="app-page hidden">
+  <div class="page">
+    <div class="page-inner">
+      <main class="main">
+        <div style="display:flex;align-items:center;gap:12px;margin-bottom:4px;flex-wrap:wrap">
+          <h2 class="page-title" id="sessionPageTitle" style="margin:0">LiveSync Session</h2>
+          <button class="btn-ghost btn-sm" onclick="showPage('mynetwork')"><i class="fa fa-arrow-left"></i> Back</button>
+        </div>
+        <div class="session-meta" id="sessionMeta"></div>
+
+        <div class="tabs">
+          <button class="tabBtn active" id="tabPeople"   onclick="showTab('people')">People (12)</button>
+          <button class="tabBtn"        id="tabReceived" onclick="showTab('received')">Req Received (2)</button>
+          <button class="tabBtn"        id="tabSent"     onclick="showTab('sent')">Req Sent (0)</button>
+          <div class="session-timer">
+            <i class="fa fa-clock" style="color:#c37d16;font-size:13px"></i>
+            <span class="timer-label">Session ends in</span>
+            <span id="timerDisplay" class="timer-display">02d 04h 37m</span>
+          </div>
+        </div>
+
+        <!-- PEOPLE -->
+        <div id="people" class="tabPanel">
+          <!-- SEND TO ALL — Premium -->
+          <div class="premium-action-bar">
+            <div class="prem-left">
+              <svg class="prem-star" viewBox="0 0 24 24" fill="#c37d16"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+              <div><span class="prem-action-label">Send connection request to all</span><em class="prem-tag">Premium feature</em></div>
+            </div>
+            <button class="prem-btn" onclick="showPremiumPrompt()">
+              <svg class="prem-btn-star" viewBox="0 0 24 24" fill="#3d2a00"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+              Send to All
+            </button>
+          </div>
+          <!-- JOIN GROUP — Premium -->
+          <div class="premium-action-bar join-group-bar">
+            <div class="prem-left">
+              <svg class="prem-star" viewBox="0 0 24 24" fill="#c37d16"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+              <div><span class="prem-action-label"><i class="fa fa-users" style="margin-right:5px;color:#0A66C2"></i>Join LiveSync Group — SPJIMR PGDM Batch 2024–26</span><em class="prem-tag">Premium feature</em></div>
+            </div>
+            <button class="prem-btn" onclick="showPremiumPrompt()">
+              <svg class="prem-btn-star" viewBox="0 0 24 24" fill="#3d2a00"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+              Join Group
+            </button>
+          </div>
+
+          <div class="pcard"><img src="https://randomuser.me/api/portraits/men/32.jpg" alt="Rahul"><div class="pinfo"><div class="pname">Rahul Sharma</div><div class="ptitle">PGDM 2024–26 | Marketing | SPJIMR</div><div class="pmutual"><i class="fa fa-user-friends"></i> 12 mutual</div></div><button class="cbtn" onclick="handleConnect(this,'Rahul Sharma','PGDM | Marketing | SPJIMR','https://randomuser.me/api/portraits/men/32.jpg')">Connect</button></div>
+          <div class="pcard"><img src="https://randomuser.me/api/portraits/women/44.jpg" alt="Priya"><div class="pinfo"><div class="pname">Priya Patel</div><div class="ptitle">PGDM 2024–26 | Finance | SPJIMR</div><div class="pmutual"><i class="fa fa-user-friends"></i> 8 mutual</div></div><button class="cbtn" onclick="handleConnect(this,'Priya Patel','PGDM | Finance | SPJIMR','https://randomuser.me/api/portraits/women/44.jpg')">Connect</button></div>
+          <div class="pcard"><img src="https://randomuser.me/api/portraits/women/65.jpg" alt="Sofia"><div class="pinfo"><div class="pname">Sofia Khan</div><div class="ptitle">PGDM 2024–26 | Strategy | SPJIMR</div><div class="pmutual"><i class="fa fa-user-friends"></i> 5 mutual</div></div><button class="cbtn" onclick="handleConnect(this,'Sofia Khan','PGDM | Strategy | SPJIMR','https://randomuser.me/api/portraits/women/65.jpg')">Connect</button></div>
+          <div class="pcard"><img src="https://randomuser.me/api/portraits/men/45.jpg" alt="John"><div class="pinfo"><div class="pname">John Mathew</div><div class="ptitle">SPJIMR Alum '22 | Product Manager | PhonePe</div><div class="pmutual"><i class="fa fa-user-friends"></i> 3 mutual</div></div><button class="cbtn" onclick="handleConnect(this,'John Mathew','SPJIMR Alum | PhonePe','https://randomuser.me/api/portraits/men/45.jpg')">Connect</button></div>
+          <div class="pcard"><img src="https://randomuser.me/api/portraits/women/12.jpg" alt="Ananya"><div class="pinfo"><div class="pname">Ananya Reddy</div><div class="ptitle">PGDM 2024–26 | Finance | SPJIMR · Ex-Axis Bank</div><div class="pmutual"><i class="fa fa-user-friends"></i> 17 mutual</div></div><button class="cbtn" onclick="handleConnect(this,'Ananya Reddy','PGDM | Finance | SPJIMR','https://randomuser.me/api/portraits/women/12.jpg')">Connect</button></div>
+          <div class="pcard"><img src="https://randomuser.me/api/portraits/men/58.jpg" alt="Vikram"><div class="pinfo"><div class="pname">Vikram Nair</div><div class="ptitle">SPJIMR Alum '21 | Associate | Sequoia India</div><div class="pmutual"><i class="fa fa-user-friends"></i> 9 mutual</div></div><button class="cbtn" onclick="handleConnect(this,'Vikram Nair','SPJIMR Alum | Sequoia India','https://randomuser.me/api/portraits/men/58.jpg')">Connect</button></div>
+          <div class="pcard"><img src="https://randomuser.me/api/portraits/women/33.jpg" alt="Divya"><div class="pinfo"><div class="pname">Divya Menon</div><div class="ptitle">PGDM 2024–26 | Operations &amp; Analytics | SPJIMR</div><div class="pmutual"><i class="fa fa-user-friends"></i> 6 mutual</div></div><button class="cbtn" onclick="handleConnect(this,'Divya Menon','PGDM | Operations | SPJIMR','https://randomuser.me/api/portraits/women/33.jpg')">Connect</button></div>
+          <div class="pcard"><img src="https://randomuser.me/api/portraits/men/71.jpg" alt="Aryan"><div class="pinfo"><div class="pname">Aryan Kapoor</div><div class="ptitle">SPJIMR Alum '23 | Strategy | McKinsey &amp; Company</div><div class="pmutual"><i class="fa fa-user-friends"></i> 11 mutual</div></div><button class="cbtn" onclick="handleConnect(this,'Aryan Kapoor','SPJIMR Alum | McKinsey','https://randomuser.me/api/portraits/men/71.jpg')">Connect</button></div>
+          <div class="pcard"><img src="https://randomuser.me/api/portraits/women/55.jpg" alt="Neha"><div class="pinfo"><div class="pname">Neha Joshi</div><div class="ptitle">PGDM 2024–26 | Digital Marketing | SPJIMR</div><div class="pmutual"><i class="fa fa-user-friends"></i> 4 mutual</div></div><button class="cbtn" onclick="handleConnect(this,'Neha Joshi','PGDM | Digital Marketing | SPJIMR','https://randomuser.me/api/portraits/women/55.jpg')">Connect</button></div>
+          <div class="pcard"><img src="https://randomuser.me/api/portraits/men/19.jpg" alt="Rohan"><div class="pinfo"><div class="pname">Rohan Desai</div><div class="ptitle">SPJIMR Alum '22 | Supply Chain Manager | Marico</div><div class="pmutual"><i class="fa fa-user-friends"></i> 7 mutual</div></div><button class="cbtn" onclick="handleConnect(this,'Rohan Desai','SPJIMR Alum | Marico','https://randomuser.me/api/portraits/men/19.jpg')">Connect</button></div>
+          <div class="pcard"><img src="https://randomuser.me/api/portraits/women/78.jpg" alt="Ishita"><div class="pinfo"><div class="pname">Ishita Bose</div><div class="ptitle">PGDM 2024–26 | Media &amp; Entertainment | SPJIMR</div><div class="pmutual"><i class="fa fa-user-friends"></i> 14 mutual</div></div><button class="cbtn" onclick="handleConnect(this,'Ishita Bose','PGDM | Media & Entertainment | SPJIMR','https://randomuser.me/api/portraits/women/78.jpg')">Connect</button></div>
+          <div class="pcard"><img src="https://randomuser.me/api/portraits/men/36.jpg" alt="Karan"><div class="pinfo"><div class="pname">Karan Mehta</div><div class="ptitle">PGDM 2024–26 | General Management | SPJIMR</div><div class="pmutual"><i class="fa fa-user-friends"></i> 2 mutual</div></div><button class="cbtn" onclick="handleConnect(this,'Karan Mehta','PGDM | General Management | SPJIMR','https://randomuser.me/api/portraits/men/36.jpg')">Connect</button></div>
+        </div>
+
+        <!-- RECEIVED -->
+        <div id="received" class="tabPanel hidden">
+          <div class="pcard" id="card-arjun">
+            <img src="https://randomuser.me/api/portraits/men/22.jpg" alt="Arjun">
+            <div class="pinfo"><div class="pname">Arjun Nair</div><div class="ptitle">PGDM 2024–26 | Operations | SPJIMR · Ex-L&amp;T</div><div class="pmutual"><i class="fa fa-user-friends"></i> 6 mutual</div></div>
+            <div class="recv-actions">
+              <button class="abtn" onclick="acceptReq(this,'Arjun Nair','card-arjun')">Accept</button>
+              <button class="ibtn" onclick="ignoreReq('card-arjun')">Ignore</button>
+            </div>
+          </div>
+          <div class="pcard" id="card-meera">
+            <img src="https://randomuser.me/api/portraits/women/30.jpg" alt="Meera">
+            <div class="pinfo"><div class="pname">Meera Iyer</div><div class="ptitle">SPJIMR Alum '21 | Senior Consultant | BCG Mumbai</div><div class="pmutual"><i class="fa fa-user-friends"></i> 14 mutual</div></div>
+            <div class="recv-actions">
+              <button class="abtn" onclick="acceptReq(this,'Meera Iyer','card-meera')">Accept</button>
+              <button class="ibtn" onclick="ignoreReq('card-meera')">Ignore</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- SENT -->
+        <div id="sent" class="tabPanel hidden">
+          <div id="sentList"></div>
+          <div id="sentEmpty" class="empty-state"><i class="fa fa-paper-plane"></i><p>No requests sent yet</p></div>
+        </div>
+      </main>
+
+      <!-- Sidebar for session page -->
+      <aside class="sidebar">
+        <div class="scard">
+          <div class="scard-title"><i class="fa fa-calendar-days" style="color:#0A66C2;margin-right:6px"></i>Upcoming Events</div>
+          <div class="event"><div class="edate"><span class="emon">MAR</span><span class="eday">15</span></div><div class="einfo"><div class="ename">FinTech Networking Mixer</div><div class="emeta"><i class="fa fa-map-marker-alt"></i> The Lalit, Mumbai</div><div class="emeta"><i class="fa fa-users"></i> 112 attending</div></div></div>
+          <div class="event"><div class="edate"><span class="emon">MAR</span><span class="eday">20</span></div><div class="einfo"><div class="ename">Product Leaders Summit 2026</div><div class="emeta"><i class="fa fa-video"></i> Online · Zoom</div><div class="emeta"><i class="fa fa-users"></i> 340 attending</div></div></div>
+          <div class="event"><div class="edate"><span class="emon">APR</span><span class="eday">3</span></div><div class="einfo"><div class="ename">SPJIMR Alumni Speed Networking</div><div class="emeta"><i class="fa fa-map-marker-alt"></i> The Trident, Mumbai BKC</div><div class="emeta"><i class="fa fa-users"></i> 76 attending</div></div></div>
+          <a href="#" class="see-all">Show all events →</a>
+        </div>
+        <div class="scard" style="margin-top:12px">
+          <div class="scard-title">Host an Event</div>
+          <p style="font-size:13px;color:#666;margin:0 0 12px">Run your own networking session or workshop.</p>
+          <button class="create-event-btn" onclick="openCreateEvent()"><i class="fa fa-plus"></i> Create Event</button>
+        </div>
+      </aside>
+    </div>
+  </div>
+</div>
+
+<!-- =====================================================
+     PAGE: JOBS
+===================================================== -->
+<div id="page-jobs" class="app-page hidden">
+  <div class="page">
+    <div class="page-inner">
+      <main class="main">
+        <h2 class="page-title">Jobs</h2>
+        <div class="jobs-search-bar">
+          <div class="navbar-search-wrap" style="flex:1"><i class="fa fa-search navbar-search-icon"></i><input class="navbar-search-input" style="width:100%" placeholder="Search by title, skill, or company"></div>
+          <div class="navbar-search-wrap" style="flex:1"><i class="fa fa-map-marker-alt navbar-search-icon"></i><input class="navbar-search-input" style="width:100%" placeholder="City, state, or remote" value="Mumbai, India"></div>
+          <button class="btn-primary">Search</button>
+        </div>
+
+        <div class="job-card">
+          <img src="https://randomuser.me/api/portraits/lego/1.jpg" class="job-logo" alt="McKinsey">
+          <div class="job-info">
+            <div class="job-title">Associate — Strategy & Operations</div>
+            <div class="job-company">McKinsey & Company</div>
+            <div class="job-meta"><i class="fa fa-map-marker-alt"></i> Mumbai, India · On-site</div>
+            <div class="job-meta"><i class="fa fa-clock"></i> Posted 2 days ago · 142 applicants</div>
+            <div class="job-tags"><span class="job-tag">Strategy</span><span class="job-tag">Consulting</span><span class="job-tag">MBA</span></div>
+          </div>
+          <button class="btn-primary btn-sm job-apply-btn" onclick="showToast('Applied to McKinsey!')">Easy Apply</button>
+        </div>
+
+        <div class="job-card">
+          <img src="https://randomuser.me/api/portraits/lego/2.jpg" class="job-logo" alt="PhonePe">
+          <div class="job-info">
+            <div class="job-title">Product Manager — Payments</div>
+            <div class="job-company">PhonePe</div>
+            <div class="job-meta"><i class="fa fa-map-marker-alt"></i> Bangalore, India · Hybrid</div>
+            <div class="job-meta"><i class="fa fa-clock"></i> Posted 5 days ago · 89 applicants</div>
+            <div class="job-tags"><span class="job-tag">Product</span><span class="job-tag">FinTech</span><span class="job-tag">0–2 yrs</span></div>
+          </div>
+          <button class="btn-primary btn-sm job-apply-btn" onclick="showToast('Applied to PhonePe!')">Easy Apply</button>
+        </div>
+
+        <div class="job-card">
+          <img src="https://randomuser.me/api/portraits/lego/3.jpg" class="job-logo" alt="Bain">
+          <div class="job-info">
+            <div class="job-title">Summer Associate — Consulting</div>
+            <div class="job-company">Bain & Company</div>
+            <div class="job-meta"><i class="fa fa-map-marker-alt"></i> Mumbai, India · On-site</div>
+            <div class="job-meta"><i class="fa fa-clock"></i> Posted 1 week ago · 218 applicants</div>
+            <div class="job-tags"><span class="job-tag">Consulting</span><span class="job-tag">Internship</span><span class="job-tag">MBA</span></div>
+          </div>
+          <button class="btn-primary btn-sm job-apply-btn" onclick="showToast('Applied to Bain!')">Easy Apply</button>
+        </div>
+
+        <div class="job-card">
+          <img src="https://randomuser.me/api/portraits/lego/4.jpg" class="job-logo" alt="Sequoia">
+          <div class="job-info">
+            <div class="job-title">Venture Fellow — Early Stage</div>
+            <div class="job-company">Sequoia Capital India</div>
+            <div class="job-meta"><i class="fa fa-map-marker-alt"></i> Bangalore, India · On-site</div>
+            <div class="job-meta"><i class="fa fa-clock"></i> Posted 3 days ago · 67 applicants</div>
+            <div class="job-tags"><span class="job-tag">VC</span><span class="job-tag">Startups</span><span class="job-tag">Finance</span></div>
+          </div>
+          <button class="btn-primary btn-sm job-apply-btn" onclick="showToast('Applied to Sequoia!')">Easy Apply</button>
+        </div>
+
+        <div class="job-card">
+          <img src="https://randomuser.me/api/portraits/lego/5.jpg" class="job-logo" alt="Marico">
+          <div class="job-info">
+            <div class="job-title">Management Trainee — Supply Chain</div>
+            <div class="job-company">Marico Limited</div>
+            <div class="job-meta"><i class="fa fa-map-marker-alt"></i> Mumbai, India · On-site</div>
+            <div class="job-meta"><i class="fa fa-clock"></i> Posted 4 days ago · 155 applicants</div>
+            <div class="job-tags"><span class="job-tag">Supply Chain</span><span class="job-tag">FMCG</span><span class="job-tag">MBA</span></div>
+          </div>
+          <button class="btn-primary btn-sm job-apply-btn" onclick="showToast('Applied to Marico!')">Easy Apply</button>
+        </div>
+
+      </main>
+      <aside class="sidebar">
+        <div class="scard">
+          <div class="scard-title">Job Alerts</div>
+          <p style="font-size:13px;color:#666;margin:0 0 10px">Get notified for new roles matching your profile.</p>
+          <button class="create-event-btn" onclick="showToast('Job alert set!')"><i class="fa fa-bell"></i> Set Alert</button>
+        </div>
+      </aside>
+    </div>
+  </div>
+</div>
+
+<!-- =====================================================
+     PAGE: MESSAGING
+===================================================== -->
+<div id="page-messaging" class="app-page hidden">
+  <div class="page" style="padding:0">
+    <div class="msg-layout">
+      <!-- Conversation list -->
+      <div class="msg-sidebar">
+        <div class="msg-sidebar-header">
+          <span style="font-weight:700;font-size:16px">Messaging</span>
+          <button class="btn-ghost btn-sm" onclick="showToast('New message coming soon!')"><i class="fa fa-pen"></i></button>
+        </div>
+        <input type="text" class="form-input" placeholder="Search messages" style="margin:10px 12px;width:calc(100% - 24px)">
+        <div class="convo-list">
+          <div class="convo-item active" onclick="openConvo('priya')">
+            <img src="https://randomuser.me/api/portraits/women/44.jpg" alt="">
+            <div class="convo-info">
+              <div class="convo-name">Priya Patel</div>
+              <div class="convo-last">Hey! Are you coming to the FinTech Mixer?</div>
+            </div>
+            <div class="convo-meta"><div class="convo-time">2m</div><div class="convo-unread">2</div></div>
+          </div>
+          <div class="convo-item" onclick="openConvo('aryan')">
+            <img src="https://randomuser.me/api/portraits/men/71.jpg" alt="">
+            <div class="convo-info">
+              <div class="convo-name">Aryan Kapoor</div>
+              <div class="convo-last">Great connecting at the event!</div>
+            </div>
+            <div class="convo-meta"><div class="convo-time">1h</div></div>
+          </div>
+          <div class="convo-item" onclick="openConvo('vikram')">
+            <img src="https://randomuser.me/api/portraits/men/58.jpg" alt="">
+            <div class="convo-info">
+              <div class="convo-name">Vikram Nair</div>
+              <div class="convo-last">Let me know if you'd like to discuss the opportunity.</div>
+            </div>
+            <div class="convo-meta"><div class="convo-time">3h</div><div class="convo-unread">1</div></div>
+          </div>
+          <div class="convo-item" onclick="openConvo('meera')">
+            <img src="https://randomuser.me/api/portraits/women/30.jpg" alt="">
+            <div class="convo-info">
+              <div class="convo-name">Meera Iyer</div>
+              <div class="convo-last">Thanks for connecting!</div>
+            </div>
+            <div class="convo-meta"><div class="convo-time">1d</div></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Chat window -->
+      <div class="msg-chat" id="msgChatWindow">
+        <div class="msg-chat-header" id="msgChatHeader">
+          <img src="https://randomuser.me/api/portraits/women/44.jpg" id="msgChatAvatar" alt="" class="msg-chat-avatar">
+          <div>
+            <div class="msg-chat-name" id="msgChatName">Priya Patel</div>
+            <div class="msg-chat-sub" id="msgChatSub">PGDM 2024–26 | Finance | SPJIMR</div>
+          </div>
+        </div>
+        <div class="msg-messages" id="msgMessages">
+          <div class="msg-bubble received">Hey Kunal! Are you going to the FinTech Mixer on the 15th?</div>
+          <div class="msg-bubble sent">Yes! I've already registered. Looking forward to it 🎉</div>
+          <div class="msg-bubble received">Amazing! Let's connect there. I heard Vikram Nair is also attending.</div>
+          <div class="msg-bubble received">Hey! Are you coming to the FinTech Mixer?</div>
+        </div>
+        <div class="msg-input-row">
+          <input type="text" id="msgInput" class="form-input" placeholder="Write a message..." onkeydown="if(event.key==='Enter') sendMessage()">
+          <button class="btn-primary" onclick="sendMessage()"><i class="fa fa-paper-plane"></i></button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- =====================================================
+     PAGE: NOTIFICATIONS
+===================================================== -->
+<div id="page-notifications" class="app-page hidden">
+  <div class="page">
+    <div class="page-inner">
+      <main class="main">
+        <h2 class="page-title">Notifications</h2>
+
+        <div class="notif-item unread" id="notif1" onclick="markRead('notif1')">
+          <img src="https://randomuser.me/api/portraits/women/44.jpg" class="notif-item-avatar" alt="">
+          <div class="notif-item-body">
+            <p><strong>Priya Patel</strong> accepted your connection request.</p>
+            <div class="notif-item-time"><i class="fa fa-clock"></i> 10 minutes ago</div>
+          </div>
+          <div class="notif-unread-dot"></div>
+        </div>
+
+        <div class="notif-item" id="notif2" onclick="markRead('notif2')">
+          <img src="https://randomuser.me/api/portraits/men/71.jpg" class="notif-item-avatar" alt="">
+          <div class="notif-item-body">
+            <p><strong>Aryan Kapoor</strong> liked your post about the SPJIMR FinTech Competition.</p>
+            <div class="notif-item-time"><i class="fa fa-clock"></i> 1 hour ago</div>
+          </div>
+        </div>
+
+        <div class="notif-item" id="notif3" onclick="markRead('notif3')">
+          <div class="notif-item-icon" style="background:#e6f4ea"><i class="fa fa-bolt" style="color:#28a745"></i></div>
+          <div class="notif-item-body">
+            <p><strong>Vikram Nair</strong> is hosting an <strong>AI Startup Networking Mixer</strong> in Mumbai tomorrow. <a href="#" onclick="showPage('session')">Join the event.</a></p>
+            <div class="notif-item-time"><i class="fa fa-clock"></i> 3 hours ago</div>
+          </div>
+        </div>
+
+        <div class="notif-item" id="notif4" onclick="markRead('notif4')">
+          <img src="https://randomuser.me/api/portraits/women/30.jpg" class="notif-item-avatar" alt="">
+          <div class="notif-item-body">
+            <p><strong>Meera Iyer</strong> sent you a connection request.</p>
+            <div class="notif-item-time"><i class="fa fa-clock"></i> 5 hours ago</div>
+            <div style="display:flex;gap:8px;margin-top:8px">
+              <button class="abtn btn-sm" onclick="showToast('Connected with Meera!')">Accept</button>
+              <button class="ibtn btn-sm" onclick="showToast('Request ignored.')">Ignore</button>
+            </div>
+          </div>
+        </div>
+
+        <div class="notif-item" id="notif5" onclick="markRead('notif5')">
+          <div class="notif-item-icon" style="background:#eef3f8"><i class="fa fa-users" style="color:#0A66C2"></i></div>
+          <div class="notif-item-body">
+            <p>Your profile appeared in <strong>47 searches</strong> this week.</p>
+            <div class="notif-item-time"><i class="fa fa-clock"></i> 1 day ago</div>
+          </div>
+        </div>
+
+        <div class="notif-item" id="notif6" onclick="markRead('notif6')">
+          <img src="https://randomuser.me/api/portraits/men/58.jpg" class="notif-item-avatar" alt="">
+          <div class="notif-item-body">
+            <p><strong>Vikram Nair</strong> commented on your post: "Great insights! The SPJIMR network is truly special."</p>
+            <div class="notif-item-time"><i class="fa fa-clock"></i> 2 days ago</div>
+          </div>
+        </div>
+
+      </main>
+      <aside class="sidebar">
+        <div class="scard">
+          <div class="scard-title">Notification Settings</div>
+          <p style="font-size:13px;color:#666;margin:0 0 10px">Control what you're notified about.</p>
+          <button class="create-event-btn" onclick="showToast('Settings coming soon!')"><i class="fa fa-cog"></i> Manage Notifications</button>
+        </div>
+      </aside>
+    </div>
+  </div>
+</div>
+
+</div><!-- end appRoot -->
 
 <!-- TOAST -->
 <div id="toast" class="toast hidden"></div>
 
-<!-- ============================================================
-     MODAL 1: CREATE EVENT (3-step)
-============================================================ -->
+<!-- ===================================================== MODALS -->
+
+<!-- CREATE EVENT MODAL -->
 <div class="modal-overlay hidden" id="modalCreateEvent">
   <div class="modal-box modal-large">
     <div class="modal-header">
@@ -360,17 +741,11 @@
       <button class="modal-close" onclick="closeModal('modalCreateEvent')">&times;</button>
     </div>
     <div class="modal-body">
-
-      <div class="privacy-notice">
-        <i class="fa fa-shield-halved"></i>
-        <span>Attendee contact information remains private. You can only reach them through platform notifications.</span>
-      </div>
-
+      <div class="privacy-notice"><i class="fa fa-shield-halved"></i><span>Attendee contact information remains private. You can only reach them through platform notifications.</span></div>
       <div class="verify-row">
         <span class="verify-badge"><i class="fa fa-circle-check"></i> Premium &amp; Verified Account</span>
         <span class="events-left"><i class="fa fa-calendar-week"></i> 2 of 3 events remaining this week</span>
       </div>
-
       <div class="step-bar">
         <div class="step active" id="step1dot"><span>1</span><small>Details</small></div>
         <div class="step-line"></div>
@@ -379,121 +754,46 @@
         <div class="step" id="step3dot"><span>3</span><small>Options</small></div>
       </div>
 
-      <!-- STEP 1 -->
+      <!-- Step 1 -->
       <div id="evStep1">
         <div class="form-grid">
-          <div class="form-group full">
-            <label>Event Name *</label>
-            <input type="text" id="evName" placeholder="e.g. AI Networking Mixer – Mumbai" class="form-input">
-          </div>
-          <div class="form-group full">
-            <label>Description *</label>
-            <textarea id="evDesc" rows="3" placeholder="What is this event about? Who should attend?" class="form-input"></textarea>
-          </div>
-          <div class="form-group">
-            <label>Location *</label>
-            <input type="text" id="evLocation" placeholder="Venue or Online" class="form-input">
-          </div>
-          <div class="form-group">
-            <label>Date &amp; Time *</label>
-            <input type="datetime-local" id="evDatetime" class="form-input">
-          </div>
+          <div class="form-group full"><label>Event Name *</label><input type="text" id="evName" placeholder="e.g. AI Networking Mixer – Mumbai" class="form-input"></div>
+          <div class="form-group full"><label>Description *</label><textarea id="evDesc" rows="3" placeholder="What is this event about?" class="form-input"></textarea></div>
+          <div class="form-group"><label>Location *</label><input type="text" id="evLocation" placeholder="Venue or Online" class="form-input"></div>
+          <div class="form-group"><label>Date &amp; Time *</label><input type="datetime-local" id="evDatetime" class="form-input"></div>
           <div class="form-group full">
             <label>Audience Type</label>
             <div class="tag-picker" id="audiencePicker">
-              <span class="tag-opt" onclick="toggleTag(this)">Startup</span>
-              <span class="tag-opt" onclick="toggleTag(this)">Tech</span>
-              <span class="tag-opt" onclick="toggleTag(this)">Product</span>
-              <span class="tag-opt" onclick="toggleTag(this)">Finance</span>
-              <span class="tag-opt" onclick="toggleTag(this)">Marketing</span>
-              <span class="tag-opt" onclick="toggleTag(this)">Consulting</span>
-              <span class="tag-opt" onclick="toggleTag(this)">Operations</span>
-              <span class="tag-opt" onclick="toggleTag(this)">HR &amp; People</span>
-              <span class="tag-opt" onclick="toggleTag(this)">Analytics</span>
-              <span class="tag-opt" onclick="toggleTag(this)">VC / Investing</span>
+              <span class="tag-opt" onclick="toggleTag(this)">Startup</span><span class="tag-opt" onclick="toggleTag(this)">Tech</span><span class="tag-opt" onclick="toggleTag(this)">Product</span><span class="tag-opt" onclick="toggleTag(this)">Finance</span><span class="tag-opt" onclick="toggleTag(this)">Marketing</span><span class="tag-opt" onclick="toggleTag(this)">Consulting</span><span class="tag-opt" onclick="toggleTag(this)">Operations</span><span class="tag-opt" onclick="toggleTag(this)">Analytics</span><span class="tag-opt" onclick="toggleTag(this)">VC / Investing</span>
             </div>
           </div>
-          <div class="form-group full">
-            <label>Attach Existing Group <span class="opt-label">(optional)</span></label>
-            <select class="form-input" id="evGroup">
-              <option value="">— None —</option>
-              <option>SPJIMR PGDM Batch 2024–26</option>
-              <option>Mumbai Product Managers</option>
-              <option>FinTech India Network</option>
-            </select>
+          <div class="form-group full"><label>Attach Existing Group <span class="opt-label">(optional)</span></label>
+            <select class="form-input" id="evGroup"><option value="">— None —</option><option>SPJIMR PGDM Batch 2024–26</option><option>Mumbai Product Managers</option><option>FinTech India Network</option></select>
           </div>
         </div>
         <div class="modal-footer">
           <button class="btn-ghost" onclick="closeModal('modalCreateEvent')">Cancel</button>
-          <button class="btn-primary" onclick="goStep(2)">Next: Set Reach &rarr;</button>
+          <button class="btn-primary" onclick="goStep(2)">Next: Set Reach →</button>
         </div>
       </div>
 
-      <!-- STEP 2: Notify Professionals -->
+      <!-- Step 2 -->
       <div id="evStep2" class="hidden">
         <div class="paid-feature-banner">
           <svg class="prem-star" viewBox="0 0 24 24" fill="#c37d16"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
-          <div>
-            <strong>Notify Relevant Professionals</strong><span> — Premium Feature</span>
-            <p>Send LinkedIn-style notifications to targeted professionals. Their personal data is never shared.</p>
-          </div>
-          <label class="toggle-switch">
-            <input type="checkbox" id="notifyToggle" onchange="toggleNotifyPanel()">
-            <span class="toggle-slider"></span>
-          </label>
+          <div><strong>Notify Relevant Professionals</strong><span> — Premium Feature</span><p>Send LinkedIn-style notifications to targeted professionals. Their personal data is never shared.</p></div>
+          <label class="toggle-switch"><input type="checkbox" id="notifyToggle" onchange="toggleNotifyPanel()"><span class="toggle-slider"></span></label>
         </div>
-
         <div id="notifyPanel" class="hidden">
           <div class="section-label"><i class="fa fa-sliders"></i> Target Audience Filters</div>
           <div class="form-grid">
-            <div class="form-group">
-              <label>Geography</label>
-              <input type="text" id="fGeo" placeholder="e.g. Mumbai, India" class="form-input" oninput="updateReach()">
-            </div>
-            <div class="form-group">
-              <label>Industry</label>
-              <select class="form-input" id="fIndustry" onchange="updateReach()">
-                <option>Any</option><option>Technology</option><option>Finance / BFSI</option>
-                <option>Consulting</option><option>FMCG</option><option>Healthcare</option>
-                <option>E-commerce</option><option>Media</option>
-              </select>
-            </div>
-            <div class="form-group">
-              <label>Profession</label>
-              <input type="text" id="fProfession" placeholder="e.g. Product Manager" class="form-input" oninput="updateReach()">
-            </div>
-            <div class="form-group">
-              <label>Experience Level</label>
-              <select class="form-input" id="fExp" onchange="updateReach()">
-                <option>Any</option><option>Student / Fresher</option><option>0–2 years</option>
-                <option>2–5 years</option><option>5–10 years</option><option>10+ years</option>
-              </select>
-            </div>
-            <div class="form-group">
-              <label>Company Size</label>
-              <select class="form-input" id="fCompSize" onchange="updateReach()">
-                <option>Any</option><option>Startup (1–50)</option><option>SME (51–500)</option>
-                <option>Mid-size (500–5000)</option><option>Enterprise (5000+)</option>
-              </select>
-            </div>
-            <div class="form-group">
-              <label>Open to Work</label>
-              <select class="form-input" id="fOTW" onchange="updateReach()">
-                <option>Any</option><option>Yes — actively looking</option><option>No preference</option>
-              </select>
-            </div>
-            <div class="form-group full">
-              <label>Interests / Skills Tags</label>
-              <input type="text" id="fSkills" placeholder="e.g. AI, Startups, Product Strategy" class="form-input" oninput="updateReach()">
-            </div>
+            <div class="form-group"><label>Geography</label><input type="text" id="fGeo" placeholder="e.g. Mumbai, India" class="form-input" oninput="updateReach()"></div>
+            <div class="form-group"><label>Industry</label><select class="form-input" id="fIndustry" onchange="updateReach()"><option>Any</option><option>Technology</option><option>Finance / BFSI</option><option>Consulting</option><option>FMCG</option><option>Healthcare</option><option>E-commerce</option><option>Media</option></select></div>
+            <div class="form-group"><label>Profession</label><input type="text" id="fProfession" placeholder="e.g. Product Manager" class="form-input" oninput="updateReach()"></div>
+            <div class="form-group"><label>Experience Level</label><select class="form-input" id="fExp" onchange="updateReach()"><option>Any</option><option>Student / Fresher</option><option>0–2 years</option><option>2–5 years</option><option>5–10 years</option><option>10+ years</option></select></div>
+            <div class="form-group full"><label>Skills / Interests</label><input type="text" id="fSkills" placeholder="e.g. AI, Startups, Product Strategy" class="form-input" oninput="updateReach()"></div>
           </div>
-
-          <div class="reach-estimate">
-            <i class="fa fa-users"></i>
-            <span>Estimated reach: <strong id="reachNum">~480 professionals</strong></span>
-            <small>Based on your filters · updates as you type</small>
-          </div>
-
+          <div class="reach-estimate"><i class="fa fa-users"></i><span>Estimated reach: <strong id="reachNum">~480 professionals</strong></span><small>Updates as you type</small></div>
           <div class="notif-preview">
             <div class="section-label"><i class="fa fa-bell"></i> Notification Preview</div>
             <div class="notif-card">
@@ -510,76 +810,42 @@
             </div>
           </div>
         </div>
-
         <div class="modal-footer">
-          <button class="btn-ghost" onclick="goStep(1)">&larr; Back</button>
-          <button class="btn-primary" onclick="goStep(3)">Next: Event Options &rarr;</button>
+          <button class="btn-ghost" onclick="goStep(1)">← Back</button>
+          <button class="btn-primary" onclick="goStep(3)">Next: Options →</button>
         </div>
       </div>
 
-      <!-- STEP 3: QR + Group + Trust -->
+      <!-- Step 3 -->
       <div id="evStep3" class="hidden">
         <div class="options-grid">
           <div class="option-card">
             <div class="option-header">
               <i class="fa fa-qrcode option-icon"></i>
-              <div>
-                <div class="option-title">Generate Event QR Code</div>
-                <div class="option-sub">Attendees scan to join. No personal data shared with host.</div>
-              </div>
-              <label class="toggle-switch">
-                <input type="checkbox" id="qrToggle" onchange="toggleQRPreview()">
-                <span class="toggle-slider"></span>
-              </label>
+              <div><div class="option-title">Generate Event QR Code</div><div class="option-sub">Attendees scan to join. No personal data shared.</div></div>
+              <label class="toggle-switch"><input type="checkbox" id="qrToggle" onchange="toggleQRPreview()"><span class="toggle-slider"></span></label>
             </div>
             <div id="qrPreviewArea" class="hidden">
               <div class="qr-placeholder">
                 <div class="qr-mock">
-                  <svg viewBox="0 0 100 100" width="110" height="110" xmlns="http://www.w3.org/2000/svg">
-                    <rect width="100" height="100" fill="white"/>
-                    <rect x="5" y="5" width="35" height="35" fill="none" stroke="#000" stroke-width="4"/>
-                    <rect x="12" y="12" width="21" height="21" fill="#000"/>
-                    <rect x="60" y="5" width="35" height="35" fill="none" stroke="#000" stroke-width="4"/>
-                    <rect x="67" y="12" width="21" height="21" fill="#000"/>
-                    <rect x="5" y="60" width="35" height="35" fill="none" stroke="#000" stroke-width="4"/>
-                    <rect x="12" y="67" width="21" height="21" fill="#000"/>
-                    <rect x="50" y="50" width="8" height="8" fill="#000"/>
-                    <rect x="62" y="50" width="8" height="8" fill="#000"/>
-                    <rect x="74" y="50" width="8" height="8" fill="#000"/>
-                    <rect x="86" y="50" width="8" height="8" fill="#000"/>
-                    <rect x="50" y="62" width="8" height="8" fill="#000"/>
-                    <rect x="74" y="62" width="8" height="8" fill="#000"/>
-                    <rect x="50" y="74" width="8" height="8" fill="#000"/>
-                    <rect x="62" y="74" width="8" height="8" fill="#000"/>
-                    <rect x="86" y="74" width="8" height="8" fill="#000"/>
-                    <rect x="62" y="86" width="8" height="8" fill="#000"/>
-                    <rect x="74" y="86" width="8" height="8" fill="#000"/>
-                  </svg>
+                  <svg viewBox="0 0 100 100" width="110" height="110" xmlns="http://www.w3.org/2000/svg"><rect width="100" height="100" fill="white"/><rect x="5" y="5" width="35" height="35" fill="none" stroke="#000" stroke-width="4"/><rect x="12" y="12" width="21" height="21" fill="#000"/><rect x="60" y="5" width="35" height="35" fill="none" stroke="#000" stroke-width="4"/><rect x="67" y="12" width="21" height="21" fill="#000"/><rect x="5" y="60" width="35" height="35" fill="none" stroke="#000" stroke-width="4"/><rect x="12" y="67" width="21" height="21" fill="#000"/><rect x="50" y="50" width="8" height="8" fill="#000"/><rect x="62" y="50" width="8" height="8" fill="#000"/><rect x="74" y="50" width="8" height="8" fill="#000"/><rect x="50" y="62" width="8" height="8" fill="#000"/><rect x="74" y="62" width="8" height="8" fill="#000"/><rect x="50" y="74" width="8" height="8" fill="#000"/><rect x="62" y="74" width="8" height="8" fill="#000"/></svg>
                 </div>
                 <div class="qr-meta">
-                  <p class="qr-title" id="qrEventLabel">Event QR Code</p>
+                  <p class="qr-title" id="qrEventLabel">Event QR</p>
                   <p class="qr-sub"><i class="fa fa-clock"></i> Expires when event ends</p>
                   <button class="btn-ghost btn-sm" onclick="openQRPreview()"><i class="fa fa-eye"></i> Preview attendee page</button>
                 </div>
               </div>
             </div>
           </div>
-
           <div class="option-card">
             <div class="option-header">
               <i class="fa fa-users option-icon"></i>
-              <div>
-                <div class="option-title">Create Networking Group</div>
-                <div class="option-sub">Build a community around this event.</div>
-              </div>
-              <label class="toggle-switch">
-                <input type="checkbox" id="groupToggle">
-                <span class="toggle-slider"></span>
-              </label>
+              <div><div class="option-title">Create Networking Group</div><div class="option-sub">Build a community around this event.</div></div>
+              <label class="toggle-switch"><input type="checkbox" id="groupToggle"><span class="toggle-slider"></span></label>
             </div>
           </div>
         </div>
-
         <div class="trust-box">
           <div class="trust-title"><i class="fa fa-lock"></i> Trust &amp; Safety</div>
           <ul class="trust-list">
@@ -587,23 +853,18 @@
             <li><i class="fa fa-check"></i> Maximum 3 events per week per host</li>
             <li><i class="fa fa-check"></i> QR codes automatically expire when the event ends</li>
             <li><i class="fa fa-check"></i> Attendees can report the host at any time</li>
-            <li><i class="fa fa-check"></i> Account verification required for paid notifications</li>
           </ul>
         </div>
-
         <div class="modal-footer">
-          <button class="btn-ghost" onclick="goStep(2)">&larr; Back</button>
+          <button class="btn-ghost" onclick="goStep(2)">← Back</button>
           <button class="btn-primary btn-gold" onclick="submitEvent()"><i class="fa fa-rocket"></i> Launch Event</button>
         </div>
       </div>
-
     </div>
   </div>
 </div>
 
-<!-- ============================================================
-     MODAL 2: QR ATTENDEE LANDING PAGE PREVIEW
-============================================================ -->
+<!-- QR LANDING PAGE PREVIEW MODAL -->
 <div class="modal-overlay hidden" id="modalQRLanding">
   <div class="modal-box modal-medium">
     <div class="modal-header">
@@ -612,31 +873,22 @@
     </div>
     <div class="modal-body">
       <div class="qr-landing-preview">
-        <div class="qlp-logo">
-          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="26" height="26" fill="white"><path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433a2.062 2.062 0 0 1-2.063-2.065 2.064 2.064 0 1 1 2.063 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/></svg>
-        </div>
-        <div class="qlp-event-name" id="qlpName">AI Networking Mixer</div>
+        <div class="qlp-logo"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="26" height="26" fill="white"><path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433a2.062 2.062 0 0 1-2.063-2.065 2.064 2.064 0 1 1 2.063 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/></svg></div>
+        <div class="qlp-event-name" id="qlpName">AI Startup Networking Mixer</div>
         <div class="qlp-host">Hosted by <strong>Kunal Ping</strong></div>
         <div class="qlp-desc" id="qlpDesc">A networking event for professionals in AI, Product &amp; Startups.</div>
         <div class="qlp-stats">
           <div class="qlp-stat"><span class="qlp-num" id="qlpCount">84</span><span class="qlp-label">Attendees</span></div>
           <div class="qlp-stat"><span class="qlp-num">3</span><span class="qlp-label">Interest tags</span></div>
         </div>
-        <div class="privacy-notice" style="margin:16px 0">
-          <i class="fa fa-shield-halved"></i>
-          <span>Your contact information remains private. Event hosts can only reach you through platform notifications.</span>
-        </div>
-        <button class="btn-primary" style="width:100%;padding:12px;font-size:15px" onclick="simulateJoin()">
-          <i class="fa fa-bolt"></i> Join Networking Session
-        </button>
+        <div class="privacy-notice" style="margin:16px 0"><i class="fa fa-shield-halved"></i><span>Your contact information remains private. Event hosts can only reach you through platform notifications.</span></div>
+        <button class="btn-primary" style="width:100%;padding:12px;font-size:15px" onclick="simulateJoin()"><i class="fa fa-bolt"></i> Join Networking Session</button>
       </div>
     </div>
   </div>
 </div>
 
-<!-- ============================================================
-     MODAL 3: HOST DASHBOARD
-============================================================ -->
+<!-- HOST DASHBOARD MODAL -->
 <div class="modal-overlay hidden" id="modalDashboard">
   <div class="modal-box modal-large">
     <div class="modal-header">
@@ -645,40 +897,22 @@
     </div>
     <div class="modal-body">
       <div class="dash-event-title" id="dashEventTitle">Event Name</div>
-      <div class="dash-privacy-note">
-        <i class="fa fa-eye-slash"></i> Aggregated data only — no personal attendee information is shown.
-      </div>
-
+      <div class="dash-privacy-note"><i class="fa fa-eye-slash"></i> Aggregated data only — no personal attendee information is shown.</div>
       <div class="dash-stats">
-        <div class="dash-stat-card">
-          <div class="dash-stat-num" id="dNotifSent">500</div>
-          <div class="dash-stat-label">Notifications Sent</div>
-        </div>
-        <div class="dash-stat-card highlight">
-          <div class="dash-stat-num" id="dJoined">84</div>
-          <div class="dash-stat-label">People Joined</div>
-        </div>
-        <div class="dash-stat-card">
-          <div class="dash-stat-num" id="dEngRate">16.8%</div>
-          <div class="dash-stat-label">Engagement Rate</div>
-        </div>
-        <div class="dash-stat-card">
-          <div class="dash-stat-num" id="dQRScans">61</div>
-          <div class="dash-stat-label">QR Scans</div>
-        </div>
+        <div class="dash-stat-card"><div class="dash-stat-num" id="dNotifSent">500</div><div class="dash-stat-label">Notifications Sent</div></div>
+        <div class="dash-stat-card highlight"><div class="dash-stat-num" id="dJoined">84</div><div class="dash-stat-label">People Joined</div></div>
+        <div class="dash-stat-card"><div class="dash-stat-num" id="dEngRate">16.8%</div><div class="dash-stat-label">Engagement Rate</div></div>
+        <div class="dash-stat-card"><div class="dash-stat-num" id="dQRScans">61</div><div class="dash-stat-label">QR Scans</div></div>
       </div>
-
       <div class="dash-section">
         <div class="dash-section-title">Top Interest Categories</div>
         <div class="interest-bars">
           <div class="ibar-row"><span class="ibar-label">AI &amp; ML</span><div class="ibar-track"><div class="ibar-fill" style="width:78%"></div></div><span class="ibar-pct">78%</span></div>
           <div class="ibar-row"><span class="ibar-label">Product Management</span><div class="ibar-track"><div class="ibar-fill" style="width:61%"></div></div><span class="ibar-pct">61%</span></div>
           <div class="ibar-row"><span class="ibar-label">Startups</span><div class="ibar-track"><div class="ibar-fill" style="width:54%"></div></div><span class="ibar-pct">54%</span></div>
-          <div class="ibar-row"><span class="ibar-label">VC / Investing</span><div class="ibar-track"><div class="ibar-fill" style="width:33%"></div></div><span class="ibar-pct">33%</span></div>
           <div class="ibar-row"><span class="ibar-label">Finance</span><div class="ibar-track"><div class="ibar-fill" style="width:27%"></div></div><span class="ibar-pct">27%</span></div>
         </div>
       </div>
-
       <div class="dash-section">
         <div class="dash-section-title">Notification Response Breakdown</div>
         <div class="notif-breakdown">
@@ -688,7 +922,6 @@
           <div class="nbd-row"><span class="nbd-dot pending"></span><span>Pending</span><span class="nbd-val">90 (18%)</span></div>
         </div>
       </div>
-
       <div class="modal-footer" style="border-top:1px solid #eee;padding-top:14px;margin-top:4px">
         <button class="btn-ghost" onclick="closeModal('modalDashboard')">Close</button>
         <button class="btn-primary" onclick="closeModal('modalDashboard');openCreateEvent()"><i class="fa fa-plus"></i> Create Another Event</button>
@@ -697,6 +930,6 @@
   </div>
 </div>
 
-<script src="script.js?v=4"></script>
+<script src="script.js?v=5"></script>
 </body>
 </html>
