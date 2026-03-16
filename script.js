@@ -470,3 +470,166 @@ document.addEventListener('click', function(e) {
 document.addEventListener('keydown', function(e) {
   if (e.key === 'Escape') document.querySelectorAll('.modal-overlay:not(.hidden)').forEach(function(m) { m.classList.add('hidden'); });
 });
+
+/* ============================================================
+   START LIVESYNC — INSTANT NETWORKING
+============================================================ */
+var lsCode         = null;   // active session code
+var lsDurationMins = 10;     // chosen duration
+var lsEndTime      = null;   // timestamp when session expires
+var lsTimerInterval = null;  // setInterval handle for countdown
+var lsExpired      = false;
+
+function openStartLivesync() {
+  // Show config step, hide others
+  document.getElementById('lsStepConfig').classList.remove('hidden');
+  document.getElementById('lsStepActive').classList.add('hidden');
+  document.getElementById('lsStepExpired').classList.add('hidden');
+  // Reset duration radio UI
+  document.getElementById('lsDur10').classList.add('selected');
+  document.getElementById('lsDur60').classList.remove('selected');
+  // Wire up duration card clicks
+  document.getElementById('lsDur10').addEventListener('click', function() {
+    document.getElementById('lsDur10').classList.add('selected');
+    document.getElementById('lsDur60').classList.remove('selected');
+    this.querySelector('input').checked = true;
+  });
+  document.getElementById('lsDur60').addEventListener('click', function() {
+    document.getElementById('lsDur60').classList.add('selected');
+    document.getElementById('lsDur10').classList.remove('selected');
+    this.querySelector('input').checked = true;
+  });
+  openModal('modalStartLivesync');
+}
+
+function launchLivesync() {
+  // Read inputs
+  var nameVal = (document.getElementById('lsName').value || '').trim() || 'LiveSync Session';
+  var durRadio = document.querySelector('input[name="lsDuration"]:checked');
+  lsDurationMins = durRadio ? parseInt(durRadio.value) : 10;
+
+  // Generate 6-digit code
+  lsCode = Math.floor(100000 + Math.random() * 900000).toString();
+  validCodes[lsCode] = true;
+  lsExpired = false;
+
+  // Set end time
+  lsEndTime = Date.now() + lsDurationMins * 60 * 1000;
+
+  // Populate active step UI
+  document.getElementById('lsActiveName').textContent = nameVal;
+  document.getElementById('lsCodeDisplay').textContent = lsCode;
+
+  // Switch to active step
+  document.getElementById('lsStepConfig').classList.add('hidden');
+  document.getElementById('lsStepActive').classList.remove('hidden');
+  document.getElementById('lsStepExpired').classList.add('hidden');
+
+  // Start countdown in modal
+  updateLsModalTimer();
+  if (lsTimerInterval) clearInterval(lsTimerInterval);
+  lsTimerInterval = setInterval(function() {
+    updateLsModalTimer();
+    updateLsBanner();
+  }, 1000);
+
+  // Show hint
+  showToast('⚡ Session started! Code: ' + lsCode);
+
+  // Pre-populate the session page
+  document.getElementById('sessionPageTitle').textContent = nameVal;
+  var meta = document.getElementById('sessionMeta');
+  if (meta) {
+    meta.innerHTML = '<i class="fa fa-bolt" style="color:#c37d16"></i> Instant LiveSync &nbsp;·&nbsp; ' +
+      '<i class="fa fa-key"></i> Code: <strong>' + lsCode + '</strong> &nbsp;·&nbsp; ' +
+      '<i class="fa fa-clock"></i> ' + lsDurationMins + ' min session';
+  }
+
+  // Show the banner on the session page
+  var banner = document.getElementById('livesyncBanner');
+  if (banner) {
+    banner.classList.remove('hidden');
+    document.getElementById('livesyncBannerTitle').textContent = nameVal;
+    updateLsBanner();
+  }
+}
+
+function updateLsModalTimer() {
+  var remaining = lsEndTime - Date.now();
+  var pill = document.getElementById('lsActiveTimerPill');
+  if (!pill) return;
+
+  if (remaining <= 0) {
+    clearInterval(lsTimerInterval);
+    lsExpired = true;
+    // Switch to expired step
+    document.getElementById('lsStepActive').classList.add('hidden');
+    document.getElementById('lsStepExpired').classList.remove('hidden');
+    // Update banner
+    var banner = document.getElementById('livesyncBanner');
+    if (banner) {
+      document.getElementById('livesyncBannerTimer').textContent = '⏹ Session ended';
+      document.querySelector('.livesync-live-dot').style.background = '#aaa';
+      document.querySelector('.livesync-live-dot').style.animation = 'none';
+    }
+    return;
+  }
+
+  var mins = Math.floor(remaining / 60000);
+  var secs = Math.floor((remaining % 60000) / 1000);
+  var label = String(mins).padStart(2,'0') + ':' + String(secs).padStart(2,'0');
+  pill.textContent = label;
+
+  // Turn amber when < 2 minutes remain
+  pill.classList.toggle('ending', mins < 2);
+}
+
+function updateLsBanner() {
+  var remaining = lsEndTime - Date.now();
+  var el = document.getElementById('livesyncBannerTimer');
+  if (!el) return;
+  if (remaining <= 0) { el.textContent = '⏹ Session ended'; return; }
+  var mins = Math.floor(remaining / 60000);
+  var secs = Math.floor((remaining % 60000) / 1000);
+  el.textContent = 'Ends in: ' + String(mins).padStart(2,'0') + 'm ' + String(secs).padStart(2,'0') + 's';
+}
+
+function endLivesync() {
+  clearInterval(lsTimerInterval);
+  lsExpired = true;
+  document.getElementById('lsStepActive').classList.add('hidden');
+  document.getElementById('lsStepExpired').classList.remove('hidden');
+  var el = document.getElementById('livesyncBannerTimer');
+  if (el) el.textContent = '⏹ Session ended';
+  showToast('LiveSync session ended.');
+}
+
+function resetLivesync() {
+  document.getElementById('lsName').value = '';
+  document.getElementById('lsStepExpired').classList.add('hidden');
+  document.getElementById('lsStepConfig').classList.remove('hidden');
+  document.getElementById('lsDur10').classList.add('selected');
+  document.getElementById('lsDur60').classList.remove('selected');
+  var r = document.querySelector('input[name="lsDuration"][value="10"]');
+  if (r) r.checked = true;
+}
+
+function goToLivesyncPage() {
+  closeModal('modalStartLivesync');
+  showPage('session');
+}
+
+// Called from session page banner "Show Code" button
+function showLivesyncCode() {
+  if (!lsCode) { showToast('No active instant session'); return; }
+  showToast('Session Code: ' + lsCode);
+}
+
+// Called from session page banner "QR" button
+function showLivesyncQR() {
+  openModal('modalStartLivesync');
+  // Show the active step directly
+  document.getElementById('lsStepConfig').classList.add('hidden');
+  document.getElementById('lsStepExpired').classList.add('hidden');
+  document.getElementById('lsStepActive').classList.remove('hidden');
+}
