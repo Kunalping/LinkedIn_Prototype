@@ -272,6 +272,11 @@
             <button class="btn-primary" onclick="joinSession()"><i class="fa fa-arrow-right"></i> Join Session</button>
           </div>
           <div class="join-hint">Try code: <strong>SPJIMR</strong> or <strong>847261</strong></div>
+          <div class="start-livesync-divider"><span>or</span></div>
+          <button class="start-livesync-btn" onclick="openStartLivesync()">
+            <i class="fa fa-bolt"></i> Start LiveSync
+            <span class="start-livesync-sub">Instantly connect with people around you</span>
+          </button>
         </div>
 
         <!-- PENDING REQUESTS -->
@@ -396,6 +401,20 @@
           <button class="btn-ghost btn-sm" onclick="showPage('mynetwork')"><i class="fa fa-arrow-left"></i> Back</button>
         </div>
         <div class="session-meta" id="sessionMeta"></div>
+        <!-- LIVESYNC INSTANT SESSION BANNER (shown only when started via Start LiveSync) -->
+        <div id="livesyncBanner" class="livesync-banner hidden">
+          <div class="livesync-banner-left">
+            <span class="livesync-live-dot"></span>
+            <div>
+              <div class="livesync-banner-title" id="livesyncBannerTitle">LiveSync Session</div>
+              <div class="livesync-banner-sub">Hosted by <strong>Kunal Ping</strong> &nbsp;·&nbsp; <span id="livesyncBannerTimer">--</span></div>
+            </div>
+          </div>
+          <div class="livesync-banner-right">
+            <button class="btn-ghost btn-sm" onclick="showLivesyncCode()"><i class="fa fa-key"></i> Show Code</button>
+            <button class="btn-ghost btn-sm" onclick="showLivesyncQR()"><i class="fa fa-qrcode"></i> QR</button>
+          </div>
+        </div>
 
         <div class="tabs">
           <button class="tabBtn active" id="tabPeople"   onclick="showTab('people')">People (12)</button>
@@ -926,6 +945,121 @@
         <button class="btn-ghost" onclick="closeModal('modalDashboard')">Close</button>
         <button class="btn-primary" onclick="closeModal('modalDashboard');openCreateEvent()"><i class="fa fa-plus"></i> Create Another Event</button>
       </div>
+    </div>
+  </div>
+</div>
+
+<!-- =====================================================
+     MODAL: START LIVESYNC (instant session)
+===================================================== -->
+<div class="modal-overlay hidden" id="modalStartLivesync">
+  <div class="modal-box modal-medium">
+    <div class="modal-header">
+      <h3><i class="fa fa-bolt" style="color:#c37d16;margin-right:8px"></i>Start Live Networking Session</h3>
+      <button class="modal-close" onclick="closeModal('modalStartLivesync')">&times;</button>
+    </div>
+    <div class="modal-body" id="livesyncModalBody">
+
+      <!-- STEP A: Configure -->
+      <div id="lsStepConfig">
+        <p style="font-size:14px;color:#555;margin-bottom:18px">Instantly connect with people physically around you. Share the code or QR — anyone who joins appears in your networking list.</p>
+
+        <div class="form-group" style="margin-bottom:16px">
+          <label style="font-size:13px;font-weight:600;color:#333">Session Name <span style="font-weight:400;color:#888">(optional)</span></label>
+          <input type="text" id="lsName" class="form-input" placeholder="e.g. SPJIMR Classroom · Row C" style="margin-top:6px">
+        </div>
+
+        <div class="form-group" style="margin-bottom:20px">
+          <label style="font-size:13px;font-weight:600;color:#333;display:block;margin-bottom:10px">Session Duration</label>
+          <div class="ls-duration-options">
+            <label class="ls-duration-opt selected" id="lsDur10">
+              <input type="radio" name="lsDuration" value="10" checked>
+              <div class="ls-dur-content">
+                <div class="ls-dur-title">10 minutes</div>
+                <div class="ls-dur-badge free">Free</div>
+              </div>
+            </label>
+            <label class="ls-duration-opt" id="lsDur60">
+              <input type="radio" name="lsDuration" value="60">
+              <div class="ls-dur-content">
+                <div class="ls-dur-title">1 hour</div>
+                <div class="ls-dur-badge premium">
+                  <svg viewBox="0 0 24 24" width="11" height="11" fill="currentColor" style="margin-right:3px"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>Premium
+                </div>
+              </div>
+            </label>
+          </div>
+        </div>
+
+        <div class="modal-footer" style="margin-top:0">
+          <button class="btn-ghost" onclick="closeModal('modalStartLivesync')">Cancel</button>
+          <button class="btn-primary btn-gold" onclick="launchLivesync()"><i class="fa fa-bolt"></i> Start Session</button>
+        </div>
+      </div>
+
+      <!-- STEP B: Session active — show code + QR -->
+      <div id="lsStepActive" class="hidden">
+        <div class="ls-active-header">
+          <span class="livesync-live-dot" style="width:10px;height:10px"></span>
+          <span id="lsActiveName" style="font-weight:700;font-size:15px;color:#000">LiveSync Session</span>
+          <span class="ls-active-timer-pill" id="lsActiveTimerPill">10:00</span>
+        </div>
+
+        <div class="ls-code-qr-grid">
+          <!-- Code side -->
+          <div class="ls-code-panel">
+            <div class="ls-panel-label"><i class="fa fa-key"></i> Session Code</div>
+            <div class="ls-code-display" id="lsCodeDisplay">------</div>
+            <div style="font-size:12px;color:#888;margin-top:6px;text-align:center">Share with people nearby</div>
+          </div>
+          <!-- QR side -->
+          <div class="ls-qr-panel">
+            <div class="ls-panel-label"><i class="fa fa-qrcode"></i> QR Code</div>
+            <div class="ls-qr-wrap">
+              <svg viewBox="0 0 100 100" width="120" height="120" xmlns="http://www.w3.org/2000/svg">
+                <rect width="100" height="100" fill="white"/>
+                <rect x="5" y="5" width="35" height="35" fill="none" stroke="#000" stroke-width="4"/>
+                <rect x="12" y="12" width="21" height="21" fill="#000"/>
+                <rect x="60" y="5" width="35" height="35" fill="none" stroke="#000" stroke-width="4"/>
+                <rect x="67" y="12" width="21" height="21" fill="#000"/>
+                <rect x="5" y="60" width="35" height="35" fill="none" stroke="#000" stroke-width="4"/>
+                <rect x="12" y="67" width="21" height="21" fill="#000"/>
+                <rect x="50" y="50" width="8" height="8" fill="#000"/><rect x="62" y="50" width="8" height="8" fill="#000"/>
+                <rect x="74" y="50" width="8" height="8" fill="#000"/><rect x="86" y="50" width="8" height="8" fill="#000"/>
+                <rect x="50" y="62" width="8" height="8" fill="#000"/><rect x="74" y="62" width="8" height="8" fill="#000"/>
+                <rect x="50" y="74" width="8" height="8" fill="#000"/><rect x="62" y="74" width="8" height="8" fill="#000"/>
+                <rect x="86" y="74" width="8" height="8" fill="#000"/><rect x="62" y="86" width="8" height="8" fill="#000"/>
+                <rect x="74" y="86" width="8" height="8" fill="#000"/>
+              </svg>
+            </div>
+            <div style="font-size:12px;color:#888;margin-top:6px;text-align:center">Scan to join instantly</div>
+          </div>
+        </div>
+
+        <div class="privacy-notice" style="margin:16px 0 0">
+          <i class="fa fa-shield-halved"></i>
+          <span>Contact information is never shared. Attendees connect only through platform requests.</span>
+        </div>
+
+        <div class="modal-footer" style="margin-top:16px">
+          <button class="btn-ghost" id="lsEndBtn" onclick="endLivesync()"><i class="fa fa-stop-circle"></i> End Session</button>
+          <button class="btn-primary" onclick="goToLivesyncPage()"><i class="fa fa-users"></i> Open Networking Page</button>
+        </div>
+      </div>
+
+      <!-- STEP C: Session expired -->
+      <div id="lsStepExpired" class="hidden">
+        <div style="text-align:center;padding:32px 0 20px">
+          <i class="fa fa-clock" style="font-size:40px;color:#ccc;display:block;margin-bottom:14px"></i>
+          <div style="font-size:16px;font-weight:700;color:#333;margin-bottom:8px">This LiveSync session has ended.</div>
+          <div style="font-size:13px;color:#888">Start a new session anytime to connect with people around you.</div>
+        </div>
+        <div class="modal-footer">
+          <button class="btn-ghost" onclick="closeModal('modalStartLivesync')">Close</button>
+          <button class="btn-primary" onclick="resetLivesync()"><i class="fa fa-bolt"></i> Start New Session</button>
+        </div>
+      </div>
+
     </div>
   </div>
 </div>
