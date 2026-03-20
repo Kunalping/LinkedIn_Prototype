@@ -83,8 +83,6 @@
           <hr class="me-hr" style="margin:12px 0">
           <div class="pcl-stat"><span>Profile viewers</span><strong>47</strong></div>
           <div class="pcl-stat"><span>Post impressions</span><strong>312</strong></div>
-          <hr class="me-hr" style="margin:12px 0">
-          <div class="pcl-prem"><i class="fa fa-star" style="color:#c37d16"></i> Try Premium for free</div>
         </div>
       </aside>
 
@@ -981,29 +979,28 @@
                 </div>
                 <div class="qr-meta">
                   <p class="qr-title" id="qrEventLabel">Event QR</p>
-                  <p class="qr-sub"><i class="fa fa-clock"></i> Expires when event ends</p>
+                  <p class="qr-sub"><i class="fa fa-shield-halved"></i> Attendees scan to join. No personal data shared.</p>
                   <button class="btn-ghost btn-sm" onclick="openQRPreview()"><i class="fa fa-eye"></i> Preview attendee page</button>
                 </div>
               </div>
-              <!-- QR Duration -->
-              <div style="margin-top:12px">
-                <div class="section-label" style="margin:0 0 8px"><i class="fa fa-clock"></i> QR Active Duration</div>
-                <div class="ls-duration-options">
-                  <label class="ls-duration-opt selected" id="qrDur10">
-                    <input type="radio" name="qrDuration" value="10" checked>
-                    <div class="ls-dur-content">
-                      <div class="ls-dur-title">10 minutes</div>
-                      <div class="ls-dur-badge free">Free</div>
-                    </div>
-                  </label>
-                  <label class="ls-duration-opt" id="qrDur60">
-                    <input type="radio" name="qrDuration" value="60">
-                    <div class="ls-dur-content">
-                      <div class="ls-dur-title">1 hour</div>
-                      <div class="ls-dur-badge premium"><svg viewBox="0 0 24 24" width="10" height="10" fill="currentColor" style="margin-right:3px"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>Premium</div>
-                    </div>
-                  </label>
+
+              <!-- QR Active Window (date-based, max 5 days) -->
+              <div class="qr-daterange-block">
+                <div class="section-label" style="margin:0 0 10px"><i class="fa fa-calendar-range"></i> QR Active Window</div>
+                <div class="form-grid" style="gap:10px">
+                  <div class="form-group">
+                    <label>Start Date &amp; Time</label>
+                    <input type="datetime-local" id="qrStartDt" class="form-input" onchange="validateQRDates()">
+                  </div>
+                  <div class="form-group">
+                    <label>End Date &amp; Time</label>
+                    <input type="datetime-local" id="qrEndDt" class="form-input" onchange="validateQRDates()">
+                  </div>
                 </div>
+                <div id="qrDateError" class="qr-date-error hidden">
+                  <i class="fa fa-triangle-exclamation"></i> End date cannot exceed 5 days from start date.
+                </div>
+                <div id="qrDateSummary" class="qr-date-summary hidden"></div>
               </div>
             </div>
           </div>
