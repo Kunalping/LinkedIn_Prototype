@@ -352,6 +352,12 @@ function openCreateEvent() {
   var gt = document.getElementById('groupToggle'); if (gt) gt.checked = false;
   var np = document.getElementById('notifyPanel'); if (np) np.classList.add('hidden');
   var qa = document.getElementById('qrPreviewArea'); if (qa) qa.classList.add('hidden');
+  // Reset QR date fields
+  ['qrStartDt','qrEndDt'].forEach(function(id) {
+    var el = document.getElementById(id); if (el) el.value = '';
+  });
+  var qrErr = document.getElementById('qrDateError');   if (qrErr) qrErr.classList.add('hidden');
+  var qrSum = document.getElementById('qrDateSummary'); if (qrSum) qrSum.classList.add('hidden');
   var gp = document.getElementById('groupPanel'); if (gp) gp.classList.add('hidden');
   // reset group mode back to create
   var cp = document.getElementById('groupCreatePanel'); if (cp) cp.classList.remove('hidden');
@@ -409,7 +415,79 @@ function toggleQRPreview() {
   var on = document.getElementById('qrToggle').checked;
   var area = document.getElementById('qrPreviewArea');
   if (area) area.classList.toggle('hidden', !on);
-  if (on) syncNotifPreview();
+  if (on) {
+    syncNotifPreview();
+    // Pre-fill start date with event date if set, else now
+    var evDt = document.getElementById('evDatetime');
+    var startEl = document.getElementById('qrStartDt');
+    var endEl   = document.getElementById('qrEndDt');
+    if (startEl && !startEl.value) {
+      var base = (evDt && evDt.value) ? new Date(evDt.value) : new Date();
+      startEl.value = toLocalDatetimeInput(base);
+      // Default end = event date (same day end)
+      if (endEl && !endEl.value) {
+        var defEnd = new Date(base);
+        defEnd.setHours(23, 59, 0, 0);
+        endEl.value = toLocalDatetimeInput(defEnd);
+      }
+    }
+  }
+}
+
+function toLocalDatetimeInput(d) {
+  var pad = function(n) { return String(n).padStart(2,'0'); };
+  return d.getFullYear() + '-' + pad(d.getMonth()+1) + '-' + pad(d.getDate()) +
+         'T' + pad(d.getHours()) + ':' + pad(d.getMinutes());
+}
+
+function validateQRDates() {
+  var startEl   = document.getElementById('qrStartDt');
+  var endEl     = document.getElementById('qrEndDt');
+  var errorEl   = document.getElementById('qrDateError');
+  var summaryEl = document.getElementById('qrDateSummary');
+  if (!startEl || !endEl || !errorEl || !summaryEl) return true;
+
+  var startVal = startEl.value;
+  var endVal   = endEl.value;
+
+  if (!startVal || !endVal) {
+    errorEl.classList.add('hidden');
+    summaryEl.classList.add('hidden');
+    return true;
+  }
+
+  var start = new Date(startVal);
+  var end   = new Date(endVal);
+  var diffMs   = end - start;
+  var maxMs    = 5 * 24 * 60 * 60 * 1000; // 5 days
+
+  if (end <= start) {
+    errorEl.textContent = '⚠ End date & time must be after start date & time.';
+    errorEl.classList.remove('hidden');
+    summaryEl.classList.add('hidden');
+    return false;
+  }
+
+  if (diffMs > maxMs) {
+    errorEl.textContent = '⚠ End date cannot exceed 5 days from start date.';
+    errorEl.classList.remove('hidden');
+    summaryEl.classList.add('hidden');
+    return false;
+  }
+
+  // Valid — show summary
+  errorEl.classList.add('hidden');
+  var diffHours = Math.round(diffMs / (1000 * 60 * 60));
+  var diffDays  = Math.floor(diffHours / 24);
+  var remHours  = diffHours % 24;
+  var durLabel  = diffDays > 0
+    ? diffDays + 'd ' + (remHours > 0 ? remHours + 'h' : '')
+    : diffHours + 'h';
+  summaryEl.innerHTML =
+    '<i class="fa fa-circle-check" style="color:#28a745"></i> QR active for <strong>' +
+    durLabel.trim() + '</strong>';
+  summaryEl.classList.remove('hidden');
+  return true;
 }
 
 function toggleTag(el) { el.classList.toggle('selected'); }
@@ -419,6 +497,15 @@ function submitEvent() {
   var loc  = (document.getElementById('evLocation').value || '').trim();
   if (!name) { showToast('Please enter an event name'); goStep(1); return; }
   if (!loc)  { showToast('Please enter a location');   goStep(1); return; }
+
+  // Validate QR dates if QR is enabled
+  var qrOn = document.getElementById('qrToggle');
+  if (qrOn && qrOn.checked) {
+    if (!validateQRDates()) {
+      showToast('⚠ Please fix the QR date range before launching');
+      return;
+    }
+  }
 
   // Generate 6-digit code
   var code = Math.floor(100000 + Math.random() * 900000).toString();
@@ -442,21 +529,98 @@ function addMyEvent(name, loc, code) {
   var container = document.querySelector('#page-mynetwork .scard .my-event-card');
   if (!container) return;
   var parent = container.parentElement;
+
+  // Each new hosted event gets its own unique networking toggle ID
+  var toggleId  = 'nt_' + code;
+  var labelId   = 'nl_' + code;
+  var statusId  = 'ns_' + code;
+
   var div = document.createElement('div');
-  div.className = 'my-event-card';
+  div.className = 'my-event-card hosted-event';
   div.style.borderTop = '2px solid #28a745';
   div.innerHTML =
+    '<div class="event-role-badge host-badge"><i class="fa fa-crown"></i> Hosting</div>' +
     '<div class="my-event-info">' +
-      '<div class="my-event-name">' + name + ' <span style="font-size:10px;background:#28a745;color:#fff;padding:1px 6px;border-radius:10px">New</span></div>' +
+      '<div class="my-event-name">' + name +
+        ' <span style="font-size:10px;background:#28a745;color:#fff;padding:1px 6px;border-radius:10px">New</span>' +
+      '</div>' +
       '<div class="emeta"><i class="fa fa-map-marker-alt"></i> ' + loc + '</div>' +
       '<div class="emeta" style="color:#c37d16"><i class="fa fa-key"></i> Code: <strong>' + code + '</strong></div>' +
     '</div>' +
+    '<div class="networking-toggle-row">' +
+      '<span class="networking-toggle-label" id="' + labelId + '">' +
+        '<i class="fa fa-wifi" style="color:#28a745"></i> Networking: <strong id="' + statusId + '">Enabled</strong>' +
+      '</span>' +
+      '<label class="toggle-switch">' +
+        '<input type="checkbox" id="' + toggleId + '" checked ' +
+          'onchange="toggleNetworkingForEvent(this, \'' + labelId + '\', \'' + statusId + '\')">' +
+        '<span class="toggle-slider"></span>' +
+      '</label>' +
+    '</div>' +
     '<div class="my-event-actions">' +
-      '<button class="btn-primary btn-sm" onclick="viewEvent(\'' + name + '\',\'Today\',\'' + loc + '\',1,\'' + code + '\')">View Event</button>' +
+      '<button class="btn-primary btn-sm" ' +
+        'onclick="openHostedEventByName(\'' + name + '\',\'' + loc + '\',\'' + code + '\',\'' + toggleId + '\')">View Event</button>' +
       '<button class="btn-ghost btn-sm" onclick="openQRForEvent(\'' + name + '\')"><i class="fa fa-qrcode"></i> QR</button>' +
       '<button class="btn-ghost btn-sm" onclick="showToast(\'Share link copied!\')"><i class="fa fa-share"></i></button>' +
     '</div>';
+
   parent.insertBefore(div, container);
+}
+
+/* ============================================================
+   PER-EVENT NETWORKING TOGGLE (for dynamically created events)
+============================================================ */
+function toggleNetworkingForEvent(checkbox, labelId, statusId) {
+  var isOn = checkbox.checked;
+
+  // Update this event's sidebar label
+  var labelEl  = document.getElementById(labelId);
+  var statusEl = document.getElementById(statusId);
+  if (labelEl) {
+    labelEl.innerHTML = isOn
+      ? '<i class="fa fa-wifi" style="color:#28a745"></i> Networking: <strong id="' + statusId + '">Enabled</strong>'
+      : '<i class="fa fa-wifi-slash" style="color:#cc1016"></i> Networking: <strong id="' + statusId + '">Disabled</strong>';
+  }
+
+  // Update global state so the session page reacts
+  isNetworkingEnabled = isOn;
+
+  // Also sync the original sidebar toggle if this is the primary hosted event
+  var primary = document.getElementById('networkingToggle');
+  if (primary) primary.checked = isOn;
+
+  showToast(isOn
+    ? '✅ Networking enabled for attendees'
+    : '🚫 Networking disabled — attendees see stats only');
+
+  // If session page is open, refresh it
+  if (currentPage === 'session' && userRole === 'host') {
+    renderHostSessionHeader();
+  }
+}
+
+/* open a dynamically created hosted event by name */
+function openHostedEventByName(name, loc, code, toggleId) {
+  userRole = 'host';
+
+  // Read networking state from THIS event's toggle
+  var tog = document.getElementById(toggleId);
+  if (tog) isNetworkingEnabled = tog.checked;
+
+  var titleEl = document.getElementById('sessionPageTitle');
+  if (titleEl) titleEl.textContent = name;
+
+  var meta = document.getElementById('sessionMeta');
+  if (meta) {
+    meta.innerHTML =
+      '<i class="fa fa-crown" style="color:#0A66C2"></i> You are hosting &nbsp;·&nbsp; ' +
+      '<i class="fa fa-map-marker-alt"></i> ' + loc +
+      ' &nbsp;·&nbsp; <i class="fa fa-key" style="color:#c37d16"></i> Code: <strong>' + code + '</strong>';
+  }
+
+  renderHostSessionHeader();
+  applyNetworkingState(true); // host always sees full people list
+  showPage('session');
 }
 
 /* ============================================================
