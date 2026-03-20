@@ -425,6 +425,10 @@
           <button class="btn-ghost btn-sm" onclick="showPage('mynetwork')"><i class="fa fa-arrow-left"></i> Back</button>
         </div>
         <div class="session-meta" id="sessionMeta"></div>
+
+        <!-- HOST / ATTENDEE ROLE BAR — populated dynamically by JS -->
+        <div id="sessionRoleBar" class="session-role-bar hidden"></div>
+
         <!-- LIVESYNC INSTANT SESSION BANNER (shown only when started via Start LiveSync) -->
         <div id="livesyncBanner" class="livesync-banner hidden">
           <div class="livesync-banner-left">
@@ -453,39 +457,51 @@
 
         <!-- PEOPLE -->
         <div id="people" class="tabPanel">
-          <!-- People Filter Bar -->
-          <div class="people-filter-bar">
-            <div class="filter-bar-label"><i class="fa fa-filter" style="color:#0A66C2"></i> Filter</div>
-            <div class="filter-group">
-              <select class="filter-select" id="filterProfession" onchange="handleFilterOthers(this,'filterProfessionOther');applyPeopleFilter()">
-                <option value="">All Professions</option>
-                <option>PGDM Student</option>
-                <option>Product Manager</option>
-                <option>Finance Professional</option>
-                <option>Strategy Consultant</option>
-                <option>Operations Manager</option>
-                <option>Marketing Professional</option>
-                <option>Software Engineer</option>
-                <option value="others">Others</option>
-              </select>
-              <input type="text" id="filterProfessionOther" class="filter-input others-input hidden" placeholder="Enter profession..." oninput="applyPeopleFilter()">
+          <!-- LinkedIn-style inline filter bar -->
+          <div class="li-filter-bar" id="liFilterBar">
+            <span class="li-filter-label">Filter by:</span>
+
+            <div class="li-filter-chip-wrap" id="chipProfWrap">
+              <button class="li-chip" id="chipProf" onclick="toggleChipMenu('chipProfMenu')">
+                Profession <i class="fa fa-chevron-down li-chip-caret"></i>
+              </button>
+              <div class="li-chip-menu hidden" id="chipProfMenu">
+                <div class="li-chip-option" onclick="selectChip('prof','')">All</div>
+                <div class="li-chip-option" onclick="selectChip('prof','PGDM Student')">PGDM Student</div>
+                <div class="li-chip-option" onclick="selectChip('prof','Product Manager')">Product Manager</div>
+                <div class="li-chip-option" onclick="selectChip('prof','Finance Professional')">Finance Professional</div>
+                <div class="li-chip-option" onclick="selectChip('prof','Strategy Consultant')">Strategy Consultant</div>
+                <div class="li-chip-option" onclick="selectChip('prof','Operations Manager')">Operations Manager</div>
+                <div class="li-chip-option" onclick="selectChip('prof','Marketing Professional')">Marketing Professional</div>
+                <div class="li-chip-option" onclick="selectChip('prof','others')">Others…</div>
+                <div class="li-chip-others-row hidden" id="chipProfOtherRow">
+                  <input type="text" id="chipProfOtherInput" class="li-chip-other-input" placeholder="Type profession…" oninput="applyPeopleFilter()">
+                </div>
+              </div>
             </div>
-            <div class="filter-group">
-              <select class="filter-select" id="filterInterest" onchange="handleFilterOthers(this,'filterInterestOther');applyPeopleFilter()">
-                <option value="">All Interests</option>
-                <option>Marketing</option>
-                <option>Finance</option>
-                <option>Strategy</option>
-                <option>Operations</option>
-                <option>Analytics</option>
-                <option>Product</option>
-                <option>Digital Marketing</option>
-                <option>Media &amp; Entertainment</option>
-                <option value="others">Others</option>
-              </select>
-              <input type="text" id="filterInterestOther" class="filter-input others-input hidden" placeholder="Enter interest..." oninput="applyPeopleFilter()">
+
+            <div class="li-filter-chip-wrap" id="chipIntWrap">
+              <button class="li-chip" id="chipInt" onclick="toggleChipMenu('chipIntMenu')">
+                Interest <i class="fa fa-chevron-down li-chip-caret"></i>
+              </button>
+              <div class="li-chip-menu hidden" id="chipIntMenu">
+                <div class="li-chip-option" onclick="selectChip('interest','')">All</div>
+                <div class="li-chip-option" onclick="selectChip('interest','Marketing')">Marketing</div>
+                <div class="li-chip-option" onclick="selectChip('interest','Finance')">Finance</div>
+                <div class="li-chip-option" onclick="selectChip('interest','Strategy')">Strategy</div>
+                <div class="li-chip-option" onclick="selectChip('interest','Analytics')">Analytics</div>
+                <div class="li-chip-option" onclick="selectChip('interest','Product')">Product</div>
+                <div class="li-chip-option" onclick="selectChip('interest','Operations')">Operations</div>
+                <div class="li-chip-option" onclick="selectChip('interest','others')">Others…</div>
+                <div class="li-chip-others-row hidden" id="chipIntOtherRow">
+                  <input type="text" id="chipIntOtherInput" class="li-chip-other-input" placeholder="Type interest…" oninput="applyPeopleFilter()">
+                </div>
+              </div>
             </div>
-            <button class="btn-ghost btn-sm" onclick="clearPeopleFilter()" style="white-space:nowrap"><i class="fa fa-xmark"></i> Clear</button>
+
+            <button class="li-filter-reset hidden" id="liFilterReset" onclick="clearPeopleFilter()">
+              <i class="fa fa-xmark"></i> Clear filters
+            </button>
           </div>
 
           <!-- SEND TO ALL — Premium ACTIVE (user is premium) -->
