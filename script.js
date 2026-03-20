@@ -47,13 +47,16 @@ function joinSession() {
   if (validCodes[code]) {
     showToast('✅ Joining session: AI Startup Networking Mixer...');
     setTimeout(function() {
+      userRole = 'attendee';
       document.getElementById('sessionPageTitle').textContent = 'LiveSync Session';
       var meta = document.getElementById('sessionMeta');
       if (meta) {
         meta.innerHTML = '<i class="fa fa-key" style="color:#c37d16"></i> Code: <strong>' + code +
           '</strong> &nbsp;·&nbsp; <i class="fa fa-map-marker-alt"></i> Mumbai · BKC &nbsp;·&nbsp; <i class="fa fa-users"></i> 84 attendees';
       }
-      applyNetworkingState(true);
+      var roleBar = document.getElementById('sessionRoleBar');
+      if (roleBar) roleBar.classList.add('hidden');
+      applyNetworkingState(isNetworkingEnabled);
       showPage('session');
     }, 600);
   } else {
@@ -667,10 +670,6 @@ function handleOthers(selectEl, inputId) {
   }
 }
 
-function handleFilterOthers(selectEl, inputId) {
-  handleOthers(selectEl, inputId);
-}
-
 /* ============================================================
    GROUP PANEL TOGGLE & MODE SWITCH (Step 3)
 ============================================================ */
@@ -719,31 +718,55 @@ document.addEventListener('DOMContentLoaded', function() {
 });
 
 /* ============================================================
+   NETWORKING STATE — single source of truth
+============================================================ */
+var isNetworkingEnabled = true;   // master state variable
+var userRole = 'host';            // 'host' | 'attendee'
+
+/* ============================================================
    NETWORKING TOGGLE (My Events sidebar)
 ============================================================ */
-var networkingEnabled = true;
-
 function toggleNetworking() {
-  networkingEnabled = document.getElementById('networkingToggle').checked;
-  var statusEl = document.getElementById('networkingStatus');
-  var labelEl  = document.getElementById('networkingLabel');
-  if (statusEl) {
-    statusEl.textContent = networkingEnabled ? 'Enabled' : 'Disabled';
-  }
+  isNetworkingEnabled = document.getElementById('networkingToggle').checked;
+
+  // Update sidebar label
+  var labelEl = document.getElementById('networkingLabel');
   if (labelEl) {
-    labelEl.innerHTML = networkingEnabled
+    labelEl.innerHTML = isNetworkingEnabled
       ? '<i class="fa fa-wifi" style="color:#28a745"></i> Networking: <strong id="networkingStatus">Enabled</strong>'
       : '<i class="fa fa-wifi-slash" style="color:#cc1016"></i> Networking: <strong id="networkingStatus">Disabled</strong>';
   }
-  showToast(networkingEnabled ? '✅ Networking enabled for attendees' : '🚫 Networking disabled — attendees see stats only');
+
+  // Update attending event badge in sidebar instantly
+  var fintechBadge = document.querySelector('#page-mynetwork .event-clickable .attending-badge:not(.disabled)');
+  // Re-stamp the FinTech event click with current state (onclick is static so this is visual only)
+
+  showToast(isNetworkingEnabled
+    ? '✅ Networking enabled — attendees can now connect'
+    : '🚫 Networking disabled — attendees see stats only');
+
+  // If the session page is currently visible, refresh its state
+  if (currentPage === 'session') {
+    // Host always sees full list; only attendee view is gated
+    if (userRole === 'host') {
+      renderHostSessionHeader();
+    } else {
+      applyNetworkingState(isNetworkingEnabled);
+    }
+  }
 }
 
 /* ============================================================
-   OPEN HOSTED EVENT (host view — with networking toggle)
+   OPEN HOSTED EVENT — distinct host view
 ============================================================ */
 function openHostedEvent() {
-  var title = document.getElementById('sessionPageTitle');
-  if (title) title.textContent = 'AI Startup Networking Mixer';
+  userRole = 'host';
+
+  // Set page title
+  var titleEl = document.getElementById('sessionPageTitle');
+  if (titleEl) titleEl.textContent = 'AI Startup Networking Mixer';
+
+  // Set meta
   var meta = document.getElementById('sessionMeta');
   if (meta) {
     meta.innerHTML =
@@ -752,86 +775,226 @@ function openHostedEvent() {
       '<i class="fa fa-map-marker-alt"></i> Mumbai · BKC &nbsp;·&nbsp; ' +
       '<i class="fa fa-key" style="color:#c37d16"></i> Code: <strong>847261</strong>';
   }
-  applyNetworkingState(true); // host always sees full people list
+
+  renderHostSessionHeader();
+  // Host always sees full people list regardless of networking state
+  applyNetworkingState(true);
   showPage('session');
 }
 
+function renderHostSessionHeader() {
+  var roleBar = document.getElementById('sessionRoleBar');
+  if (!roleBar) return;
+  var tog = document.getElementById('networkingToggle');
+  var isOn = tog ? tog.checked : isNetworkingEnabled;
+  roleBar.className = 'session-role-bar host-role-bar';
+  roleBar.innerHTML =
+    '<div class="srb-left">' +
+      '<span class="srb-badge host-badge-inline"><i class="fa fa-crown"></i> You are hosting</span>' +
+      '<span class="srb-sep">·</span>' +
+      '<span id="srbNetStatus" class="srb-net-status ' + (isOn ? 'net-on' : 'net-off') + '">' +
+        '<i class="fa ' + (isOn ? 'fa-wifi' : 'fa-wifi-slash') + '"></i> ' +
+        'Networking ' + (isOn ? 'Enabled' : 'Disabled') +
+      '</span>' +
+    '</div>' +
+    '<div class="srb-right">' +
+      '<label class="toggle-switch" style="margin-left:8px">' +
+        '<input type="checkbox" id="inlineNetworkingToggle" ' + (isOn ? 'checked' : '') + ' onchange="inlineToggleNetworking()">' +
+        '<span class="toggle-slider"></span>' +
+      '</label>' +
+      '<button class="btn-ghost btn-sm" onclick="openQRForEvent(\'AI Startup Networking Mixer\')" style="margin-left:8px"><i class="fa fa-qrcode"></i> QR</button>' +
+    '</div>';
+  roleBar.classList.remove('hidden');
+}
+
+function inlineToggleNetworking() {
+  var chk = document.getElementById('inlineNetworkingToggle');
+  isNetworkingEnabled = chk ? chk.checked : isNetworkingEnabled;
+
+  // Sync sidebar toggle
+  var sidebarToggle = document.getElementById('networkingToggle');
+  if (sidebarToggle) sidebarToggle.checked = isNetworkingEnabled;
+
+  // Update sidebar label
+  var labelEl = document.getElementById('networkingLabel');
+  if (labelEl) {
+    labelEl.innerHTML = isNetworkingEnabled
+      ? '<i class="fa fa-wifi" style="color:#28a745"></i> Networking: <strong id="networkingStatus">Enabled</strong>'
+      : '<i class="fa fa-wifi-slash" style="color:#cc1016"></i> Networking: <strong id="networkingStatus">Disabled</strong>';
+  }
+
+  // Update the inline status badge
+  var srbStatus = document.getElementById('srbNetStatus');
+  if (srbStatus) {
+    srbStatus.className = 'srb-net-status ' + (isNetworkingEnabled ? 'net-on' : 'net-off');
+    srbStatus.innerHTML = '<i class="fa ' + (isNetworkingEnabled ? 'fa-wifi' : 'fa-wifi-slash') + '"></i> Networking ' + (isNetworkingEnabled ? 'Enabled' : 'Disabled');
+  }
+  // Update inline toggle icon
+  var iIcon = document.querySelector('#inlineNetworkingToggle ~ .toggle-slider');
+  // Host always sees people list; toast to show what attendees experience
+  showToast(isNetworkingEnabled ? '✅ Networking enabled — attendees can now connect' : '🚫 Attendees now see stats-only view');
+}
+
 /* ============================================================
-   OPEN ATTENDING EVENT (attendee view)
+   OPEN ATTENDING EVENT — distinct attendee view
 ============================================================ */
 var attendingEventData = {
   fintech: { name:'FinTech Networking Mixer', date:'March 15, 2026', location:'The Lalit, Mumbai', attendees:112 },
   summit:  { name:'Product Leaders Summit 2026', date:'March 20, 2026', location:'Online · Zoom', attendees:340 }
 };
 
-function openAttendingEvent(key, isNetworkingOn) {
+function openAttendingEvent(key, networkingOnForThisEvent) {
+  userRole = 'attendee';
   var ev = attendingEventData[key];
   if (!ev) return;
-  var title = document.getElementById('sessionPageTitle');
-  if (title) title.textContent = ev.name;
+
+  // For the hosted event (fintech), respect the live isNetworkingEnabled toggle.
+  // For summit, it is statically disabled (separate event, host is someone else).
+  var isOn = (key === 'fintech') ? isNetworkingEnabled : networkingOnForThisEvent;
+
+  var titleEl = document.getElementById('sessionPageTitle');
+  if (titleEl) titleEl.textContent = ev.name;
+
   var meta = document.getElementById('sessionMeta');
   if (meta) {
     meta.innerHTML =
-      '<i class="fa fa-circle-check" style="color:#28a745"></i> Attending &nbsp;·&nbsp; ' +
+      '<i class="fa fa-circle-check" style="color:#28a745"></i> You are attending &nbsp;·&nbsp; ' +
       '<i class="fa fa-calendar"></i> ' + ev.date + ' &nbsp;·&nbsp; ' +
       '<i class="fa fa-map-marker-alt"></i> ' + ev.location;
   }
+
   var ndCount = document.getElementById('ndAttendeeCount');
   if (ndCount) ndCount.textContent = ev.attendees;
-  applyNetworkingState(isNetworkingOn);
+
+  renderAttendeeSessionHeader(isOn);
+  applyNetworkingState(isOn);
   showPage('session');
 }
 
+function renderAttendeeSessionHeader(isOn) {
+  var roleBar = document.getElementById('sessionRoleBar');
+  if (!roleBar) return;
+  roleBar.className = 'session-role-bar attendee-role-bar';
+  roleBar.innerHTML =
+    '<div class="srb-left">' +
+      '<span class="srb-badge attendee-badge-inline"><i class="fa fa-user"></i> You are attending</span>' +
+      '<span class="srb-sep">·</span>' +
+      '<span class="srb-net-status ' + (isOn ? 'net-on' : 'net-off') + '">' +
+        '<i class="fa ' + (isOn ? 'fa-wifi' : 'fa-wifi-slash') + '"></i> ' +
+        'Networking ' + (isOn ? 'Open' : 'Not yet enabled') +
+      '</span>' +
+    '</div>' +
+    (isOn ? '<div class="srb-right srb-tip">Connect with people in this session</div>'
+           : '<div class="srb-right srb-tip">The host hasn\'t enabled networking yet</div>');
+  roleBar.classList.remove('hidden');
+}
+
 /* ============================================================
-   APPLY NETWORKING STATE (show/hide people vs disabled view)
+   APPLY NETWORKING STATE — single renderer, reacts to isNetworkingEnabled
 ============================================================ */
 function applyNetworkingState(isOn) {
-  var tabs         = document.querySelector('#page-session .tabs');
+  var tabsRow      = document.querySelector('#page-session .tabs');
   var peoplePanel  = document.getElementById('people');
   var disabledView = document.getElementById('networkingDisabledView');
-  var banner       = document.querySelector('#page-session .livesync-banner');
 
   if (isOn) {
-    if (tabs) tabs.style.display = '';
-    if (peoplePanel) peoplePanel.classList.remove('hidden');
+    if (tabsRow)      tabsRow.style.display      = '';
+    if (peoplePanel)  { peoplePanel.classList.remove('hidden'); peoplePanel.style.display = ''; }
     if (disabledView) disabledView.classList.add('hidden');
+    // Reset to People tab so it's always visible on open
+    showTab('people');
   } else {
-    // Hide tabs and people panel; show disabled message
-    if (tabs) tabs.style.display = 'none';
-    if (peoplePanel) peoplePanel.classList.add('hidden');
+    if (tabsRow)      tabsRow.style.display      = 'none';
+    if (peoplePanel)  { peoplePanel.classList.add('hidden'); peoplePanel.style.display = 'none'; }
     if (disabledView) disabledView.classList.remove('hidden');
   }
 }
 
 /* ============================================================
-   PEOPLE PAGE FILTER
+   Hide role bar when leaving session page
 ============================================================ */
+var _origShowPage = showPage;
+// We'll patch showPage after definition to hide roleBar on navigate away.
+// (Done via the existing showPage; we add cleanup inside openHostedEvent / openAttendingEvent)
+
+/* ============================================================
+   PEOPLE PAGE — CHIP FILTER SYSTEM
+============================================================ */
+var activeFilters = { prof: '', interest: '' };
+
+function toggleChipMenu(menuId) {
+  // Close all other menus first
+  document.querySelectorAll('.li-chip-menu').forEach(function(m) {
+    if (m.id !== menuId) m.classList.add('hidden');
+  });
+  var menu = document.getElementById(menuId);
+  if (menu) menu.classList.toggle('hidden');
+}
+
+// Close menus on outside click
+document.addEventListener('click', function(e) {
+  if (!e.target.closest('.li-filter-chip-wrap')) {
+    document.querySelectorAll('.li-chip-menu').forEach(function(m) { m.classList.add('hidden'); });
+  }
+});
+
+function selectChip(type, value) {
+  if (value === 'others') {
+    // Show the text input row, don't close menu yet
+    var rowId  = type === 'prof' ? 'chipProfOtherRow'   : 'chipIntOtherRow';
+    var row    = document.getElementById(rowId);
+    if (row) { row.classList.remove('hidden'); row.querySelector('input').focus(); }
+    return;
+  }
+
+  activeFilters[type] = value;
+
+  // Hide the others row and clear its input
+  var rowId  = type === 'prof' ? 'chipProfOtherRow'   : 'chipIntOtherRow';
+  var inpId  = type === 'prof' ? 'chipProfOtherInput' : 'chipIntOtherInput';
+  var row    = document.getElementById(rowId);
+  var inp    = document.getElementById(inpId);
+  if (row) row.classList.add('hidden');
+  if (inp) inp.value = '';
+
+  // Update chip label
+  var chipId = type === 'prof' ? 'chipProf' : 'chipInt';
+  var chip   = document.getElementById(chipId);
+  if (chip) {
+    var label = value || (type === 'prof' ? 'Profession' : 'Interest');
+    chip.innerHTML = label + ' <i class="fa fa-chevron-down li-chip-caret"></i>';
+    chip.classList.toggle('li-chip-active', !!value);
+  }
+
+  // Close menu
+  var menuId = type === 'prof' ? 'chipProfMenu' : 'chipIntMenu';
+  var menu   = document.getElementById(menuId);
+  if (menu) menu.classList.add('hidden');
+
+  applyPeopleFilter();
+}
+
 var peopleData = [
-  { id:'p1', name:'Rahul Sharma',  title:'PGDM 2024–26 | Marketing | SPJIMR',             interest:'Marketing',           profession:'PGDM Student' },
-  { id:'p2', name:'Priya Patel',   title:'PGDM 2024–26 | Finance | SPJIMR',               interest:'Finance',             profession:'Finance Professional' },
-  { id:'p3', name:'Sofia Khan',    title:'PGDM 2024–26 | Strategy | SPJIMR',              interest:'Strategy',            profession:'Strategy Consultant' },
-  { id:'p4', name:'John Mathew',   title:"SPJIMR Alum '22 | Product Manager | PhonePe",  interest:'Product',             profession:'Product Manager' },
-  { id:'p5', name:'Ananya Reddy',  title:'PGDM 2024–26 | Finance | SPJIMR · Ex-Axis Bank',interest:'Finance',            profession:'Finance Professional' },
-  { id:'p6', name:'Vikram Nair',   title:"SPJIMR Alum '21 | Associate | Sequoia India",  interest:'Strategy',            profession:'Strategy Consultant' },
-  { id:'p7', name:'Divya Menon',   title:'PGDM 2024–26 | Operations & Analytics | SPJIMR',interest:'Analytics',          profession:'Operations Manager' },
-  { id:'p8', name:'Aryan Kapoor',  title:"SPJIMR Alum '23 | Strategy | McKinsey",         interest:'Strategy',            profession:'Strategy Consultant' },
-  { id:'p9', name:'Neha Joshi',    title:'PGDM 2024–26 | Digital Marketing | SPJIMR',     interest:'Digital Marketing',   profession:'Marketing Professional' },
-  { id:'p10',name:'Rohan Desai',   title:"SPJIMR Alum '22 | Supply Chain Manager | Marico",interest:'Operations',        profession:'Operations Manager' },
-  { id:'p11',name:'Ishita Bose',   title:'PGDM 2024–26 | Media & Entertainment | SPJIMR', interest:'Media & Entertainment',profession:'Marketing Professional'},
-  { id:'p12',name:'Karan Mehta',   title:'PGDM 2024–26 | General Management | SPJIMR',   interest:'Strategy',            profession:'PGDM Student' },
+  { name:'Rahul Sharma',  title:'PGDM 2024–26 | Marketing | SPJIMR',              interest:'Marketing',            profession:'PGDM Student' },
+  { name:'Priya Patel',   title:'PGDM 2024–26 | Finance | SPJIMR',                interest:'Finance',              profession:'Finance Professional' },
+  { name:'Sofia Khan',    title:'PGDM 2024–26 | Strategy | SPJIMR',               interest:'Strategy',             profession:'Strategy Consultant' },
+  { name:'John Mathew',   title:"SPJIMR Alum '22 | Product Manager | PhonePe",   interest:'Product',              profession:'Product Manager' },
+  { name:'Ananya Reddy',  title:'PGDM 2024–26 | Finance | SPJIMR · Ex-Axis Bank', interest:'Finance',              profession:'Finance Professional' },
+  { name:'Vikram Nair',   title:"SPJIMR Alum '21 | Associate | Sequoia India",   interest:'Strategy',             profession:'Strategy Consultant' },
+  { name:'Divya Menon',   title:'PGDM 2024–26 | Operations & Analytics | SPJIMR', interest:'Analytics',            profession:'Operations Manager' },
+  { name:'Aryan Kapoor',  title:"SPJIMR Alum '23 | Strategy | McKinsey",          interest:'Strategy',             profession:'Strategy Consultant' },
+  { name:'Neha Joshi',    title:'PGDM 2024–26 | Digital Marketing | SPJIMR',      interest:'Digital Marketing',    profession:'Marketing Professional' },
+  { name:'Rohan Desai',   title:"SPJIMR Alum '22 | Supply Chain Manager | Marico",interest:'Operations',           profession:'Operations Manager' },
+  { name:'Ishita Bose',   title:'PGDM 2024–26 | Media & Entertainment | SPJIMR',  interest:'Media & Entertainment',profession:'Marketing Professional' },
+  { name:'Karan Mehta',   title:'PGDM 2024–26 | General Management | SPJIMR',    interest:'Strategy',             profession:'PGDM Student' },
 ];
 
 function applyPeopleFilter() {
-  var profSel   = document.getElementById('filterProfession');
-  var profOther = document.getElementById('filterProfessionOther');
-  var intSel    = document.getElementById('filterInterest');
-  var intOther  = document.getElementById('filterInterestOther');
-  if (!profSel) return;
-
-  var prof = profSel.value === 'others' ? (profOther.value || '').toLowerCase().trim()
-                                        : profSel.value.toLowerCase();
-  var intr = intSel.value === 'others'  ? (intOther.value || '').toLowerCase().trim()
-                                        : intSel.value.toLowerCase();
+  // Read chip selections (custom input overrides)
+  var profCustom = (document.getElementById('chipProfOtherInput') || {}).value || '';
+  var intCustom  = (document.getElementById('chipIntOtherInput')  || {}).value || '';
+  var prof = (profCustom.trim() || activeFilters.prof).toLowerCase();
+  var intr = (intCustom.trim()  || activeFilters.interest).toLowerCase();
 
   var cards = document.querySelectorAll('#people .pcard');
   var shown = 0;
@@ -839,7 +1002,7 @@ function applyPeopleFilter() {
     var pd = peopleData[i];
     if (!pd) { card.style.display = ''; shown++; return; }
     var profMatch = !prof || pd.profession.toLowerCase().includes(prof) || pd.title.toLowerCase().includes(prof);
-    var intrMatch = !intr || pd.interest.toLowerCase().includes(intr) || pd.title.toLowerCase().includes(intr);
+    var intrMatch = !intr || pd.interest.toLowerCase().includes(intr)  || pd.title.toLowerCase().includes(intr);
     if (profMatch && intrMatch) { card.style.display = ''; shown++; }
     else card.style.display = 'none';
   });
@@ -847,18 +1010,37 @@ function applyPeopleFilter() {
   // Update tab count
   var tabBtn = document.getElementById('tabPeople');
   if (tabBtn) tabBtn.textContent = 'People (' + shown + ')';
+
+  // Show/hide clear button
+  var hasFilter = !!(prof || intr);
+  var resetBtn  = document.getElementById('liFilterReset');
+  if (resetBtn) resetBtn.classList.toggle('hidden', !hasFilter);
 }
 
 function clearPeopleFilter() {
-  ['filterProfession','filterInterest'].forEach(function(id) {
+  activeFilters = { prof: '', interest: '' };
+
+  // Reset chips to default labels
+  var chipProf = document.getElementById('chipProf');
+  if (chipProf) { chipProf.innerHTML = 'Profession <i class="fa fa-chevron-down li-chip-caret"></i>'; chipProf.classList.remove('li-chip-active'); }
+  var chipInt = document.getElementById('chipInt');
+  if (chipInt) { chipInt.innerHTML = 'Interest <i class="fa fa-chevron-down li-chip-caret"></i>'; chipInt.classList.remove('li-chip-active'); }
+
+  // Clear other inputs & hide rows
+  ['chipProfOtherInput','chipIntOtherInput'].forEach(function(id) {
     var el = document.getElementById(id); if (el) el.value = '';
   });
-  ['filterProfessionOther','filterInterestOther'].forEach(function(id) {
-    var el = document.getElementById(id); if (el) { el.value = ''; el.classList.add('hidden'); }
+  ['chipProfOtherRow','chipIntOtherRow'].forEach(function(id) {
+    var el = document.getElementById(id); if (el) el.classList.add('hidden');
   });
-  applyPeopleFilter();
+
+  // Show all cards
+  document.querySelectorAll('#people .pcard').forEach(function(c) { c.style.display = ''; });
   var tabBtn = document.getElementById('tabPeople');
   if (tabBtn) tabBtn.textContent = 'People (12)';
+
+  var resetBtn = document.getElementById('liFilterReset');
+  if (resetBtn) resetBtn.classList.add('hidden');
 }
 
 /* ============================================================
