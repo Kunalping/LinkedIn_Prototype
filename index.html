@@ -59,7 +59,7 @@
       </div>
     </div>
     <a class="nitem" href="#"><i class="fa fa-th"></i><span>For Business</span></a>
-    <a class="npremium" href="#">Try Premium for <strong>&#8377;0</strong></a>
+    <a class="npremium premium-active-badge" href="#"><svg viewBox="0 0 24 24" width="13" height="13" fill="#c37d16" style="margin-right:4px"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>Premium</a>
   </div>
 </header>
 
@@ -349,17 +349,28 @@
         <div class="scard">
           <div class="scard-title"><i class="fa fa-calendar-days" style="color:#0A66C2;margin-right:6px"></i>My Events</div>
 
-          <!-- Sample hosted event -->
-          <div class="my-event-card" id="myevent-1">
+          <!-- HOSTED EVENT — you are the host -->
+          <div class="my-event-card hosted-event" id="myevent-1">
+            <div class="event-role-badge host-badge"><i class="fa fa-crown"></i> Hosting</div>
             <div class="my-event-info">
               <div class="my-event-name">AI Startup Networking Mixer</div>
               <div class="emeta"><i class="fa fa-calendar"></i> June 20, 2026</div>
               <div class="emeta"><i class="fa fa-map-marker-alt"></i> Mumbai · BKC</div>
-              <div class="emeta"><i class="fa fa-users"></i> 84 attendees</div>
+              <div class="emeta"><i class="fa fa-users"></i> <span id="hostedAttendeeCount">84</span> attendees</div>
               <div class="emeta" style="color:#c37d16"><i class="fa fa-key"></i> Code: <strong>847261</strong></div>
             </div>
+            <!-- Networking Toggle -->
+            <div class="networking-toggle-row">
+              <span class="networking-toggle-label" id="networkingLabel">
+                <i class="fa fa-wifi" style="color:#28a745"></i> Networking: <strong id="networkingStatus">Enabled</strong>
+              </span>
+              <label class="toggle-switch">
+                <input type="checkbox" id="networkingToggle" checked onchange="toggleNetworking()">
+                <span class="toggle-slider"></span>
+              </label>
+            </div>
             <div class="my-event-actions">
-              <button class="btn-primary btn-sm" onclick="viewEvent('AI Startup Networking Mixer','June 20, 2026','Mumbai · BKC',84,'847261')">View Event</button>
+              <button class="btn-primary btn-sm" onclick="openHostedEvent()">View Event</button>
               <button class="btn-ghost btn-sm" onclick="openQRForEvent('AI Startup Networking Mixer')"><i class="fa fa-qrcode"></i> QR</button>
               <button class="btn-ghost btn-sm" onclick="showToast('Share link copied!')"><i class="fa fa-share"></i></button>
             </div>
@@ -370,14 +381,27 @@
 
         <div class="scard" style="margin-top:12px">
           <div class="scard-title"><i class="fa fa-calendar-days" style="color:#0A66C2;margin-right:6px"></i>Upcoming Events</div>
-          <div class="event">
+
+          <!-- ATTENDING EVENT (networking enabled) -->
+          <div class="event event-clickable" onclick="openAttendingEvent('fintech', true)">
             <div class="edate"><span class="emon">MAR</span><span class="eday">15</span></div>
-            <div class="einfo"><div class="ename">FinTech Networking Mixer</div><div class="emeta"><i class="fa fa-map-marker-alt"></i> The Lalit, Mumbai</div></div>
+            <div class="einfo">
+              <div class="ename">FinTech Networking Mixer</div>
+              <div class="emeta"><i class="fa fa-map-marker-alt"></i> The Lalit, Mumbai</div>
+              <div class="emeta attending-badge"><i class="fa fa-circle-check"></i> Attending · Networking On</div>
+            </div>
           </div>
-          <div class="event">
+
+          <!-- ATTENDING EVENT (networking disabled) -->
+          <div class="event event-clickable" onclick="openAttendingEvent('summit', false)">
             <div class="edate"><span class="emon">MAR</span><span class="eday">20</span></div>
-            <div class="einfo"><div class="ename">Product Leaders Summit 2026</div><div class="emeta"><i class="fa fa-video"></i> Online · Zoom</div></div>
+            <div class="einfo">
+              <div class="ename">Product Leaders Summit 2026</div>
+              <div class="emeta"><i class="fa fa-video"></i> Online · Zoom</div>
+              <div class="emeta attending-badge disabled"><i class="fa fa-circle-xmark"></i> Attending · Networking Off</div>
+            </div>
           </div>
+
           <div class="event">
             <div class="edate"><span class="emon">APR</span><span class="eday">3</span></div>
             <div class="einfo"><div class="ename">SPJIMR Alumni Speed Networking</div><div class="emeta"><i class="fa fa-map-marker-alt"></i> The Trident, BKC</div></div>
@@ -429,24 +453,59 @@
 
         <!-- PEOPLE -->
         <div id="people" class="tabPanel">
-          <!-- SEND TO ALL — Premium -->
-          <div class="premium-action-bar">
+          <!-- People Filter Bar -->
+          <div class="people-filter-bar">
+            <div class="filter-bar-label"><i class="fa fa-filter" style="color:#0A66C2"></i> Filter</div>
+            <div class="filter-group">
+              <select class="filter-select" id="filterProfession" onchange="handleFilterOthers(this,'filterProfessionOther');applyPeopleFilter()">
+                <option value="">All Professions</option>
+                <option>PGDM Student</option>
+                <option>Product Manager</option>
+                <option>Finance Professional</option>
+                <option>Strategy Consultant</option>
+                <option>Operations Manager</option>
+                <option>Marketing Professional</option>
+                <option>Software Engineer</option>
+                <option value="others">Others</option>
+              </select>
+              <input type="text" id="filterProfessionOther" class="filter-input others-input hidden" placeholder="Enter profession..." oninput="applyPeopleFilter()">
+            </div>
+            <div class="filter-group">
+              <select class="filter-select" id="filterInterest" onchange="handleFilterOthers(this,'filterInterestOther');applyPeopleFilter()">
+                <option value="">All Interests</option>
+                <option>Marketing</option>
+                <option>Finance</option>
+                <option>Strategy</option>
+                <option>Operations</option>
+                <option>Analytics</option>
+                <option>Product</option>
+                <option>Digital Marketing</option>
+                <option>Media &amp; Entertainment</option>
+                <option value="others">Others</option>
+              </select>
+              <input type="text" id="filterInterestOther" class="filter-input others-input hidden" placeholder="Enter interest..." oninput="applyPeopleFilter()">
+            </div>
+            <button class="btn-ghost btn-sm" onclick="clearPeopleFilter()" style="white-space:nowrap"><i class="fa fa-xmark"></i> Clear</button>
+          </div>
+
+          <!-- SEND TO ALL — Premium ACTIVE (user is premium) -->
+          <div class="premium-action-bar premium-active">
             <div class="prem-left">
               <svg class="prem-star" viewBox="0 0 24 24" fill="#c37d16"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
               <div><span class="prem-action-label">Send connection request to all</span><em class="prem-tag">Premium feature</em></div>
             </div>
-            <button class="prem-btn" onclick="showPremiumPrompt()">
+            <button class="prem-btn" onclick="sendToAll()">
               <svg class="prem-btn-star" viewBox="0 0 24 24" fill="#3d2a00"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
               Send to All
             </button>
           </div>
-          <!-- JOIN GROUP — Premium -->
-          <div class="premium-action-bar join-group-bar">
+          <!-- JOIN GROUP — Premium ACTIVE -->
+          <div class="premium-action-bar join-group-bar premium-active">
             <div class="prem-left">
               <svg class="prem-star" viewBox="0 0 24 24" fill="#c37d16"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
               <div><span class="prem-action-label"><i class="fa fa-users" style="margin-right:5px;color:#0A66C2"></i>Join LiveSync Group — SPJIMR PGDM Batch 2024–26</span><em class="prem-tag">Premium feature</em></div>
             </div>
-            <button class="prem-btn" onclick="showPremiumPrompt()">
+            <button class="prem-btn" onclick="joinGroup()">
               <svg class="prem-btn-star" viewBox="0 0 24 24" fill="#3d2a00"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
               Join Group
             </button>
@@ -464,6 +523,26 @@
           <div class="pcard"><img src="https://randomuser.me/api/portraits/men/19.jpg" alt="Rohan"><div class="pinfo"><div class="pname">Rohan Desai</div><div class="ptitle">SPJIMR Alum '22 | Supply Chain Manager | Marico</div><div class="pmutual"><i class="fa fa-user-friends"></i> 7 mutual</div></div><button class="cbtn" onclick="handleConnect(this,'Rohan Desai','SPJIMR Alum | Marico','https://randomuser.me/api/portraits/men/19.jpg')">Connect</button></div>
           <div class="pcard"><img src="https://randomuser.me/api/portraits/women/78.jpg" alt="Ishita"><div class="pinfo"><div class="pname">Ishita Bose</div><div class="ptitle">PGDM 2024–26 | Media &amp; Entertainment | SPJIMR</div><div class="pmutual"><i class="fa fa-user-friends"></i> 14 mutual</div></div><button class="cbtn" onclick="handleConnect(this,'Ishita Bose','PGDM | Media & Entertainment | SPJIMR','https://randomuser.me/api/portraits/women/78.jpg')">Connect</button></div>
           <div class="pcard"><img src="https://randomuser.me/api/portraits/men/36.jpg" alt="Karan"><div class="pinfo"><div class="pname">Karan Mehta</div><div class="ptitle">PGDM 2024–26 | General Management | SPJIMR</div><div class="pmutual"><i class="fa fa-user-friends"></i> 2 mutual</div></div><button class="cbtn" onclick="handleConnect(this,'Karan Mehta','PGDM | General Management | SPJIMR','https://randomuser.me/api/portraits/men/36.jpg')">Connect</button></div>
+        </div>
+
+        <!-- NETWORKING DISABLED VIEW -->
+        <div id="networkingDisabledView" class="hidden">
+          <div class="networking-disabled-panel">
+            <i class="fa fa-lock" style="font-size:40px;color:#ccc;display:block;margin-bottom:14px"></i>
+            <div class="nd-title">Connections will be visible once the host enables networking</div>
+            <div class="nd-sub">The host can enable networking from their event dashboard at any time.</div>
+            <div class="nd-stats">
+              <div class="nd-stat"><span class="nd-num" id="ndAttendeeCount">84</span><span class="nd-label">Attendees</span></div>
+              <div class="nd-stat"><span class="nd-num">3</span><span class="nd-label">Professions</span></div>
+              <div class="nd-stat"><span class="nd-num">High</span><span class="nd-label">Engagement</span></div>
+            </div>
+            <div class="nd-prof-list">
+              <div class="nd-prof-title">Top Professions in this Session</div>
+              <div class="nd-prof-bar"><span>PGDM / MBA Students</span><div class="nd-bar"><div class="nd-bar-fill" style="width:72%"></div></div><span>72%</span></div>
+              <div class="nd-prof-bar"><span>Strategy / Consulting</span><div class="nd-bar"><div class="nd-bar-fill" style="width:48%"></div></div><span>48%</span></div>
+              <div class="nd-prof-bar"><span>Finance Professionals</span><div class="nd-bar"><div class="nd-bar-fill" style="width:35%"></div></div><span>35%</span></div>
+            </div>
+          </div>
         </div>
 
         <!-- RECEIVED -->
@@ -786,9 +865,6 @@
               <span class="tag-opt" onclick="toggleTag(this)">Startup</span><span class="tag-opt" onclick="toggleTag(this)">Tech</span><span class="tag-opt" onclick="toggleTag(this)">Product</span><span class="tag-opt" onclick="toggleTag(this)">Finance</span><span class="tag-opt" onclick="toggleTag(this)">Marketing</span><span class="tag-opt" onclick="toggleTag(this)">Consulting</span><span class="tag-opt" onclick="toggleTag(this)">Operations</span><span class="tag-opt" onclick="toggleTag(this)">Analytics</span><span class="tag-opt" onclick="toggleTag(this)">VC / Investing</span>
             </div>
           </div>
-          <div class="form-group full"><label>Attach Existing Group <span class="opt-label">(optional)</span></label>
-            <select class="form-input" id="evGroup"><option value="">— None —</option><option>SPJIMR PGDM Batch 2024–26</option><option>Mumbai Product Managers</option><option>FinTech India Network</option></select>
-          </div>
         </div>
         <div class="modal-footer">
           <button class="btn-ghost" onclick="closeModal('modalCreateEvent')">Cancel</button>
@@ -807,10 +883,47 @@
           <div class="section-label"><i class="fa fa-sliders"></i> Target Audience Filters</div>
           <div class="form-grid">
             <div class="form-group"><label>Geography</label><input type="text" id="fGeo" placeholder="e.g. Mumbai, India" class="form-input" oninput="updateReach()"></div>
-            <div class="form-group"><label>Industry</label><select class="form-input" id="fIndustry" onchange="updateReach()"><option>Any</option><option>Technology</option><option>Finance / BFSI</option><option>Consulting</option><option>FMCG</option><option>Healthcare</option><option>E-commerce</option><option>Media</option></select></div>
-            <div class="form-group"><label>Profession</label><input type="text" id="fProfession" placeholder="e.g. Product Manager" class="form-input" oninput="updateReach()"></div>
-            <div class="form-group"><label>Experience Level</label><select class="form-input" id="fExp" onchange="updateReach()"><option>Any</option><option>Student / Fresher</option><option>0–2 years</option><option>2–5 years</option><option>5–10 years</option><option>10+ years</option></select></div>
-            <div class="form-group full"><label>Skills / Interests</label><input type="text" id="fSkills" placeholder="e.g. AI, Startups, Product Strategy" class="form-input" oninput="updateReach()"></div>
+            <div class="form-group">
+              <label>Industry</label>
+              <select class="form-input" id="fIndustry" onchange="handleOthers(this,'fIndustryOther');updateReach()">
+                <option value="">Any</option><option>Technology</option><option>Finance / BFSI</option><option>Consulting</option><option>FMCG</option><option>Healthcare</option><option>E-commerce</option><option>Media</option><option value="others">Others</option>
+              </select>
+              <input type="text" id="fIndustryOther" class="form-input others-input hidden" placeholder="Specify industry..." oninput="updateReach()">
+            </div>
+            <div class="form-group">
+              <label>Profession</label>
+              <select class="form-input" id="fProfessionSel" onchange="handleOthers(this,'fProfessionOther');updateReach()">
+                <option value="">Any</option><option>Product Manager</option><option>Software Engineer</option><option>Data Scientist</option><option>Consultant</option><option>Investment Analyst</option><option>Marketing Manager</option><option>Operations Manager</option><option value="others">Others</option>
+              </select>
+              <input type="text" id="fProfessionOther" class="form-input others-input hidden" placeholder="Specify profession..." oninput="updateReach()">
+            </div>
+            <div class="form-group">
+              <label>Experience Level</label>
+              <select class="form-input" id="fExp" onchange="handleOthers(this,'fExpOther');updateReach()">
+                <option value="">Any</option><option>Student / Fresher</option><option>0–2 years</option><option>2–5 years</option><option>5–10 years</option><option>10+ years</option><option value="others">Others</option>
+              </select>
+              <input type="text" id="fExpOther" class="form-input others-input hidden" placeholder="Specify experience..." oninput="updateReach()">
+            </div>
+            <div class="form-group">
+              <label>Company Size</label>
+              <select class="form-input" id="fCompSize" onchange="handleOthers(this,'fCompSizeOther');updateReach()">
+                <option value="">Any</option><option>Startup (1–50)</option><option>SME (51–500)</option><option>Mid-size (500–5000)</option><option>Enterprise (5000+)</option><option value="others">Others</option>
+              </select>
+              <input type="text" id="fCompSizeOther" class="form-input others-input hidden" placeholder="Specify company size..." oninput="updateReach()">
+            </div>
+            <div class="form-group">
+              <label>Open to Work</label>
+              <select class="form-input" id="fOTW" onchange="updateReach()">
+                <option value="">Any</option><option>Yes — actively looking</option><option>No preference</option>
+              </select>
+            </div>
+            <div class="form-group full">
+              <label>Interests / Skills</label>
+              <select class="form-input" id="fInterestsSel" onchange="handleOthers(this,'fInterestsOther');updateReach()">
+                <option value="">Any</option><option>AI / Machine Learning</option><option>Startups</option><option>FinTech</option><option>Product Strategy</option><option>Consulting</option><option>VC / Investing</option><option>Supply Chain</option><option value="others">Others</option>
+              </select>
+              <input type="text" id="fInterestsOther" class="form-input others-input hidden" placeholder="Specify interests or skills..." oninput="updateReach()">
+            </div>
           </div>
           <div class="reach-estimate"><i class="fa fa-users"></i><span>Estimated reach: <strong id="reachNum">~480 professionals</strong></span><small>Updates as you type</small></div>
           <div class="notif-preview">
@@ -838,6 +951,7 @@
       <!-- Step 3 -->
       <div id="evStep3" class="hidden">
         <div class="options-grid">
+          <!-- QR Code with duration -->
           <div class="option-card">
             <div class="option-header">
               <i class="fa fa-qrcode option-icon"></i>
@@ -855,13 +969,54 @@
                   <button class="btn-ghost btn-sm" onclick="openQRPreview()"><i class="fa fa-eye"></i> Preview attendee page</button>
                 </div>
               </div>
+              <!-- QR Duration -->
+              <div style="margin-top:12px">
+                <div class="section-label" style="margin:0 0 8px"><i class="fa fa-clock"></i> QR Active Duration</div>
+                <div class="ls-duration-options">
+                  <label class="ls-duration-opt selected" id="qrDur10">
+                    <input type="radio" name="qrDuration" value="10" checked>
+                    <div class="ls-dur-content">
+                      <div class="ls-dur-title">10 minutes</div>
+                      <div class="ls-dur-badge free">Free</div>
+                    </div>
+                  </label>
+                  <label class="ls-duration-opt" id="qrDur60">
+                    <input type="radio" name="qrDuration" value="60">
+                    <div class="ls-dur-content">
+                      <div class="ls-dur-title">1 hour</div>
+                      <div class="ls-dur-badge premium"><svg viewBox="0 0 24 24" width="10" height="10" fill="currentColor" style="margin-right:3px"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>Premium</div>
+                    </div>
+                  </label>
+                </div>
+              </div>
             </div>
           </div>
+
+          <!-- Networking Group: Create + Attach in same card -->
           <div class="option-card">
             <div class="option-header">
               <i class="fa fa-users option-icon"></i>
-              <div><div class="option-title">Create Networking Group</div><div class="option-sub">Build a community around this event.</div></div>
-              <label class="toggle-switch"><input type="checkbox" id="groupToggle"><span class="toggle-slider"></span></label>
+              <div><div class="option-title">Networking Group</div><div class="option-sub">Create a new group or attach an existing one.</div></div>
+              <label class="toggle-switch"><input type="checkbox" id="groupToggle" onchange="toggleGroupPanel()"><span class="toggle-slider"></span></label>
+            </div>
+            <div id="groupPanel" class="hidden" style="margin-top:12px;padding-top:12px;border-top:1px solid #f0f0f0">
+              <div class="group-mode-tabs">
+                <button class="group-mode-btn active" id="groupModeCreate" onclick="switchGroupMode('create')">Create New Group</button>
+                <button class="group-mode-btn" id="groupModeAttach" onclick="switchGroupMode('attach')">Attach Existing</button>
+              </div>
+              <div id="groupCreatePanel" style="margin-top:10px">
+                <input type="text" id="newGroupName" class="form-input" placeholder="Group name e.g. AI Networking 2026" style="margin-bottom:8px">
+                <textarea class="form-input" id="newGroupDesc" rows="2" placeholder="What is this group about?" style="margin-bottom:0"></textarea>
+              </div>
+              <div id="groupAttachPanel" class="hidden" style="margin-top:10px">
+                <select class="form-input" id="evGroup">
+                  <option value="">— Select a group —</option>
+                  <option>SPJIMR PGDM Batch 2024–26</option>
+                  <option>Mumbai Product Managers</option>
+                  <option>FinTech India Network</option>
+                  <option>AI Startups Mumbai</option>
+                </select>
+              </div>
             </div>
           </div>
         </div>
