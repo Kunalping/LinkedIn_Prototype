@@ -674,3 +674,176 @@ textarea.form-input { resize:vertical; }
 .nd-prof-bar span:first-child { width:160px; flex-shrink:0; }
 .nd-bar { flex:1; height:7px; background:#e0e0e0; border-radius:4px; overflow:hidden; }
 .nd-bar-fill { height:100%; background:#0A66C2; border-radius:4px; }
+
+/* ============================================================
+   SESSION ROLE BAR (host vs attendee context header)
+============================================================ */
+.session-role-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border-radius: 10px;
+  padding: 10px 16px;
+  margin-bottom: 14px;
+  flex-wrap: wrap;
+  gap: 10px;
+  font-size: 13px;
+}
+
+.host-role-bar {
+  background: linear-gradient(135deg, #eef3f8, #e0ecf8);
+  border: 1.5px solid #0A66C2;
+}
+
+.attendee-role-bar {
+  background: #f8f8f8;
+  border: 1.5px solid #e0e0e0;
+}
+
+.srb-left  { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
+.srb-right { display: flex; align-items: center; gap: 6px; }
+
+.srb-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 12px;
+  font-weight: 700;
+  padding: 3px 10px;
+  border-radius: 20px;
+}
+
+.host-badge-inline     { background: #0A66C2; color: #fff; }
+.attendee-badge-inline { background: #f3f2ef; color: #555; border: 1px solid #ccc; }
+
+.srb-sep { color: #ccc; font-size: 16px; }
+
+.srb-net-status {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 12px;
+  font-weight: 600;
+  padding: 3px 10px;
+  border-radius: 20px;
+}
+
+.net-on  { background: #e6f4ea; color: #1e7e34; }
+.net-off { background: #fce8e8; color: #cc1016; }
+
+.srb-tip { font-size: 12px; color: #888; }
+
+/* ============================================================
+   LINKEDIN-STYLE CHIP FILTER BAR
+============================================================ */
+.li-filter-bar {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+  margin-bottom: 14px;
+  padding: 2px 0;
+}
+
+.li-filter-label {
+  font-size: 13px;
+  font-weight: 600;
+  color: #555;
+  white-space: nowrap;
+}
+
+.li-filter-chip-wrap {
+  position: relative;
+}
+
+/* The chip button itself */
+.li-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: #fff;
+  border: 1.5px solid #ccc;
+  border-radius: 20px;
+  padding: 5px 14px;
+  font-size: 13px;
+  font-weight: 500;
+  color: #333;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: border-color 0.15s, background 0.15s, color 0.15s;
+  line-height: 1.4;
+}
+
+.li-chip:hover { border-color: #0A66C2; color: #0A66C2; }
+
+.li-chip.li-chip-active {
+  background: #0A66C2;
+  border-color: #0A66C2;
+  color: #fff;
+  font-weight: 600;
+}
+
+.li-chip-caret { font-size: 10px; opacity: 0.7; }
+
+/* Dropdown menu under chip */
+.li-chip-menu {
+  position: absolute;
+  top: calc(100% + 6px);
+  left: 0;
+  z-index: 300;
+  background: #fff;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  box-shadow: 0 4px 16px rgba(0,0,0,0.12);
+  min-width: 200px;
+  overflow: hidden;
+  animation: chipMenuIn 0.15s ease;
+}
+
+@keyframes chipMenuIn {
+  from { opacity:0; transform:translateY(-6px); }
+  to   { opacity:1; transform:translateY(0); }
+}
+
+.li-chip-option {
+  padding: 9px 16px;
+  font-size: 13px;
+  color: #333;
+  cursor: pointer;
+  transition: background 0.1s;
+}
+
+.li-chip-option:hover { background: #eef3f8; color: #0A66C2; }
+
+.li-chip-others-row {
+  padding: 6px 12px 10px;
+  border-top: 1px solid #f0f0f0;
+}
+
+.li-chip-other-input {
+  width: 100%;
+  border: 1.5px solid #0A66C2;
+  border-radius: 6px;
+  padding: 6px 10px;
+  font-size: 13px;
+  outline: none;
+  box-sizing: border-box;
+}
+
+/* Reset / clear button */
+.li-filter-reset {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  background: none;
+  border: none;
+  color: #0A66C2;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  padding: 5px 8px;
+  border-radius: 6px;
+  transition: background 0.15s;
+}
+
+.li-filter-reset:hover { background: #eef3f8; }
