@@ -53,6 +53,7 @@ function joinSession() {
         meta.innerHTML = '<i class="fa fa-key" style="color:#c37d16"></i> Code: <strong>' + code +
           '</strong> &nbsp;·&nbsp; <i class="fa fa-map-marker-alt"></i> Mumbai · BKC &nbsp;·&nbsp; <i class="fa fa-users"></i> 84 attendees';
       }
+      applyNetworkingState(true);
       showPage('session');
     }, 600);
   } else {
@@ -74,6 +75,7 @@ function viewEvent(name, date, location, attendees, code) {
       ' &nbsp;·&nbsp; <i class="fa fa-users" style="color:#0A66C2"></i> ' + attendees + ' attendees' +
       ' &nbsp;·&nbsp; <i class="fa fa-key" style="color:#c37d16"></i> Code: <strong>' + code + '</strong>';
   }
+  applyNetworkingState(true);
   showPage('session');
 }
 
@@ -334,8 +336,12 @@ function openCreateEvent() {
   ['evName','evDesc','evLocation','evDatetime','fGeo','fProfession','fSkills'].forEach(function(id) {
     var el = document.getElementById(id); if (el) el.value = '';
   });
-  ['fIndustry','fExp','evGroup'].forEach(function(id) {
+  ['fIndustry','fProfessionSel','fExp','fCompSize','fOTW','fInterestsSel','evGroup'].forEach(function(id) {
     var el = document.getElementById(id); if (el) el.selectedIndex = 0;
+  });
+  // Reset others inputs
+  ['fIndustryOther','fProfessionOther','fExpOther','fCompSizeOther','fInterestsOther'].forEach(function(id) {
+    var el = document.getElementById(id); if (el) { el.value=''; el.classList.add('hidden'); }
   });
   document.querySelectorAll('.tag-opt.selected').forEach(function(t) { t.classList.remove('selected'); });
   var nt = document.getElementById('notifyToggle'); if (nt) nt.checked = false;
@@ -343,6 +349,12 @@ function openCreateEvent() {
   var gt = document.getElementById('groupToggle'); if (gt) gt.checked = false;
   var np = document.getElementById('notifyPanel'); if (np) np.classList.add('hidden');
   var qa = document.getElementById('qrPreviewArea'); if (qa) qa.classList.add('hidden');
+  var gp = document.getElementById('groupPanel'); if (gp) gp.classList.add('hidden');
+  // reset group mode back to create
+  var cp = document.getElementById('groupCreatePanel'); if (cp) cp.classList.remove('hidden');
+  var ap = document.getElementById('groupAttachPanel'); if (ap) ap.classList.add('hidden');
+  var cb = document.getElementById('groupModeCreate'); if (cb) cb.classList.add('active');
+  var ab = document.getElementById('groupModeAttach'); if (ab) ab.classList.remove('active');
   openModal('modalCreateEvent');
 }
 
@@ -378,8 +390,14 @@ function toggleNotifyPanel() {
 
 function updateReach() {
   var count = 0;
-  ['fGeo','fProfession','fSkills'].forEach(function(id) { var el = document.getElementById(id); if (el && el.value.trim()) count++; });
-  ['fIndustry','fExp'].forEach(function(id) { var el = document.getElementById(id); if (el && el.selectedIndex > 0) count++; });
+  ['fGeo'].forEach(function(id) { var el = document.getElementById(id); if (el && el.value.trim()) count++; });
+  ['fIndustry','fProfessionSel','fExp','fCompSize','fOTW','fInterestsSel'].forEach(function(id) {
+    var el = document.getElementById(id); if (el && el.value && el.value !== 'others') count++;
+  });
+  // Count Others custom inputs too
+  ['fIndustryOther','fProfessionOther','fExpOther','fCompSizeOther','fInterestsOther'].forEach(function(id) {
+    var el = document.getElementById(id); if (el && el.value.trim()) count++;
+  });
   var reach = Math.max(30, 480 - count * 55 + Math.floor(Math.random() * 20));
   var el = document.getElementById('reachNum'); if (el) el.textContent = '~' + reach + ' professionals';
 }
@@ -632,4 +650,247 @@ function showLivesyncQR() {
   document.getElementById('lsStepConfig').classList.add('hidden');
   document.getElementById('lsStepExpired').classList.add('hidden');
   document.getElementById('lsStepActive').classList.remove('hidden');
+}
+
+/* ============================================================
+   "OTHERS" HANDLER — Step 2 filters
+============================================================ */
+function handleOthers(selectEl, inputId) {
+  var inp = document.getElementById(inputId);
+  if (!inp) return;
+  if (selectEl.value === 'others') {
+    inp.classList.remove('hidden');
+    inp.focus();
+  } else {
+    inp.classList.add('hidden');
+    inp.value = '';
+  }
+}
+
+function handleFilterOthers(selectEl, inputId) {
+  handleOthers(selectEl, inputId);
+}
+
+/* ============================================================
+   GROUP PANEL TOGGLE & MODE SWITCH (Step 3)
+============================================================ */
+function toggleGroupPanel() {
+  var on = document.getElementById('groupToggle').checked;
+  var panel = document.getElementById('groupPanel');
+  if (panel) panel.classList.toggle('hidden', !on);
+}
+
+function switchGroupMode(mode) {
+  var createPanel = document.getElementById('groupCreatePanel');
+  var attachPanel = document.getElementById('groupAttachPanel');
+  var createBtn   = document.getElementById('groupModeCreate');
+  var attachBtn   = document.getElementById('groupModeAttach');
+  if (mode === 'create') {
+    createPanel.classList.remove('hidden');
+    attachPanel.classList.add('hidden');
+    createBtn.classList.add('active');
+    attachBtn.classList.remove('active');
+  } else {
+    attachPanel.classList.remove('hidden');
+    createPanel.classList.add('hidden');
+    attachBtn.classList.add('active');
+    createBtn.classList.remove('active');
+  }
+}
+
+/* ============================================================
+   QR DURATION RADIO WIRING (Step 3)
+============================================================ */
+document.addEventListener('DOMContentLoaded', function() {
+  var dur10 = document.getElementById('qrDur10');
+  var dur60 = document.getElementById('qrDur60');
+  if (dur10) {
+    dur10.addEventListener('click', function() {
+      dur10.classList.add('selected');
+      dur60.classList.remove('selected');
+    });
+  }
+  if (dur60) {
+    dur60.addEventListener('click', function() {
+      dur60.classList.add('selected');
+      dur10.classList.remove('selected');
+    });
+  }
+});
+
+/* ============================================================
+   NETWORKING TOGGLE (My Events sidebar)
+============================================================ */
+var networkingEnabled = true;
+
+function toggleNetworking() {
+  networkingEnabled = document.getElementById('networkingToggle').checked;
+  var statusEl = document.getElementById('networkingStatus');
+  var labelEl  = document.getElementById('networkingLabel');
+  if (statusEl) {
+    statusEl.textContent = networkingEnabled ? 'Enabled' : 'Disabled';
+  }
+  if (labelEl) {
+    labelEl.innerHTML = networkingEnabled
+      ? '<i class="fa fa-wifi" style="color:#28a745"></i> Networking: <strong id="networkingStatus">Enabled</strong>'
+      : '<i class="fa fa-wifi-slash" style="color:#cc1016"></i> Networking: <strong id="networkingStatus">Disabled</strong>';
+  }
+  showToast(networkingEnabled ? '✅ Networking enabled for attendees' : '🚫 Networking disabled — attendees see stats only');
+}
+
+/* ============================================================
+   OPEN HOSTED EVENT (host view — with networking toggle)
+============================================================ */
+function openHostedEvent() {
+  var title = document.getElementById('sessionPageTitle');
+  if (title) title.textContent = 'AI Startup Networking Mixer';
+  var meta = document.getElementById('sessionMeta');
+  if (meta) {
+    meta.innerHTML =
+      '<i class="fa fa-crown" style="color:#0A66C2"></i> You are hosting &nbsp;·&nbsp; ' +
+      '<i class="fa fa-calendar"></i> June 20, 2026 &nbsp;·&nbsp; ' +
+      '<i class="fa fa-map-marker-alt"></i> Mumbai · BKC &nbsp;·&nbsp; ' +
+      '<i class="fa fa-key" style="color:#c37d16"></i> Code: <strong>847261</strong>';
+  }
+  applyNetworkingState(true); // host always sees full people list
+  showPage('session');
+}
+
+/* ============================================================
+   OPEN ATTENDING EVENT (attendee view)
+============================================================ */
+var attendingEventData = {
+  fintech: { name:'FinTech Networking Mixer', date:'March 15, 2026', location:'The Lalit, Mumbai', attendees:112 },
+  summit:  { name:'Product Leaders Summit 2026', date:'March 20, 2026', location:'Online · Zoom', attendees:340 }
+};
+
+function openAttendingEvent(key, isNetworkingOn) {
+  var ev = attendingEventData[key];
+  if (!ev) return;
+  var title = document.getElementById('sessionPageTitle');
+  if (title) title.textContent = ev.name;
+  var meta = document.getElementById('sessionMeta');
+  if (meta) {
+    meta.innerHTML =
+      '<i class="fa fa-circle-check" style="color:#28a745"></i> Attending &nbsp;·&nbsp; ' +
+      '<i class="fa fa-calendar"></i> ' + ev.date + ' &nbsp;·&nbsp; ' +
+      '<i class="fa fa-map-marker-alt"></i> ' + ev.location;
+  }
+  var ndCount = document.getElementById('ndAttendeeCount');
+  if (ndCount) ndCount.textContent = ev.attendees;
+  applyNetworkingState(isNetworkingOn);
+  showPage('session');
+}
+
+/* ============================================================
+   APPLY NETWORKING STATE (show/hide people vs disabled view)
+============================================================ */
+function applyNetworkingState(isOn) {
+  var tabs         = document.querySelector('#page-session .tabs');
+  var peoplePanel  = document.getElementById('people');
+  var disabledView = document.getElementById('networkingDisabledView');
+  var banner       = document.querySelector('#page-session .livesync-banner');
+
+  if (isOn) {
+    if (tabs) tabs.style.display = '';
+    if (peoplePanel) peoplePanel.classList.remove('hidden');
+    if (disabledView) disabledView.classList.add('hidden');
+  } else {
+    // Hide tabs and people panel; show disabled message
+    if (tabs) tabs.style.display = 'none';
+    if (peoplePanel) peoplePanel.classList.add('hidden');
+    if (disabledView) disabledView.classList.remove('hidden');
+  }
+}
+
+/* ============================================================
+   PEOPLE PAGE FILTER
+============================================================ */
+var peopleData = [
+  { id:'p1', name:'Rahul Sharma',  title:'PGDM 2024–26 | Marketing | SPJIMR',             interest:'Marketing',           profession:'PGDM Student' },
+  { id:'p2', name:'Priya Patel',   title:'PGDM 2024–26 | Finance | SPJIMR',               interest:'Finance',             profession:'Finance Professional' },
+  { id:'p3', name:'Sofia Khan',    title:'PGDM 2024–26 | Strategy | SPJIMR',              interest:'Strategy',            profession:'Strategy Consultant' },
+  { id:'p4', name:'John Mathew',   title:"SPJIMR Alum '22 | Product Manager | PhonePe",  interest:'Product',             profession:'Product Manager' },
+  { id:'p5', name:'Ananya Reddy',  title:'PGDM 2024–26 | Finance | SPJIMR · Ex-Axis Bank',interest:'Finance',            profession:'Finance Professional' },
+  { id:'p6', name:'Vikram Nair',   title:"SPJIMR Alum '21 | Associate | Sequoia India",  interest:'Strategy',            profession:'Strategy Consultant' },
+  { id:'p7', name:'Divya Menon',   title:'PGDM 2024–26 | Operations & Analytics | SPJIMR',interest:'Analytics',          profession:'Operations Manager' },
+  { id:'p8', name:'Aryan Kapoor',  title:"SPJIMR Alum '23 | Strategy | McKinsey",         interest:'Strategy',            profession:'Strategy Consultant' },
+  { id:'p9', name:'Neha Joshi',    title:'PGDM 2024–26 | Digital Marketing | SPJIMR',     interest:'Digital Marketing',   profession:'Marketing Professional' },
+  { id:'p10',name:'Rohan Desai',   title:"SPJIMR Alum '22 | Supply Chain Manager | Marico",interest:'Operations',        profession:'Operations Manager' },
+  { id:'p11',name:'Ishita Bose',   title:'PGDM 2024–26 | Media & Entertainment | SPJIMR', interest:'Media & Entertainment',profession:'Marketing Professional'},
+  { id:'p12',name:'Karan Mehta',   title:'PGDM 2024–26 | General Management | SPJIMR',   interest:'Strategy',            profession:'PGDM Student' },
+];
+
+function applyPeopleFilter() {
+  var profSel   = document.getElementById('filterProfession');
+  var profOther = document.getElementById('filterProfessionOther');
+  var intSel    = document.getElementById('filterInterest');
+  var intOther  = document.getElementById('filterInterestOther');
+  if (!profSel) return;
+
+  var prof = profSel.value === 'others' ? (profOther.value || '').toLowerCase().trim()
+                                        : profSel.value.toLowerCase();
+  var intr = intSel.value === 'others'  ? (intOther.value || '').toLowerCase().trim()
+                                        : intSel.value.toLowerCase();
+
+  var cards = document.querySelectorAll('#people .pcard');
+  var shown = 0;
+  cards.forEach(function(card, i) {
+    var pd = peopleData[i];
+    if (!pd) { card.style.display = ''; shown++; return; }
+    var profMatch = !prof || pd.profession.toLowerCase().includes(prof) || pd.title.toLowerCase().includes(prof);
+    var intrMatch = !intr || pd.interest.toLowerCase().includes(intr) || pd.title.toLowerCase().includes(intr);
+    if (profMatch && intrMatch) { card.style.display = ''; shown++; }
+    else card.style.display = 'none';
+  });
+
+  // Update tab count
+  var tabBtn = document.getElementById('tabPeople');
+  if (tabBtn) tabBtn.textContent = 'People (' + shown + ')';
+}
+
+function clearPeopleFilter() {
+  ['filterProfession','filterInterest'].forEach(function(id) {
+    var el = document.getElementById(id); if (el) el.value = '';
+  });
+  ['filterProfessionOther','filterInterestOther'].forEach(function(id) {
+    var el = document.getElementById(id); if (el) { el.value = ''; el.classList.add('hidden'); }
+  });
+  applyPeopleFilter();
+  var tabBtn = document.getElementById('tabPeople');
+  if (tabBtn) tabBtn.textContent = 'People (12)';
+}
+
+/* ============================================================
+   PREMIUM ACTIONS (now functional for premium user)
+============================================================ */
+function sendToAll() {
+  var cards = document.querySelectorAll('#people .pcard');
+  var count = 0;
+  cards.forEach(function(card) {
+    var btn = card.querySelector('.cbtn');
+    if (btn && !btn.classList.contains('requested') && card.style.display !== 'none') {
+      btn.classList.add('requested');
+      btn.textContent = 'Requested';
+      btn.disabled = true;
+      count++;
+      // Add to sent tab silently
+      var nameEl  = card.querySelector('.pname');
+      var titleEl = card.querySelector('.ptitle');
+      var imgEl   = card.querySelector('img');
+      if (nameEl) {
+        sentCount++;
+        updateSentTab(nameEl.textContent, titleEl ? titleEl.textContent : '', imgEl ? imgEl.src : '');
+      }
+    }
+  });
+  updateTabCounts();
+  if (count > 0) showToast('⭐ Sent ' + count + ' connection requests!');
+  else showToast('All visible attendees already requested.');
+}
+
+function joinGroup() {
+  showToast('⭐ You joined: SPJIMR PGDM Batch 2024–26');
+  var bar = document.querySelector('.join-group-bar .prem-btn');
+  if (bar) { bar.textContent = 'Joined ✓'; bar.disabled = true; bar.style.opacity = '0.8'; }
 }
