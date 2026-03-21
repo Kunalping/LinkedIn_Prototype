@@ -874,10 +874,9 @@ function _refreshSidebarLabel(labelId, statusId, isOn) {
    NETWORKING TOGGLE — static hosted event (id: networkingToggle, code: 847261)
    Only called by the static event's checkbox. Does NOT touch dynamic events.
 ============================================================ */
-function toggleNetworking() {
+function toggleNetworking(checkbox) {
   var code = '847261';
-  var chk  = document.getElementById('networkingToggle');
-  var isOn = chk ? chk.checked : getNetworking(code);
+  var isOn = checkbox.checked;
 
   setNetworking(code, isOn);
   _refreshSidebarLabel('networkingLabel', 'networkingStatus', isOn);
