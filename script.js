@@ -47,7 +47,8 @@ function joinSession() {
   if (validCodes[code]) {
     showToast('✅ Joining session: AI Startup Networking Mixer...');
     setTimeout(function() {
-      userRole = 'attendee';
+      userRole        = 'attendee';
+      activeEventCode = code;
       document.getElementById('sessionPageTitle').textContent = 'LiveSync Session';
       var meta = document.getElementById('sessionMeta');
       if (meta) {
@@ -56,7 +57,7 @@ function joinSession() {
       }
       var roleBar = document.getElementById('sessionRoleBar');
       if (roleBar) roleBar.classList.add('hidden');
-      applyNetworkingState(isNetworkingEnabled);
+      applyNetworkingState(getNetworking(code));
       showPage('session');
     }, 600);
   } else {
