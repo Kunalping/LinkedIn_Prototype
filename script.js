@@ -530,10 +530,12 @@ function addMyEvent(name, loc, code) {
   if (!container) return;
   var parent = container.parentElement;
 
-  // Each new hosted event gets its own unique networking toggle ID
   var toggleId  = 'nt_' + code;
   var labelId   = 'nl_' + code;
   var statusId  = 'ns_' + code;
+
+  // Initialise networking state for this new event (default: enabled)
+  if (!(code in eventNetworkingState)) eventNetworkingState[code] = true;
 
   var div = document.createElement('div');
   div.className = 'my-event-card hosted-event';
@@ -552,8 +554,8 @@ function addMyEvent(name, loc, code) {
         '<i class="fa fa-wifi" style="color:#28a745"></i> Networking: <strong id="' + statusId + '">Enabled</strong>' +
       '</span>' +
       '<label class="toggle-switch">' +
-        '<input type="checkbox" id="' + toggleId + '" checked ' +
-          'onchange="toggleNetworkingForEvent(this, \'' + labelId + '\', \'' + statusId + '\')">' +
+        '<input type="checkbox" id="' + toggleId + '" data-code="' + code + '" checked ' +
+          'onchange="toggleNetworkingForEvent(this,\'' + labelId + '\',\'' + statusId + '\')">' +
         '<span class="toggle-slider"></span>' +
       '</label>' +
     '</div>' +
@@ -567,61 +569,6 @@ function addMyEvent(name, loc, code) {
   parent.insertBefore(div, container);
 }
 
-/* ============================================================
-   PER-EVENT NETWORKING TOGGLE (for dynamically created events)
-============================================================ */
-function toggleNetworkingForEvent(checkbox, labelId, statusId) {
-  var isOn = checkbox.checked;
-
-  // Update this event's sidebar label
-  var labelEl  = document.getElementById(labelId);
-  var statusEl = document.getElementById(statusId);
-  if (labelEl) {
-    labelEl.innerHTML = isOn
-      ? '<i class="fa fa-wifi" style="color:#28a745"></i> Networking: <strong id="' + statusId + '">Enabled</strong>'
-      : '<i class="fa fa-wifi-slash" style="color:#cc1016"></i> Networking: <strong id="' + statusId + '">Disabled</strong>';
-  }
-
-  // Update global state so the session page reacts
-  isNetworkingEnabled = isOn;
-
-  // Also sync the original sidebar toggle if this is the primary hosted event
-  var primary = document.getElementById('networkingToggle');
-  if (primary) primary.checked = isOn;
-
-  showToast(isOn
-    ? '✅ Networking enabled for attendees'
-    : '🚫 Networking disabled — attendees see stats only');
-
-  // If session page is open, refresh it
-  if (currentPage === 'session' && userRole === 'host') {
-    renderHostSessionHeader();
-  }
-}
-
-/* open a dynamically created hosted event by name */
-function openHostedEventByName(name, loc, code, toggleId) {
-  userRole = 'host';
-
-  // Read networking state from THIS event's toggle
-  var tog = document.getElementById(toggleId);
-  if (tog) isNetworkingEnabled = tog.checked;
-
-  var titleEl = document.getElementById('sessionPageTitle');
-  if (titleEl) titleEl.textContent = name;
-
-  var meta = document.getElementById('sessionMeta');
-  if (meta) {
-    meta.innerHTML =
-      '<i class="fa fa-crown" style="color:#0A66C2"></i> You are hosting &nbsp;·&nbsp; ' +
-      '<i class="fa fa-map-marker-alt"></i> ' + loc +
-      ' &nbsp;·&nbsp; <i class="fa fa-key" style="color:#c37d16"></i> Code: <strong>' + code + '</strong>';
-  }
-
-  renderHostSessionHeader();
-  applyNetworkingState(true); // host always sees full people list
-  showPage('session');
-}
 
 /* ============================================================
    QR LANDING PAGE PREVIEW
@@ -882,55 +829,105 @@ document.addEventListener('DOMContentLoaded', function() {
 });
 
 /* ============================================================
-   NETWORKING STATE — single source of truth
+   NETWORKING STATE — per-event dictionary (keyed by event code)
+   eventNetworkingState is the ONLY source of truth.
+   No other variable controls individual event networking state.
 ============================================================ */
-var isNetworkingEnabled = true;   // master state variable
-var userRole = 'host';            // 'host' | 'attendee'
+var eventNetworkingState = {
+  '847261': true   // static hosted event starts enabled
+};
+
+/* code of the event currently open in the session view */
+var activeEventCode = '847261';
+
+var userRole = 'host';
+
+/* read state for a given code (defaults true on first access) */
+function getNetworking(code) {
+  if (!(code in eventNetworkingState)) eventNetworkingState[code] = true;
+  return eventNetworkingState[code];
+}
+
+/* write state — ONLY function allowed to mutate eventNetworkingState */
+function setNetworking(code, isOn) {
+  eventNetworkingState[code] = isOn;
+}
+
+/* convenience getter for the active event */
+function activeNetworking() {
+  return getNetworking(activeEventCode);
+}
 
 /* ============================================================
-   NETWORKING TOGGLE (My Events sidebar)
+   PRIVATE: update one event's sidebar label only
+   Never touches any other event's DOM or state.
+============================================================ */
+function _refreshSidebarLabel(labelId, statusId, isOn) {
+  var labelEl = document.getElementById(labelId);
+  if (!labelEl) return;
+  labelEl.innerHTML = isOn
+    ? '<i class="fa fa-wifi" style="color:#28a745"></i> Networking: <strong id="' + statusId + '">Enabled</strong>'
+    : '<i class="fa fa-wifi-slash" style="color:#cc1016"></i> Networking: <strong id="' + statusId + '">Disabled</strong>';
+}
+
+/* ============================================================
+   NETWORKING TOGGLE — static hosted event (id: networkingToggle, code: 847261)
+   Only called by the static event's checkbox. Does NOT touch dynamic events.
 ============================================================ */
 function toggleNetworking() {
-  isNetworkingEnabled = document.getElementById('networkingToggle').checked;
+  var code = '847261';
+  var chk  = document.getElementById('networkingToggle');
+  var isOn = chk ? chk.checked : getNetworking(code);
 
-  // Update sidebar label
-  var labelEl = document.getElementById('networkingLabel');
-  if (labelEl) {
-    labelEl.innerHTML = isNetworkingEnabled
-      ? '<i class="fa fa-wifi" style="color:#28a745"></i> Networking: <strong id="networkingStatus">Enabled</strong>'
-      : '<i class="fa fa-wifi-slash" style="color:#cc1016"></i> Networking: <strong id="networkingStatus">Disabled</strong>';
-  }
+  setNetworking(code, isOn);
+  _refreshSidebarLabel('networkingLabel', 'networkingStatus', isOn);
 
-  // Update attending event badge in sidebar instantly
-  var fintechBadge = document.querySelector('#page-mynetwork .event-clickable .attending-badge:not(.disabled)');
-  // Re-stamp the FinTech event click with current state (onclick is static so this is visual only)
-
-  showToast(isNetworkingEnabled
+  showToast(isOn
     ? '✅ Networking enabled — attendees can now connect'
     : '🚫 Networking disabled — attendees see stats only');
 
-  // If the session page is currently visible, refresh its state
-  if (currentPage === 'session') {
-    // Host always sees full list; only attendee view is gated
-    if (userRole === 'host') {
-      renderHostSessionHeader();
-    } else {
-      applyNetworkingState(isNetworkingEnabled);
-    }
+  // Only refresh session page if THIS event is the one open
+  if (currentPage === 'session' && activeEventCode === code) {
+    if (userRole === 'host') renderHostSessionHeader();
+    else applyNetworkingState(isOn);
   }
 }
 
 /* ============================================================
-   OPEN HOSTED EVENT — distinct host view
+   PER-EVENT TOGGLE — dynamic events created at runtime
+   Each checkbox carries data-code="<eventCode>" so it knows
+   exactly which event it belongs to.
+   Does NOT touch the static event's checkbox or any other event.
+============================================================ */
+function toggleNetworkingForEvent(checkbox, labelId, statusId) {
+  var code = checkbox.getAttribute('data-code');
+  if (!code) return;
+  var isOn = checkbox.checked;
+
+  setNetworking(code, isOn);
+  _refreshSidebarLabel(labelId, statusId, isOn);
+
+  showToast(isOn
+    ? '✅ Networking enabled — attendees can now connect'
+    : '🚫 Networking disabled — attendees see stats only');
+
+  // Only refresh session page if THIS event is the one open
+  if (currentPage === 'session' && activeEventCode === code) {
+    if (userRole === 'host') renderHostSessionHeader();
+    else applyNetworkingState(isOn);
+  }
+}
+
+/* ============================================================
+   OPEN HOSTED EVENT — static (code: 847261)
 ============================================================ */
 function openHostedEvent() {
-  userRole = 'host';
+  userRole        = 'host';
+  activeEventCode = '847261';
 
-  // Set page title
   var titleEl = document.getElementById('sessionPageTitle');
   if (titleEl) titleEl.textContent = 'AI Startup Networking Mixer';
 
-  // Set meta
   var meta = document.getElementById('sessionMeta');
   if (meta) {
     meta.innerHTML =
@@ -941,16 +938,44 @@ function openHostedEvent() {
   }
 
   renderHostSessionHeader();
-  // Host always sees full people list regardless of networking state
-  applyNetworkingState(true);
+  applyNetworkingState(true); // host always sees full people list
   showPage('session');
 }
 
+/* ============================================================
+   OPEN HOSTED EVENT BY NAME — dynamically created events
+============================================================ */
+function openHostedEventByName(name, loc, code, toggleId) {
+  userRole        = 'host';
+  activeEventCode = code;
+
+  // Initialise state to enabled if this event hasn't been seen before
+  if (!(code in eventNetworkingState)) eventNetworkingState[code] = true;
+
+  var titleEl = document.getElementById('sessionPageTitle');
+  if (titleEl) titleEl.textContent = name;
+
+  var meta = document.getElementById('sessionMeta');
+  if (meta) {
+    meta.innerHTML =
+      '<i class="fa fa-crown" style="color:#0A66C2"></i> You are hosting &nbsp;·&nbsp; ' +
+      '<i class="fa fa-map-marker-alt"></i> ' + loc +
+      ' &nbsp;·&nbsp; <i class="fa fa-key" style="color:#c37d16"></i> Code: <strong>' + code + '</strong>';
+  }
+
+  renderHostSessionHeader();        // reads getNetworking(activeEventCode) — correct
+  applyNetworkingState(true);       // host always sees full people list
+  showPage('session');
+}
+
+/* ============================================================
+   SESSION ROLE BAR — host view (reads per-event state via activeEventCode)
+============================================================ */
 function renderHostSessionHeader() {
   var roleBar = document.getElementById('sessionRoleBar');
   if (!roleBar) return;
-  var tog = document.getElementById('networkingToggle');
-  var isOn = tog ? tog.checked : isNetworkingEnabled;
+  // Always read from per-event dict, never from a shared DOM checkbox
+  var isOn = getNetworking(activeEventCode);
   roleBar.className = 'session-role-bar host-role-bar';
   roleBar.innerHTML =
     '<div class="srb-left">' +
@@ -963,58 +988,69 @@ function renderHostSessionHeader() {
     '</div>' +
     '<div class="srb-right">' +
       '<label class="toggle-switch" style="margin-left:8px">' +
-        '<input type="checkbox" id="inlineNetworkingToggle" ' + (isOn ? 'checked' : '') + ' onchange="inlineToggleNetworking()">' +
+        '<input type="checkbox" id="inlineNetworkingToggle" data-code="' + activeEventCode + '" ' +
+          (isOn ? 'checked' : '') + ' onchange="inlineToggleNetworking(this)">' +
         '<span class="toggle-slider"></span>' +
       '</label>' +
-      '<button class="btn-ghost btn-sm" onclick="openQRForEvent(\'AI Startup Networking Mixer\')" style="margin-left:8px"><i class="fa fa-qrcode"></i> QR</button>' +
+      '<button class="btn-ghost btn-sm" style="margin-left:8px" ' +
+        'onclick="openQRForEvent(\'' + activeEventCode + '\')">' +
+        '<i class="fa fa-qrcode"></i> QR' +
+      '</button>' +
     '</div>';
   roleBar.classList.remove('hidden');
 }
 
-function inlineToggleNetworking() {
-  var chk = document.getElementById('inlineNetworkingToggle');
-  isNetworkingEnabled = chk ? chk.checked : isNetworkingEnabled;
+/* inline toggle inside the session page role bar —
+   writes only to eventNetworkingState[activeEventCode] */
+function inlineToggleNetworking(checkbox) {
+  var code = checkbox ? checkbox.getAttribute('data-code') : activeEventCode;
+  var isOn = checkbox ? checkbox.checked : false;
+  if (!code) return;
 
-  // Sync sidebar toggle
-  var sidebarToggle = document.getElementById('networkingToggle');
-  if (sidebarToggle) sidebarToggle.checked = isNetworkingEnabled;
+  setNetworking(code, isOn);
 
-  // Update sidebar label
-  var labelEl = document.getElementById('networkingLabel');
-  if (labelEl) {
-    labelEl.innerHTML = isNetworkingEnabled
-      ? '<i class="fa fa-wifi" style="color:#28a745"></i> Networking: <strong id="networkingStatus">Enabled</strong>'
-      : '<i class="fa fa-wifi-slash" style="color:#cc1016"></i> Networking: <strong id="networkingStatus">Disabled</strong>';
+  // Sync the sidebar checkbox for this specific event only
+  if (code === '847261') {
+    var sc = document.getElementById('networkingToggle');
+    if (sc) sc.checked = isOn;
+    _refreshSidebarLabel('networkingLabel', 'networkingStatus', isOn);
+  } else {
+    var dc = document.getElementById('nt_' + code);
+    if (dc) dc.checked = isOn;
+    _refreshSidebarLabel('nl_' + code, 'ns_' + code, isOn);
   }
 
-  // Update the inline status badge
-  var srbStatus = document.getElementById('srbNetStatus');
-  if (srbStatus) {
-    srbStatus.className = 'srb-net-status ' + (isNetworkingEnabled ? 'net-on' : 'net-off');
-    srbStatus.innerHTML = '<i class="fa ' + (isNetworkingEnabled ? 'fa-wifi' : 'fa-wifi-slash') + '"></i> Networking ' + (isNetworkingEnabled ? 'Enabled' : 'Disabled');
+  // Update inline status pill
+  var pill = document.getElementById('srbNetStatus');
+  if (pill) {
+    pill.className = 'srb-net-status ' + (isOn ? 'net-on' : 'net-off');
+    pill.innerHTML = '<i class="fa ' + (isOn ? 'fa-wifi' : 'fa-wifi-slash') + '"></i> Networking ' + (isOn ? 'Enabled' : 'Disabled');
   }
-  // Update inline toggle icon
-  var iIcon = document.querySelector('#inlineNetworkingToggle ~ .toggle-slider');
-  // Host always sees people list; toast to show what attendees experience
-  showToast(isNetworkingEnabled ? '✅ Networking enabled — attendees can now connect' : '🚫 Attendees now see stats-only view');
+
+  showToast(isOn ? '✅ Networking enabled — attendees can now connect' : '🚫 Attendees now see stats-only view');
 }
 
 /* ============================================================
-   OPEN ATTENDING EVENT — distinct attendee view
+   OPEN ATTENDING EVENT — attendee view (reads per-event state)
 ============================================================ */
 var attendingEventData = {
-  fintech: { name:'FinTech Networking Mixer', date:'March 15, 2026', location:'The Lalit, Mumbai', attendees:112 },
-  summit:  { name:'Product Leaders Summit 2026', date:'March 20, 2026', location:'Online · Zoom', attendees:340 }
+  fintech: { name:'FinTech Networking Mixer',    date:'March 15, 2026', location:'The Lalit, Mumbai', attendees:112, code:'847261' },
+  summit:  { name:'Product Leaders Summit 2026', date:'March 20, 2026', location:'Online · Zoom',     attendees:340, code:'SUMMIT' }
 };
 
-function openAttendingEvent(key, networkingOnForThisEvent) {
+function openAttendingEvent(key, defaultNetworkingOn) {
   userRole = 'attendee';
   var ev = attendingEventData[key];
   if (!ev) return;
 
-  // For the hosted event (fintech), respect the live isNetworkingEnabled toggle.
-  // For summit, it is statically disabled (separate event, host is someone else).
-  var isOn = (key === 'fintech') ? isNetworkingEnabled : networkingOnForThisEvent;
+  activeEventCode = ev.code;
+
+  // If this event's code is already in the dict (e.g. host toggled it), use that.
+  // Otherwise use the static default passed in from the HTML onclick.
+  if (!(ev.code in eventNetworkingState)) {
+    eventNetworkingState[ev.code] = defaultNetworkingOn;
+  }
+  var isOn = eventNetworkingState[ev.code];
 
   var titleEl = document.getElementById('sessionPageTitle');
   if (titleEl) titleEl.textContent = ev.name;
@@ -1048,13 +1084,14 @@ function renderAttendeeSessionHeader(isOn) {
         'Networking ' + (isOn ? 'Open' : 'Not yet enabled') +
       '</span>' +
     '</div>' +
-    (isOn ? '<div class="srb-right srb-tip">Connect with people in this session</div>'
-           : '<div class="srb-right srb-tip">The host hasn\'t enabled networking yet</div>');
+    (isOn
+      ? '<div class="srb-right srb-tip">Connect with people in this session</div>'
+      : '<div class="srb-right srb-tip">The host hasn\'t enabled networking yet</div>');
   roleBar.classList.remove('hidden');
 }
 
 /* ============================================================
-   APPLY NETWORKING STATE — single renderer, reacts to isNetworkingEnabled
+   APPLY NETWORKING STATE — controls what the session page shows
 ============================================================ */
 function applyNetworkingState(isOn) {
   var tabsRow      = document.querySelector('#page-session .tabs');
@@ -1062,24 +1099,16 @@ function applyNetworkingState(isOn) {
   var disabledView = document.getElementById('networkingDisabledView');
 
   if (isOn) {
-    if (tabsRow)      tabsRow.style.display      = '';
+    if (tabsRow)      tabsRow.style.display = '';
     if (peoplePanel)  { peoplePanel.classList.remove('hidden'); peoplePanel.style.display = ''; }
     if (disabledView) disabledView.classList.add('hidden');
-    // Reset to People tab so it's always visible on open
     showTab('people');
   } else {
-    if (tabsRow)      tabsRow.style.display      = 'none';
+    if (tabsRow)      tabsRow.style.display = 'none';
     if (peoplePanel)  { peoplePanel.classList.add('hidden'); peoplePanel.style.display = 'none'; }
     if (disabledView) disabledView.classList.remove('hidden');
   }
 }
-
-/* ============================================================
-   Hide role bar when leaving session page
-============================================================ */
-var _origShowPage = showPage;
-// We'll patch showPage after definition to hide roleBar on navigate away.
-// (Done via the existing showPage; we add cleanup inside openHostedEvent / openAttendingEvent)
 
 /* ============================================================
    PEOPLE PAGE — CHIP FILTER SYSTEM
